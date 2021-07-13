@@ -1,0 +1,31 @@
+{
+  "name": "carpo-redspot",
+  "version": "0.0.0",
+  "description": "carpo extension and vscode extension",
+  "main": "extension.js",
+  "repository": "https://github.com/patractlabs/carpo-extension.git",
+  "author": "patractlabs",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.57.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:extension.helloWorld"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.helloWorld",
+        "title": "Hello World"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@patract/dev": "^0.5.20",
+    "babel-loader": "^8.2.2",
+    "thread-loader": "^3.0.4"
+  }
+}

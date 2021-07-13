@@ -1,0 +1,27 @@
+{
+  "name": "carpo-extension",
+  "version": "0.0.0",
+  "description": "carpo extension and vscode extension",
+  "main": "packages/carpo-redspot/build/index.js",
+  "repository": "https://github.com/patractlabs/carpo-extension.git",
+  "author": "patractlabs",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "resolutions": {
+    "typescript": "^4.3.5",
+    "webpack": "5.41.1"
+  },
+  "scripts": {
+    "build": "NODE_ENV=production yarn polkadot-dev-build-ts",
+    "lint": "polkadot-dev-run-lint"
+  },
+  "devDependencies": {
+    "@patract/dev": "^0.5.20",
+    "@types/node": "14.x",
+    "@types/vscode": "^1.58.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0"
+  }
+}
