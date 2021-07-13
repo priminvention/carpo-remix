@@ -8,7 +8,9 @@
     "baseUrl": ".",
     "paths": {
       "carpo-redspot": ["packages/carpo-redspot/src"],
-      "carpo-redspot/*": ["packages/carpo-redspot/src/*"]
+      "carpo-redspot/*": ["packages/carpo-redspot/src/*"],
+      "@carpo/common": ["packages/common/src"],
+      "@carpo/common/*": ["packages/common/src/*"]
     },
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@polkadot/ts", "./node_modules/@types"]

@@ -1,0 +1,9 @@
+{
+  "name": "@carpo/common",
+  "version": "0.0.0",
+  "description": "carpo extension common",
+  "main": "build/index.js",
+  "repository": "https://github.com/patractlabs/carpo-extension.git",
+  "author": "patractlabs",
+  "license": "MIT"
+}

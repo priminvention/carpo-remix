@@ -10,7 +10,7 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}/packages/carpo-redspot/build"
+				"--extensionDevelopmentPath=${workspaceFolder}/packages/carpo-redspot"
 			],
 			"outFiles": [
 				"${workspaceFolder}/packages/carpo-redspot/build/**/*.js"
