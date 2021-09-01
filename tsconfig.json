@@ -10,7 +10,11 @@
       "carpo-redspot": ["packages/carpo-redspot/src"],
       "carpo-redspot/*": ["packages/carpo-redspot/src/*"],
       "@carpo/common": ["packages/common/src"],
-      "@carpo/common/*": ["packages/common/src/*"]
+      "@carpo/common/*": ["packages/common/src/*"],
+      "@carpo/compile": ["packages/compile/src"],
+      "@carpo/compile/*": ["packages/compile/src/*"],
+      "@carpo/config": ["packages/config/src"],
+      "@carpo/config/*": ["packages/config/src/*"]
     },
     "skipLibCheck": true,
     "typeRoots": ["./node_modules/@polkadot/ts", "./node_modules/@types"]

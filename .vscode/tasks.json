@@ -4,8 +4,9 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+      "label": "build:browser",
 			"type": "npm",
-			"script": "build",
+			"script": "build:browser",
 			"problemMatcher": [
         "$ts-webpack-watch",
         "$tslint-webpack-watch"
@@ -18,6 +19,30 @@
 				"kind": "build",
 				"isDefault": true
 			}
-		}
+		},
+		{
+      "label": "build:extension",
+			"type": "npm",
+			"script": "build:extension",
+			"problemMatcher": [
+        "$ts-webpack-watch",
+        "$tslint-webpack-watch"
+			],
+			"isBackground": true,
+			"presentation": {
+				"reveal": "never"
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		},
+    {
+      "label": "Build",
+      "dependsOn": [
+        "build:browser",
+        "build:extension"
+      ]
+    }
 	]
 }

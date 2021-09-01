@@ -15,12 +15,42 @@
   "activationEvents": [
     "workspaceContains:package.json"
   ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "carpoView",
+          "title": "Carpo",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "carpoView": [
+        {
+          "type": "webview",
+          "id": "carpo.compileView",
+          "name": "Compile"
+        }
+      ]
+    }
+  },
   "devDependencies": {
     "@patract/dev": "^0.5.21",
     "@types/cross-spawn": "^6.0.2",
     "@types/fs-extra": "^9.0.12",
     "babel-loader": "^8.2.2",
+    "copy-webpack-plugin": "^9.0.1",
+    "crypto-browserify": "^3.12.0",
+    "css-loader": "^6.2.0",
+    "file-loader": "^6.2.0",
+    "html-loader": "^2.1.2",
+    "markdown-loader": "^6.0.0",
+    "null-loader": "^4.0.1",
+    "path-browserify": "^1.0.1",
+    "stream-browserify": "^3.0.0",
     "thread-loader": "^3.0.4",
+    "url-loader": "^4.1.1",
     "webpack": "^5.44.0",
     "webpack-cli": "^4.7.2"
   },

@@ -1,6 +1,8 @@
 import type { ChildProcessWithoutNullStreams } from 'child_process';
 import type { OutputChannel, StatusBarItem } from 'vscode';
 
+import { carpoConfigBase, redspotConfigPath } from '@carpo/config';
+import { redspotConfigTemplate } from '@carpo/config/redspotConfig';
 import { execSync } from 'child_process';
 import { spawn } from 'cross-spawn';
 import fs from 'fs-extra';
@@ -69,5 +71,11 @@ export class Workspace extends VscodeBase {
         }
       });
     });
+  }
+
+  public genConfig(): void {
+    fs.ensureDirSync(carpoConfigBase(this.path));
+    fs.ensureFileSync(redspotConfigPath(this.path));
+    fs.writeFileSync(redspotConfigPath(this.path), redspotConfigTemplate(this.path));
   }
 }

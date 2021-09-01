@@ -1,0 +1,9 @@
+{
+  "name": "@carpo/compile",
+  "version": "0.0.0",
+  "description": "carpo extension compile",
+  "main": "build/index.js",
+  "repository": "https://github.com/patractlabs/carpo-extension.git",
+  "author": "patractlabs",
+  "license": "MIT"
+}
