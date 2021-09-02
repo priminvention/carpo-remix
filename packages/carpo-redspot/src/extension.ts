@@ -18,6 +18,10 @@ export function activate(context: vscode.ExtensionContext): void {
 
   const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
 
+  statusBar.text = 'carpo-redspot';
+  statusBar.tooltip = 'ready';
+  statusBar.show();
+
   const workspace = vscode.workspace.workspaceFolders.map(({ uri }) => {
     return new Workspace(uri.path, output, statusBar);
   })[0];

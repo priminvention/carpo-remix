@@ -16,10 +16,7 @@ function config(workspace: Workspace): void {
 
 export async function init(workspace: Workspace, statusBar: StatusBarItem): Promise<void> {
   statusBar.text = 'Redspot: Installing';
-  statusBar.show();
-
-  await install(workspace);
   config(workspace);
-
+  await install(workspace);
   statusBar.text = `Redspot: ${workspace.redspotVersion}`;
 }

@@ -1,7 +1,8 @@
 import type { ChildProcessWithoutNullStreams } from 'child_process';
+import type { RedspotConfig } from 'redspot/types/config';
 import type { OutputChannel, StatusBarItem } from 'vscode';
 
-import { carpoConfigBase, redspotConfigPath } from '@carpo/config';
+import { carpoConfigBase, redspotConfigPath, userSettingPath } from '@carpo/config';
 import { redspotConfigTemplate } from '@carpo/config/redspotConfig';
 import { execSync } from 'child_process';
 import { spawn } from 'cross-spawn';
@@ -12,7 +13,7 @@ import { VscodeBase } from './VscodeBase';
 
 function shouldUseYarn(): boolean {
   try {
-    execSync('yarnpkg --version', { stdio: 'ignore' });
+    execSync('yarn --version', { stdio: 'ignore' });
 
     return true;
   } catch (e) {
@@ -21,7 +22,9 @@ function shouldUseYarn(): boolean {
 }
 
 function doYarn(cwd: string): ChildProcessWithoutNullStreams {
-  return spawn(`yarnpkg`, ['install', '--cwd', cwd]);
+  process.chdir(cwd);
+
+  return spawn(`yarn`, ['install']);
 }
 
 function doNpm(cwd: string): ChildProcessWithoutNullStreams {
@@ -32,10 +35,12 @@ function doNpm(cwd: string): ChildProcessWithoutNullStreams {
 
 export class Workspace extends VscodeBase {
   public path: string;
+  private redspotBin: string;
 
-  constructor(path: string, output: OutputChannel, status: StatusBarItem) {
-    super(output, status);
-    this.path = path;
+  constructor(_path: string, _output: OutputChannel, _status: StatusBarItem) {
+    super(_output, _status);
+    this.path = _path;
+    this.redspotBin = path.join(_path, 'node_modules/.bin/redspot');
   }
 
   public get isRedspotProject(): boolean {
@@ -44,8 +49,8 @@ export class Workspace extends VscodeBase {
     );
   }
 
-  public get redspotVersion(): string {
-    return execSync(`${path.join(this.path, 'node_modules/.bin/redspot')} --version`).toString();
+  public get redspotVersion(): any {
+    return execSync(`node ${this.redspotBin} --version`).toString();
   }
 
   public doInstall(): Promise<void> {
@@ -73,9 +78,28 @@ export class Workspace extends VscodeBase {
     });
   }
 
+  public getRedspotConfig(): RedspotConfig {
+    process.chdir(this.path);
+    const execCommand = `node ${this.redspotBin} metadata`;
+
+    const output = execSync(execCommand, { maxBuffer: 1024 * 2048 }).toString();
+
+    const outputObj: RedspotConfig = JSON.parse(output);
+
+    outputObj.paths = {
+      ...outputObj.paths,
+      configFile: redspotConfigPath(this.path)
+    };
+
+    return outputObj;
+  }
+
   public genConfig(): void {
+    const config = this.getRedspotConfig();
+
     fs.ensureDirSync(carpoConfigBase(this.path));
     fs.ensureFileSync(redspotConfigPath(this.path));
     fs.writeFileSync(redspotConfigPath(this.path), redspotConfigTemplate(this.path));
+    fs.writeJsonSync(userSettingPath(this.path), config, { spaces: 2 });
   }
 }
