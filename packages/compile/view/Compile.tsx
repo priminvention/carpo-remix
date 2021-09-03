@@ -1,10 +1,10 @@
-import { sendMessage } from '@carpo/common/sendMessage';
-import React, { useEffect } from 'react';
+import { useRedspot } from '@carpo/react-components';
+import React from 'react';
 
 const Compile: React.FC = () => {
-  useEffect(() => {
-    sendMessage('redspot.getConfig', null).then(console.log).catch(console.error);
-  }, []);
+  const { config } = useRedspot();
+
+  console.log(config);
 
   return <>Compile</>;
 };

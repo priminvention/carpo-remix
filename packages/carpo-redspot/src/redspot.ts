@@ -1,6 +1,6 @@
 import type { RedspotConfig } from 'redspot/types/config';
 
-import { redspotConfigPath } from '@carpo/config';
+import { redspotConfigPath, userSettingPath } from '@carpo/config';
 import { execSync } from 'child_process';
 import fs from 'fs-extra';
 import path from 'path';
@@ -9,14 +9,14 @@ import { Init } from './init';
 
 export abstract class Redspot extends Init {
   public redspotBin: string;
-  public redspotConfig: RedspotConfig;
+  #redspotConfig: RedspotConfig;
 
   constructor(_basePath: string) {
     super(_basePath);
     this.redspotBin = path.join(_basePath, 'node_modules/.bin/redspot');
     const userConfig = this.getUserRedspotConfig();
 
-    this.redspotConfig = {
+    this.#redspotConfig = {
       ...userConfig,
       paths: {
         ...userConfig.paths,
@@ -34,6 +34,15 @@ export abstract class Redspot extends Init {
 
   public get redspotVersion(): any {
     return execSync(`node ${this.redspotBin} --version`).toString();
+  }
+
+  public get redspotConfig(): RedspotConfig {
+    return this.#redspotConfig;
+  }
+
+  public setRedspotConfig(_redspotConfig: RedspotConfig): void {
+    fs.writeJsonSync(userSettingPath(this.basePath), _redspotConfig, { spaces: 2 });
+    this.#redspotConfig = _redspotConfig;
   }
 
   public getUserRedspotConfig(): RedspotConfig {

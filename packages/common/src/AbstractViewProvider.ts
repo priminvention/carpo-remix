@@ -64,6 +64,10 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
     switch (type) {
       case 'redspot.getConfig':
         return Promise.resolve(this._ctx.redspotConfig);
+      case 'redspot.setConfig':
+        this._ctx.setRedspotConfig(request as RequestTypes['redspot.setConfig']);
+
+        return Promise.resolve(request as ResponseTypes['redspot.setConfig']);
       default:
         throw new Error(`Unable to handle message of type ${type}`);
     }

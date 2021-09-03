@@ -5,5 +5,8 @@
   "main": "build/index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
   "author": "patractlabs",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@carpo/react-components": "0.0.0"
+  }
 }

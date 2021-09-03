@@ -1,7 +1,9 @@
 import type { RedspotConfig } from 'redspot/types/config';
 
 export interface RequestSignatures {
-  'redspot.getConfig': [null, RedspotConfig, RedspotConfig];
+  'redspot.getConfig': [null, RedspotConfig];
+  'redspot.subConfig': [null, RedspotConfig, RedspotConfig];
+  'redspot.setConfig': [RedspotConfig, RedspotConfig];
 }
 
 export type MessageTypes = keyof RequestSignatures;

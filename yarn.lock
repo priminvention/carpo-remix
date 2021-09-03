@@ -1580,12 +1580,20 @@ __metadata:
 "@carpo/compile@workspace:packages/compile":
   version: 0.0.0-use.local
   resolution: "@carpo/compile@workspace:packages/compile"
+  dependencies:
+    "@carpo/react-components": 0.0.0
   languageName: unknown
   linkType: soft
 
 "@carpo/config@workspace:packages/config":
   version: 0.0.0-use.local
   resolution: "@carpo/config@workspace:packages/config"
+  languageName: unknown
+  linkType: soft
+
+"@carpo/react-components@0.0.0, @carpo/react-components@workspace:packages/react-components":
+  version: 0.0.0-use.local
+  resolution: "@carpo/react-components@workspace:packages/react-components"
   languageName: unknown
   linkType: soft
 
