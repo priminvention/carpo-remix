@@ -30,7 +30,7 @@ function doNpm(cwd: string): ChildProcessWithoutNullStreams {
   return spawn('npm', ['install']);
 }
 
-export class Context extends Redspot {
+export class CarpoContext extends Redspot {
   #isReady: Promise<void>;
 
   constructor(_basePath: string) {

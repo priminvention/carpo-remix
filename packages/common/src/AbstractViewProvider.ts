@@ -1,16 +1,27 @@
+import type {
+  MessageTypes,
+  RequestTypes,
+  ResponseTypes,
+  TransportRequestMessage,
+  TransportResponseMessage
+} from './types';
+
+import { CarpoContext } from 'carpo-redspot/ctx';
 import * as vscode from 'vscode';
 
 export abstract class AbstractViewProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
   private readonly _extensionUri: vscode.Uri;
   private readonly _jsName: string;
+  private readonly _ctx: CarpoContext;
 
-  constructor(_extensionUri: vscode.Uri, _jsName: string) {
+  constructor(_extensionUri: vscode.Uri, _jsName: string, _ctx: CarpoContext) {
     this._extensionUri = _extensionUri;
     this._jsName = _jsName;
+    this._ctx = _ctx;
   }
 
-  public resolveWebviewView(
+  public resolveWebviewView<TMessageType extends MessageTypes>(
     webviewView: vscode.WebviewView,
     context: vscode.WebviewViewResolveContext,
     _token: vscode.CancellationToken
@@ -26,13 +37,36 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
 
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
-    webviewView.webview.onDidReceiveMessage((data: any): any => {
-      switch (data.type) {
-        case 'colorSelected': {
-          return vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));
-        }
-      }
+    webviewView.webview.onDidReceiveMessage((data: TransportRequestMessage<TMessageType>): void => {
+      const promise = this.handle(data.id, data.message, data.request);
+
+      promise
+        .then((response) => {
+          return webviewView.webview.postMessage({
+            id: data.id,
+            response
+          } as TransportResponseMessage<TMessageType>);
+        })
+        .catch((error: Error) => {
+          return webviewView.webview.postMessage({
+            error: error.message,
+            id: data.id
+          });
+        });
     });
+  }
+
+  private async handle<TMessageType extends MessageTypes>(
+    id: string,
+    type: TMessageType,
+    request: RequestTypes[TMessageType]
+  ): Promise<ResponseTypes[keyof ResponseTypes]> {
+    switch (type) {
+      case 'redspot.getConfig':
+        return Promise.resolve(this._ctx.redspotConfig);
+      default:
+        throw new Error(`Unable to handle message of type ${type}`);
+    }
   }
 
   private _getHtmlForWebview(webview: vscode.Webview) {
