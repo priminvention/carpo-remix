@@ -12,12 +12,12 @@ import * as vscode from 'vscode';
 export abstract class AbstractViewProvider implements vscode.WebviewViewProvider {
   private _view?: vscode.WebviewView;
   private readonly _extensionUri: vscode.Uri;
-  private readonly _jsName: string;
+  private readonly _sourceName: string;
   private readonly _ctx: CarpoContext;
 
-  constructor(_extensionUri: vscode.Uri, _jsName: string, _ctx: CarpoContext) {
+  constructor(_extensionUri: vscode.Uri, _sourceName: string, _ctx: CarpoContext) {
     this._extensionUri = _extensionUri;
-    this._jsName = _jsName;
+    this._sourceName = _sourceName;
     this._ctx = _ctx;
   }
 
@@ -75,7 +75,8 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
 
   private _getHtmlForWebview(webview: vscode.Webview) {
     // Get the local path to main script run in the webview, then convert it to a uri we can use in the webview.
-    const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, this._jsName));
+    const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, `${this._sourceName}.js`));
+    const stylesMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, `${this._sourceName}.css`));
 
     // Use a nonce to only allow a specific script to be run.
     const nonce = getNonce();
@@ -90,6 +91,7 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
 				-->
 				<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';">
 				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<link href="${stylesMainUri}" rel="stylesheet">
 
 				<title>Compile</title>
 			</head>

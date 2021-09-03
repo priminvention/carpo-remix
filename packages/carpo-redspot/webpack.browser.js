@@ -2,6 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { getThemeVariables } = require('antd/dist/theme');
 
 const findPackages = require('../../scripts/findPackages');
 
@@ -39,7 +41,29 @@ function createWebpack() {
         {
           include: /node_modules/,
           test: /\.css$/,
-          use: [require.resolve('css-loader')]
+          use: [MiniCssExtractPlugin.loader, require.resolve('css-loader')]
+        },
+        {
+          test: /\.less/,
+          use: [
+            MiniCssExtractPlugin.loader,
+            require.resolve('css-loader'),
+            {
+              loader: require.resolve('less-loader'),
+              options: {
+                lessOptions: {
+                  modifyVars: {
+                    ...getThemeVariables({
+                      dark: true,
+                      compact: true
+                    }),
+                    'body-background': 'transparent'
+                  },
+                  javascriptEnabled: true
+                }
+              }
+            }
+          ]
         },
         {
           exclude: /(node_modules)/,
@@ -98,15 +122,18 @@ function createWebpack() {
       hints: false
     },
     plugins: [
-      new webpack.ProvidePlugin({
-        Buffer: ['buffer', 'Buffer'],
-        process: 'process/browser.js'
-      }),
+      // new webpack.ProvidePlugin({
+      //   Buffer: ['buffer', 'Buffer'],
+      //   process: 'process/browser.js'
+      // }),
       new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
       new webpack.DefinePlugin({
         'process.env': {
           NODE_ENV: JSON.stringify(NODE_ENV)
         }
+      }),
+      new MiniCssExtractPlugin({
+        filename: '[name].css'
       })
     ].concat(plugins),
     resolve: {
