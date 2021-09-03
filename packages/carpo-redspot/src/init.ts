@@ -1,22 +1,37 @@
-import type { StatusBarItem } from 'vscode';
+import type { OutputChannel, StatusBarItem } from 'vscode';
+import type { Disposed } from './types';
 
-import { Workspace } from './Workspace';
+import * as vscode from 'vscode';
 
-async function install(workspace: Workspace): Promise<void> {
-  if (workspace.isRedspotProject) {
-    await workspace.doInstall();
+export abstract class Init implements Disposed {
+  public basePath: string;
+  public outputChannel: OutputChannel;
+  public statusBar: StatusBarItem;
+
+  constructor(_basePath: string) {
+    this.basePath = _basePath;
+    this.outputChannel = vscode.window.createOutputChannel('Carpo Redspot');
+    this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
+
+    this.init();
   }
-}
 
-function config(workspace: Workspace): void {
-  if (workspace.isRedspotProject) {
-    workspace.genConfig();
+  private init(): void {
+    this.outputChannel.show();
+    this.statusBar.text = 'Carpo Redspot';
+    this.statusBar.show();
   }
-}
 
-export async function init(workspace: Workspace, statusBar: StatusBarItem): Promise<void> {
-  statusBar.text = 'Redspot: Installing';
-  config(workspace);
-  await install(workspace);
-  statusBar.text = `Redspot: ${workspace.redspotVersion}`;
+  public dispose(): void {
+    this.outputChannel.dispose();
+    this.statusBar.dispose();
+  }
+
+  protected print(value: string | Buffer | { toString: () => string }): void {
+    this.outputChannel.append(value.toString());
+  }
+
+  protected println(value: string | Buffer | { toString: () => string }): void {
+    this.outputChannel.appendLine(value.toString());
+  }
 }

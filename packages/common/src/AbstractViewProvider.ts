@@ -27,7 +27,6 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
     webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
 
     webviewView.webview.onDidReceiveMessage((data: any): any => {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       switch (data.type) {
         case 'colorSelected': {
           return vscode.window.activeTextEditor?.insertSnippet(new vscode.SnippetString(`#${data.value}`));

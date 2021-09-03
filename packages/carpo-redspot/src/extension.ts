@@ -3,8 +3,7 @@
 import { CompileViewProvider } from '@carpo/compile/CompileViewProvider';
 import * as vscode from 'vscode';
 
-import { init } from './init';
-import { Workspace } from './Workspace';
+import { Context } from './ctx';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -13,17 +12,8 @@ export function activate(context: vscode.ExtensionContext): void {
     return;
   }
 
-  // Create output channel
-  const output = vscode.window.createOutputChannel('Carpo Redspot');
-
-  const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-
-  statusBar.text = 'carpo-redspot';
-  statusBar.tooltip = 'ready';
-  statusBar.show();
-
-  const workspace = vscode.workspace.workspaceFolders.map(({ uri }) => {
-    return new Workspace(uri.path, output, statusBar);
+  const ctx = vscode.workspace.workspaceFolders.map(({ uri }) => {
+    return new Context(uri.path);
   })[0];
 
   // This line of code will only be executed once when your extension is activated // Use the console to output diagnostic information (console.log) and errors (console.error)
@@ -31,13 +21,9 @@ export function activate(context: vscode.ExtensionContext): void {
 
   const provider = new CompileViewProvider(context.extensionUri, 'dist/compile.js');
 
-  context.subscriptions.push(
-    output,
-    statusBar,
-    vscode.window.registerWebviewViewProvider(CompileViewProvider.viewType, provider)
-  );
+  context.subscriptions.push(ctx, vscode.window.registerWebviewViewProvider(CompileViewProvider.viewType, provider));
 
-  init(workspace, statusBar).catch(output.appendLine);
+  ctx.doInstall().catch(console.error);
 }
 
 // this method is called when your extension is deactivated
