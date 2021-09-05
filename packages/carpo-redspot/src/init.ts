@@ -12,7 +12,6 @@ export abstract class Init implements Disposed {
     this.basePath = _basePath;
     this.outputChannel = vscode.window.createOutputChannel('Carpo Redspot');
     this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
-
     this.init();
   }
 
@@ -33,5 +32,28 @@ export abstract class Init implements Disposed {
 
   protected println(value: string | Buffer | { toString: () => string }): void {
     this.outputChannel.appendLine(value.toString());
+  }
+
+  protected runCli(command: string): Promise<vscode.TaskExecution> {
+    return new Promise((resolve, reject) => {
+      const task = new vscode.Task(
+        {
+          type: 'redspot'
+        },
+        vscode.TaskScope.Workspace,
+        command,
+        'npm',
+        new vscode.ShellExecution(command)
+      );
+
+      vscode.tasks.executeTask(task).then((execution) => {
+        vscode.tasks.onDidEndTask((e) => {
+          if (e.execution === execution) {
+            resolve(e.execution);
+            execution.terminate();
+          }
+        });
+      }, reject);
+    });
   }
 }

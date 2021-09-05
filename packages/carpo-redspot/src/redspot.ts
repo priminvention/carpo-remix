@@ -4,6 +4,7 @@ import { redspotConfigPath, userSettingPath } from '@carpo/config';
 import { execSync } from 'child_process';
 import fs from 'fs-extra';
 import path from 'path';
+import * as vscode from 'vscode';
 
 import { Init } from './init';
 
@@ -43,6 +44,10 @@ export abstract class Redspot extends Init {
   public setRedspotConfig(_redspotConfig: RedspotConfig): void {
     fs.writeJsonSync(userSettingPath(this.basePath), _redspotConfig, { spaces: 2 });
     this.#redspotConfig = _redspotConfig;
+  }
+
+  public compile(): Promise<vscode.TaskExecution> {
+    return this.runCli(`node ${this.redspotBin} compile`);
   }
 
   public getUserRedspotConfig(): RedspotConfig {

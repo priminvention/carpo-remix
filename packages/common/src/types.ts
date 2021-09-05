@@ -4,6 +4,7 @@ export interface RequestSignatures {
   'redspot.getConfig': [null, RedspotConfig];
   'redspot.subConfig': [null, RedspotConfig, RedspotConfig];
   'redspot.setConfig': [RedspotConfig, RedspotConfig];
+  'redspot.compile': [null, null];
 }
 
 export type MessageTypes = keyof RequestSignatures;
