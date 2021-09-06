@@ -1,0 +1,9 @@
+{
+  "name": "@carpo/react-components",
+  "version": "0.0.0",
+  "description": "carpo extension react-components",
+  "main": "build/index.js",
+  "repository": "https://github.com/patractlabs/carpo-extension.git",
+  "author": "patractlabs",
+  "license": "MIT"
+}
