@@ -2,4 +2,4 @@ export interface Disposed {
   dispose(): any;
 }
 
-export type InterfaceEvents = 'ready' | 'redspot.config.change';
+export type InterfaceEvents = 'installed' | 'ready' | 'redspot.config.change';

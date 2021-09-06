@@ -62,9 +62,11 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
     type: TMessageType,
     request: RequestTypes[TMessageType]
   ): Promise<ResponseTypes[keyof ResponseTypes]> {
+    await this._ctx.isReady;
+
     switch (type) {
       case 'redspot.getConfig':
-        return Promise.resolve(this._ctx.redspotConfig);
+        return this._ctx.redspotConfig;
       case 'redspot.setConfig':
         this._ctx.setRedspotConfig(request as RequestTypes['redspot.setConfig']);
 
@@ -82,7 +84,7 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
           } as TransportSubscriptionMessage<'redspot.subConfig'>);
         });
 
-        return Promise.resolve(this._ctx.redspotConfig);
+        return this._ctx.redspotConfig;
 
       default:
         throw new Error(`Unable to handle message of type ${type}`);

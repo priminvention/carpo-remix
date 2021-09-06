@@ -22,8 +22,6 @@ export function activate(context: vscode.ExtensionContext): void {
   const provider = new CompileViewProvider(context.extensionUri, 'dist/compile', ctx);
 
   context.subscriptions.push(ctx, vscode.window.registerWebviewViewProvider(CompileViewProvider.viewType, provider));
-
-  ctx.doInstall().catch(console.error);
 }
 
 // this method is called when your extension is deactivated

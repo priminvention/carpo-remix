@@ -1,49 +1,36 @@
-import type { ChildProcessWithoutNullStreams } from 'child_process';
-
 import { carpoConfigBase, redspotConfigPath, userSettingPath } from '@carpo/config';
 import { redspotConfigTemplate } from '@carpo/config/redspotConfig';
-import { execSync } from 'child_process';
-import { spawn } from 'cross-spawn';
 import fs from 'fs-extra';
 
 import { Redspot } from './redspot';
-
-function shouldUseYarn(): boolean {
-  try {
-    execSync('yarn --version', { stdio: 'ignore' });
-
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-function doYarn(cwd: string): ChildProcessWithoutNullStreams {
-  process.chdir(cwd);
-
-  return spawn(`yarn`, ['install']);
-}
-
-function doNpm(cwd: string): ChildProcessWithoutNullStreams {
-  process.chdir(cwd);
-
-  return spawn('npm', ['install']);
-}
+import { doNpm, doYarn, shouldUseYarn } from './utils';
 
 export class CarpoContext extends Redspot {
-  #isReady: Promise<void>;
+  #isReady: Promise<CarpoContext>;
 
   constructor(_basePath: string) {
     super(_basePath);
-    this.#isReady = new Promise((resolve) => {
-      this.emit('ready', this);
-      this.genConfig();
-      resolve();
-    });
+    this.#isReady = this.doInstall()
+      .then(() => {
+        this.emit('installed');
+        this.statusBar.text = 'Installed';
+      })
+      .then(() => this.genConfig())
+      .then(() => {
+        this.emit('ready', this);
+
+        this.statusBar.text = 'Carpo: Ready';
+
+        return this;
+      });
   }
 
-  private genConfig(): void {
-    const config = this.redspotConfig;
+  public get isReady(): Promise<CarpoContext> {
+    return this.#isReady;
+  }
+
+  private async genConfig(): Promise<void> {
+    const config = await this.redspotConfig;
 
     fs.ensureDirSync(carpoConfigBase(this.basePath));
     fs.ensureFileSync(redspotConfigPath(this.basePath));
@@ -51,8 +38,8 @@ export class CarpoContext extends Redspot {
     fs.writeJsonSync(userSettingPath(this.basePath), config, { spaces: 2 });
   }
 
-  public doInstall(): Promise<void> {
-    return new Promise((resolve, reject) => {
+  private async doInstall(): Promise<void> {
+    await new Promise<void>((resolve, reject) => {
       const installFunc = shouldUseYarn() ? doYarn : doNpm;
       const child = installFunc(this.basePath);
 
@@ -74,5 +61,6 @@ export class CarpoContext extends Redspot {
         }
       });
     });
+    await this.checkRedspotVersion();
   }
 }
