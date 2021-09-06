@@ -5,5 +5,9 @@
   "main": "build/index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
   "author": "patractlabs",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "carpo-redspot": "0.0.0",
+    "eventemitter3": "^4.0.7"
+  }
 }

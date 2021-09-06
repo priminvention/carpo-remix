@@ -36,6 +36,7 @@ export class CarpoContext extends Redspot {
   constructor(_basePath: string) {
     super(_basePath);
     this.#isReady = new Promise((resolve) => {
+      this.emit('ready', this);
       this.genConfig();
       resolve();
     });

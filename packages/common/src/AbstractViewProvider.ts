@@ -3,7 +3,8 @@ import type {
   RequestTypes,
   ResponseTypes,
   TransportRequestMessage,
-  TransportResponseMessage
+  TransportResponseMessage,
+  TransportSubscriptionMessage
 } from './types';
 
 import { CarpoContext } from 'carpo-redspot/ctx';
@@ -72,6 +73,16 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
         await this._ctx.compile();
 
         return Promise.resolve(null);
+      case 'redspot.subConfig':
+        this._ctx.on('redspot.config.change', (redspotConfig) => {
+          // eslint-disable-next-line @typescript-eslint/no-floating-promises
+          this._view?.webview.postMessage({
+            id,
+            subscription: redspotConfig
+          } as TransportSubscriptionMessage<'redspot.subConfig'>);
+        });
+
+        return Promise.resolve(this._ctx.redspotConfig);
 
       default:
         throw new Error(`Unable to handle message of type ${type}`);

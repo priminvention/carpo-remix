@@ -26,6 +26,12 @@ export const RedspotProvider: React.FC = ({ children }) => {
     });
   }, []);
 
+  useEffect(() => {
+    sendMessage('redspot.subConfig', null, (redspotConfig) => {
+      setConfig(redspotConfig);
+    }).catch(console.error);
+  }, []);
+
   return <RedspotContext.Provider value={{ config, changeConfig }}>{children}</RedspotContext.Provider>;
 };
 

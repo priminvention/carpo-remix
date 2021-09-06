@@ -44,6 +44,7 @@ export abstract class Redspot extends Init {
   public setRedspotConfig(_redspotConfig: RedspotConfig): void {
     fs.writeJsonSync(userSettingPath(this.basePath), _redspotConfig, { spaces: 2 });
     this.#redspotConfig = _redspotConfig;
+    this.emit('redspot.config.change', _redspotConfig);
   }
 
   public compile(): Promise<vscode.TaskExecution> {

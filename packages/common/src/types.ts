@@ -33,6 +33,12 @@ export interface TransportResponseMessage<TMessageType extends MessageTypes> {
   error?: string;
 }
 
+export interface TransportSubscriptionMessage<TMessageType extends MessageTypes> {
+  id: string;
+  subscription?: ResponseTypes[TMessageType];
+  error?: string;
+}
+
 export interface SendRequest {
   <TMessageType extends MessageTypes>(message: TMessageType, request: RequestTypes[TMessageType]): Promise<
     ResponseTypes[TMessageType]

@@ -3,12 +3,16 @@ import type { Disposed } from './types';
 
 import * as vscode from 'vscode';
 
-export abstract class Init implements Disposed {
+import { Events } from './events';
+
+export abstract class Init extends Events implements Disposed {
   public basePath: string;
   public outputChannel: OutputChannel;
   public statusBar: StatusBarItem;
 
   constructor(_basePath: string) {
+    super();
+
     this.basePath = _basePath;
     this.outputChannel = vscode.window.createOutputChannel('Carpo Redspot');
     this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);

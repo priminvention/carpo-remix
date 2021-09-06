@@ -1583,6 +1583,9 @@ __metadata:
 "@carpo/common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@carpo/common@workspace:packages/common"
+  dependencies:
+    carpo-redspot: 0.0.0
+    eventemitter3: ^4.0.7
   languageName: unknown
   linkType: soft
 
@@ -4229,7 +4232,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"carpo-redspot@workspace:packages/carpo-redspot":
+"carpo-redspot@0.0.0, carpo-redspot@workspace:packages/carpo-redspot":
   version: 0.0.0-use.local
   resolution: "carpo-redspot@workspace:packages/carpo-redspot"
   dependencies:
