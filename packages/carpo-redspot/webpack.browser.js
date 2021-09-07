@@ -25,7 +25,8 @@ function createWebpack() {
     context,
     entry: {
       compile: path.resolve(__dirname, '../compile/view/index.tsx'),
-      run: path.resolve(__dirname, '../run/view/index.tsx')
+      run: path.resolve(__dirname, '../run/view/index.tsx'),
+      test: path.resolve(__dirname, '../test/view/index.tsx')
     },
     output: {
       filename: '[name].js',

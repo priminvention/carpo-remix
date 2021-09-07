@@ -36,6 +36,11 @@
           "type": "webview",
           "id": "carpo.runView",
           "name": "Run"
+        },
+        {
+          "type": "webview",
+          "id": "carpo.testView",
+          "name": "Test"
         }
       ]
     }

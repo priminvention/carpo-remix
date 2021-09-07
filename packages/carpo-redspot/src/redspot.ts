@@ -14,6 +14,9 @@ export abstract class Redspot extends Init {
   #scriptWatchers: vscode.FileSystemWatcher[];
   #scriptPaths: string[] = ['scripts'];
 
+  #testWatchers: vscode.FileSystemWatcher[];
+  #testPaths: string[] = ['tests'];
+
   public redspotBin: string;
   #redspotConfig: Promise<RedspotConfig>;
 
@@ -22,6 +25,7 @@ export abstract class Redspot extends Init {
     this.redspotBin = path.join(_basePath, 'node_modules/.bin/redspot');
 
     this.#scriptWatchers = this.watchScripts();
+    this.#testWatchers = this.watchTests();
 
     this.#redspotConfig = new Promise((resolve) => {
       this.once('installed', () => {
@@ -43,13 +47,34 @@ export abstract class Redspot extends Init {
     this.#scriptWatchers.forEach((watcher) => watcher.dispose());
   }
 
-  public getScriptFiles(): Thenable<vscode.Uri[]> {
-    return vscode.workspace
-      .findFiles({
-        base: path.resolve(this.basePath, 'scripts'),
-        pattern: '*.{ts,js}'
-      })
-      .then((files) => files, console.error);
+  public async getScriptFiles(): Promise<vscode.Uri[]> {
+    const files: vscode.Uri[] = [];
+
+    for (const scriptPath of this.#scriptPaths) {
+      files.push(
+        ...(await vscode.workspace.findFiles({
+          base: path.resolve(this.basePath, scriptPath),
+          pattern: '*.{ts,js}'
+        }))
+      );
+    }
+
+    return files;
+  }
+
+  public async getTestFiles(): Promise<vscode.Uri[]> {
+    const files: vscode.Uri[] = [];
+
+    for (const testPath of this.#testPaths) {
+      files.push(
+        ...(await vscode.workspace.findFiles({
+          base: path.resolve(this.basePath, testPath),
+          pattern: '*.{spec,test}.{ts,js}'
+        }))
+      );
+    }
+
+    return files;
   }
 
   public get isRedspotProject(): boolean {
@@ -79,6 +104,10 @@ export abstract class Redspot extends Init {
 
   public run(scriptPath: string): Promise<vscode.TaskExecution> {
     return this.runCli(`node ${this.redspotBin} run ${scriptPath}`);
+  }
+
+  public test(filePath?: string, noCompile = false): Promise<vscode.TaskExecution> {
+    return this.runCli(`node ${this.redspotBin} test ${filePath || ''} ${noCompile ? '--no-compile' : ''}`);
   }
 
   public getUserRedspotConfig(): RedspotConfig {
@@ -138,6 +167,31 @@ export abstract class Redspot extends Init {
       const change = () => {
         this.getScriptFiles().then((files) => {
           this.emit('redspot.script.change', files);
+        }, console.error);
+      };
+
+      watcher.onDidCreate(change);
+      watcher.onDidDelete(change);
+
+      return watcher;
+    });
+  }
+
+  private watchTests(): vscode.FileSystemWatcher[] {
+    return this.#testPaths.map((testPath) => {
+      const watcher = vscode.workspace.createFileSystemWatcher(
+        {
+          base: path.resolve(this.basePath, testPath),
+          pattern: '*.{spec,test}.{ts,js}'
+        },
+        false,
+        false,
+        false
+      );
+
+      const change = () => {
+        this.getTestFiles().then((files) => {
+          this.emit('redspot.test.change', files);
         }, console.error);
       };
 

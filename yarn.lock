@@ -1617,6 +1617,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@carpo/test@workspace:packages/test":
+  version: 0.0.0-use.local
+  resolution: "@carpo/test@workspace:packages/test"
+  dependencies:
+    "@carpo/react-components": 0.0.0
+  languageName: unknown
+  linkType: soft
+
 "@cnakazawa/watch@npm:^1.0.3":
   version: 1.0.4
   resolution: "@cnakazawa/watch@npm:1.0.4"

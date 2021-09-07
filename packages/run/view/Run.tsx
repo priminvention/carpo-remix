@@ -26,7 +26,7 @@ const Run: React.FC = () => {
   return (
     <>
       <RowItem label='Select'>
-        <Select<string> onChange={setSelectFile} placeholder='Select script to run' style={{ width: '100%' }}>
+        <Select<string> onChange={setSelectFile} placeholder='Select script to run'>
           {scripts.map((script) => (
             <Select.Option key={script.path} value={script.path}>
               {script.path.replace(workspacePath || '', '').replace(/^\//, '')}

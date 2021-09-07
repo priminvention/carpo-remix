@@ -13,6 +13,7 @@ export type InterfaceEvents = {
   ready: CarpoContext;
   'redspot.config.change': RedspotConfig;
   'redspot.script.change': vscode.Uri[];
+  'redspot.test.change': vscode.Uri[];
 };
 
 export type InterfaceEventType = keyof InterfaceEvents;

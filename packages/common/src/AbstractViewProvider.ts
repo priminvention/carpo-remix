@@ -67,16 +67,20 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
     switch (type) {
       case 'workspace.path':
         return this._ctx.basePath;
+
       case 'redspot.getConfig':
         return this._ctx.redspotConfig;
+
       case 'redspot.setConfig':
         this._ctx.setRedspotConfig(request as RequestTypes['redspot.setConfig']);
 
         return request as ResponseTypes['redspot.setConfig'];
+
       case 'redspot.compile':
         await this._ctx.compile();
 
         return null;
+
       case 'redspot.subConfig':
         this._ctx.on('redspot.config.change', (redspotConfig) => {
           this._view?.webview
@@ -88,8 +92,10 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
         });
 
         return this._ctx.redspotConfig;
+
       case 'redspot.getScripts':
         return this._ctx.getScriptFiles();
+
       case 'redspot.subScripts':
         this._ctx.on('redspot.script.change', (scripts) => {
           this._view?.webview
@@ -101,8 +107,32 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
         });
 
         return this._ctx.getScriptFiles();
+
+      case 'redspot.getTestFiles':
+        return this._ctx.getTestFiles();
+
+      case 'redspot.subTestFiles':
+        this._ctx.on('redspot.test.change', (tests) => {
+          this._view?.webview
+            .postMessage({
+              id,
+              subscription: tests
+            } as TransportSubscriptionMessage<'redspot.subTestFiles'>)
+            .then((a) => a, console.error);
+        });
+
+        return this._ctx.getTestFiles();
+
       case 'redspot.run':
         await this._ctx.run(request as RequestTypes['redspot.run']);
+
+        return null;
+
+      case 'redspot.test':
+        await this._ctx.test(
+          (request as RequestTypes['redspot.test']).filePath,
+          (request as RequestTypes['redspot.test']).noCompile
+        );
 
         return null;
 
