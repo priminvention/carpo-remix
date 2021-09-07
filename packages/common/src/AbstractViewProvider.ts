@@ -65,26 +65,46 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
     await this._ctx.isReady;
 
     switch (type) {
+      case 'workspace.path':
+        return this._ctx.basePath;
       case 'redspot.getConfig':
         return this._ctx.redspotConfig;
       case 'redspot.setConfig':
         this._ctx.setRedspotConfig(request as RequestTypes['redspot.setConfig']);
 
-        return Promise.resolve(request as ResponseTypes['redspot.setConfig']);
+        return request as ResponseTypes['redspot.setConfig'];
       case 'redspot.compile':
         await this._ctx.compile();
 
-        return Promise.resolve(null);
+        return null;
       case 'redspot.subConfig':
         this._ctx.on('redspot.config.change', (redspotConfig) => {
-          // eslint-disable-next-line @typescript-eslint/no-floating-promises
-          this._view?.webview.postMessage({
-            id,
-            subscription: redspotConfig
-          } as TransportSubscriptionMessage<'redspot.subConfig'>);
+          this._view?.webview
+            .postMessage({
+              id,
+              subscription: redspotConfig
+            } as TransportSubscriptionMessage<'redspot.subConfig'>)
+            .then((a) => a, console.error);
         });
 
         return this._ctx.redspotConfig;
+      case 'redspot.getScripts':
+        return this._ctx.getScriptFiles();
+      case 'redspot.subScripts':
+        this._ctx.on('redspot.script.change', (scripts) => {
+          this._view?.webview
+            .postMessage({
+              id,
+              subscription: scripts
+            } as TransportSubscriptionMessage<'redspot.subScripts'>)
+            .then((a) => a, console.error);
+        });
+
+        return this._ctx.getScriptFiles();
+      case 'redspot.run':
+        await this._ctx.run(request as RequestTypes['redspot.run']);
+
+        return null;
 
       default:
         throw new Error(`Unable to handle message of type ${type}`);

@@ -13,6 +13,8 @@
       "@carpo/common/*": ["packages/common/src/*"],
       "@carpo/compile": ["packages/compile/src"],
       "@carpo/compile/*": ["packages/compile/src/*"],
+      "@carpo/run": ["packages/run/src"],
+      "@carpo/run/*": ["packages/run/src/*"],
       "@carpo/config": ["packages/config/src"],
       "@carpo/config/*": ["packages/config/src/*"],
       "@carpo/react-components": ["packages/react-components/src"],

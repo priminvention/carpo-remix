@@ -31,6 +31,11 @@
           "type": "webview",
           "id": "carpo.compileView",
           "name": "Compile"
+        },
+        {
+          "type": "webview",
+          "id": "carpo.runView",
+          "name": "Run"
         }
       ]
     }
@@ -62,6 +67,7 @@
   "dependencies": {
     "cross-spawn": "^7.0.3",
     "fs-extra": "^10.0.0",
+    "globby": "^12.0.2",
     "semver": "^7.3.5"
   }
 }

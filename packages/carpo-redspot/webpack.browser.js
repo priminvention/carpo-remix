@@ -24,7 +24,8 @@ function createWebpack() {
   const config = {
     context,
     entry: {
-      compile: path.resolve(__dirname, '../compile/view/index.tsx')
+      compile: path.resolve(__dirname, '../compile/view/index.tsx'),
+      run: path.resolve(__dirname, '../run/view/index.tsx')
     },
     output: {
       filename: '[name].js',

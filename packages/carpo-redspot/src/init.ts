@@ -42,7 +42,7 @@ export abstract class Init extends Events implements Disposed {
     return new Promise((resolve, reject) => {
       const task = new vscode.Task(
         {
-          type: 'redspot'
+          type: command
         },
         vscode.TaskScope.Workspace,
         command,

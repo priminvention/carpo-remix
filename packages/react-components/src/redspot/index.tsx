@@ -9,6 +9,11 @@ const RedspotContext = createContext<RedspotState>({} as any);
 
 export const RedspotProvider: React.FC = ({ children }) => {
   const [config, setConfig] = useState<RedspotConfig>();
+  const [workspacePath, setWorkspacePath] = useState<string | undefined>();
+
+  useEffect(() => {
+    sendMessage('workspace.path', null).then(setWorkspacePath).catch(console.error);
+  }, []);
 
   useEffect(() => {
     sendMessage('redspot.getConfig', null)
@@ -32,7 +37,7 @@ export const RedspotProvider: React.FC = ({ children }) => {
     }).catch(console.error);
   }, []);
 
-  return <RedspotContext.Provider value={{ config, changeConfig }}>{children}</RedspotContext.Provider>;
+  return <RedspotContext.Provider value={{ config, workspacePath, changeConfig }}>{children}</RedspotContext.Provider>;
 };
 
 export const useRedspot = (): RedspotState => {

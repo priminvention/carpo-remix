@@ -1,10 +1,19 @@
 import type { RedspotConfig } from 'redspot/types/config';
 
+export type Uri = {
+  path: string;
+  scheme: string;
+};
+
 export interface RequestSignatures {
+  'workspace.path': [null, string];
   'redspot.getConfig': [null, RedspotConfig];
   'redspot.subConfig': [null, RedspotConfig, RedspotConfig];
   'redspot.setConfig': [RedspotConfig, RedspotConfig];
   'redspot.compile': [null, null];
+  'redspot.getScripts': [null, Uri[]];
+  'redspot.subScripts': [null, Uri[], Uri[]];
+  'redspot.run': [string, null];
 }
 
 export type MessageTypes = keyof RequestSignatures;

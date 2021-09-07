@@ -12,7 +12,7 @@ export class CarpoContext extends Redspot {
     super(_basePath);
     this.#isReady = this.doInstall()
       .then(() => {
-        this.emit('installed');
+        this.emit('installed', null);
         this.statusBar.text = 'Installed';
       })
       .then(() => this.genConfig())
