@@ -136,6 +136,21 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
 
         return null;
 
+      case 'redspot.getArtifacts':
+        return this._ctx.getArtifacts();
+
+      case 'redspot.subArtifacts':
+        this._ctx.on('redspot.artifacts.change', (artifacts) => {
+          this._view?.webview
+            .postMessage({
+              id,
+              subscription: artifacts
+            } as TransportSubscriptionMessage<'redspot.subTestFiles'>)
+            .then((a) => a, console.error);
+        });
+
+        return this._ctx.getArtifacts();
+
       default:
         throw new Error(`Unable to handle message of type ${type}`);
     }

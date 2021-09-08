@@ -17,6 +17,8 @@ export interface RequestSignatures {
   'redspot.getTestFiles': [null, Uri[]];
   'redspot.subTestFiles': [null, Uri[], Uri[]];
   'redspot.test': [{ noCompile: boolean; filePath?: string }, null];
+  'redspot.getArtifacts': [null, any[]];
+  'redspot.subArtifacts': [null, any[], any[]];
 }
 
 export type MessageTypes = keyof RequestSignatures;

@@ -11,11 +11,7 @@ import { Init } from './init';
 import { doNpmInstall, doYarnAdd, shouldUseYarn } from './utils';
 
 export abstract class Redspot extends Init {
-  #scriptWatchers: vscode.FileSystemWatcher[];
-  #scriptPaths: string[] = ['scripts'];
-
-  #testWatchers: vscode.FileSystemWatcher[];
-  #testPaths: string[] = ['tests'];
+  #watchers: vscode.FileSystemWatcher[] = [];
 
   public redspotBin: string;
   #redspotConfig: Promise<RedspotConfig>;
@@ -24,57 +20,73 @@ export abstract class Redspot extends Init {
     super(_basePath);
     this.redspotBin = path.join(_basePath, 'node_modules/.bin/redspot');
 
-    this.#scriptWatchers = this.watchScripts();
-    this.#testWatchers = this.watchTests();
-
     this.#redspotConfig = new Promise((resolve) => {
       this.once('installed', () => {
         const userConfig = this.getUserRedspotConfig();
 
-        resolve({
+        const config = {
           ...userConfig,
           paths: {
             ...userConfig.paths,
             configFile: redspotConfigPath(this.basePath)
           }
-        });
+        };
+
+        resolve(config);
       });
+    });
+
+    this.once('ready', () => {
+      this.watch().catch(console.error);
     });
   }
 
   public dispose(): void {
     super.dispose();
-    this.#scriptWatchers.forEach((watcher) => watcher.dispose());
+    this.#watchers.forEach((watcher) => watcher.dispose());
   }
 
   public async getScriptFiles(): Promise<vscode.Uri[]> {
     const files: vscode.Uri[] = [];
 
-    for (const scriptPath of this.#scriptPaths) {
-      files.push(
-        ...(await vscode.workspace.findFiles({
-          base: path.resolve(this.basePath, scriptPath),
-          pattern: '*.{ts,js}'
-        }))
-      );
-    }
+    files.push(
+      ...(await vscode.workspace.findFiles({
+        base: path.resolve(this.basePath, 'scripts'),
+        pattern: '*.{ts,js}'
+      }))
+    );
 
     return files;
   }
 
   public async getTestFiles(): Promise<vscode.Uri[]> {
+    const redspotConfig = await this.redspotConfig;
+
     const files: vscode.Uri[] = [];
 
-    for (const testPath of this.#testPaths) {
-      files.push(
-        ...(await vscode.workspace.findFiles({
-          base: path.resolve(this.basePath, testPath),
-          pattern: '*.{spec,test}.{ts,js}'
-        }))
-      );
-    }
+    files.push(
+      ...(await vscode.workspace.findFiles({
+        base: redspotConfig.paths.tests,
+        pattern: '*.{spec,test}.{ts,js}'
+      }))
+    );
 
     return files;
+  }
+
+  public async getArtifacts(): Promise<any[]> {
+    const redspotConfig = await this.redspotConfig;
+
+    const files: vscode.Uri[] = [];
+
+    files.push(
+      ...(await vscode.workspace.findFiles({
+        base: redspotConfig.paths.artifacts,
+        pattern: '*.contract'
+      }))
+    );
+
+    return Promise.all(files.map((file) => fs.readJSON(file.path)));
   }
 
   public get isRedspotProject(): boolean {
@@ -152,53 +164,80 @@ export abstract class Redspot extends Init {
     return Promise.resolve();
   }
 
-  private watchScripts(): vscode.FileSystemWatcher[] {
-    return this.#scriptPaths.map((scriptPath) => {
-      const watcher = vscode.workspace.createFileSystemWatcher(
-        {
-          base: path.resolve(this.basePath, scriptPath),
-          pattern: '*.{ts,js}'
-        },
-        false,
-        false,
-        false
-      );
-
-      const change = () => {
-        this.getScriptFiles().then((files) => {
-          this.emit('redspot.script.change', files);
-        }, console.error);
-      };
-
-      watcher.onDidCreate(change);
-      watcher.onDidDelete(change);
-
-      return watcher;
-    });
+  private async watch(): Promise<void> {
+    this.#watchers.push(this.watchScripts(), await this.watchTests(), await this.watchArtifacts());
   }
 
-  private watchTests(): vscode.FileSystemWatcher[] {
-    return this.#testPaths.map((testPath) => {
-      const watcher = vscode.workspace.createFileSystemWatcher(
-        {
-          base: path.resolve(this.basePath, testPath),
-          pattern: '*.{spec,test}.{ts,js}'
-        },
-        false,
-        false,
-        false
-      );
+  private watchScripts(): vscode.FileSystemWatcher {
+    const watcher = vscode.workspace.createFileSystemWatcher(
+      {
+        base: path.resolve(this.basePath, 'scripts'),
+        pattern: '*.{ts,js}'
+      },
+      false,
+      false,
+      false
+    );
 
-      const change = () => {
-        this.getTestFiles().then((files) => {
-          this.emit('redspot.test.change', files);
-        }, console.error);
-      };
+    const change = () => {
+      this.getScriptFiles().then((files) => {
+        this.emit('redspot.script.change', files);
+      }, console.error);
+    };
 
-      watcher.onDidCreate(change);
-      watcher.onDidDelete(change);
+    watcher.onDidCreate(change);
+    watcher.onDidDelete(change);
 
-      return watcher;
-    });
+    return watcher;
+  }
+
+  private async watchTests(): Promise<vscode.FileSystemWatcher> {
+    const redspotConfig = await this.redspotConfig;
+    const watcher = vscode.workspace.createFileSystemWatcher(
+      {
+        base: redspotConfig.paths.tests,
+        pattern: '*.{spec,test}.{ts,js}'
+      },
+      false,
+      false,
+      false
+    );
+
+    const change = () => {
+      this.getTestFiles().then((files) => {
+        this.emit('redspot.test.change', files);
+      }, console.error);
+    };
+
+    watcher.onDidCreate(change);
+    watcher.onDidDelete(change);
+
+    return watcher;
+  }
+
+  private async watchArtifacts(): Promise<vscode.FileSystemWatcher> {
+    const redspotConfig = await this.redspotConfig;
+
+    const watcher = vscode.workspace.createFileSystemWatcher(
+      {
+        base: redspotConfig.paths.artifacts,
+        pattern: '*.contract'
+      },
+      false,
+      false,
+      false
+    );
+
+    const change = () => {
+      this.getArtifacts().then((artifacts) => {
+        this.emit('redspot.artifacts.change', artifacts);
+      }, console.error);
+    };
+
+    watcher.onDidCreate(change);
+    watcher.onDidDelete(change);
+    watcher.onDidChange(change);
+
+    return watcher;
   }
 }

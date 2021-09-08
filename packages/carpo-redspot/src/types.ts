@@ -14,6 +14,7 @@ export type InterfaceEvents = {
   'redspot.config.change': RedspotConfig;
   'redspot.script.change': vscode.Uri[];
   'redspot.test.change': vscode.Uri[];
+  'redspot.artifacts.change': any[];
 };
 
 export type InterfaceEventType = keyof InterfaceEvents;

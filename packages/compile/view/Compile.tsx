@@ -1,7 +1,7 @@
 import { PlusOutlined } from '@ant-design/icons';
 import { sendMessage } from '@carpo/common/sendMessage';
-import { RowItem, useRedspot } from '@carpo/react-components';
-import { Button, Input, Select, Switch } from 'antd';
+import { Artifacts, RowItem, useRedspot } from '@carpo/react-components';
+import { Button, Divider, Input, Select, Switch } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import { RedspotConfig } from 'redspot/types/config';
 
@@ -88,6 +88,8 @@ const Compile: React.FC = () => {
           Compile
         </Button>
       </Button.Group>
+      <Divider style={{ marginTop: 8, marginBottom: 8 }} />
+      <Artifacts />
     </>
   );
 };
