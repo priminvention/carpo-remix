@@ -34,8 +34,10 @@ export class CarpoContext extends Redspot {
 
     fs.ensureDirSync(carpoConfigBase(this.basePath));
     fs.ensureFileSync(redspotConfigPath(this.basePath));
-    fs.writeFileSync(redspotConfigPath(this.basePath), redspotConfigTemplate(this.basePath));
-    fs.writeJsonSync(userSettingPath(this.basePath), config, { spaces: 2 });
+    !fs.existsSync(redspotConfigPath(this.basePath)) &&
+      fs.writeFileSync(redspotConfigPath(this.basePath), redspotConfigTemplate(this.basePath));
+    !fs.existsSync(userSettingPath(this.basePath)) &&
+      fs.writeJsonSync(userSettingPath(this.basePath), config, { spaces: 2 });
   }
 
   private async doInstall(): Promise<void> {
