@@ -111,15 +111,19 @@ export abstract class Redspot extends Init {
   }
 
   public compile(): Promise<vscode.TaskExecution> {
-    return this.runCli(`node ${this.redspotBin} compile`);
+    return this.runCli(`node ${this.redspotBin} compile --config ${redspotConfigPath(this.basePath)}`);
   }
 
   public run(scriptPath: string): Promise<vscode.TaskExecution> {
-    return this.runCli(`node ${this.redspotBin} run ${scriptPath}`);
+    return this.runCli(`node ${this.redspotBin} run ${scriptPath} --config ${redspotConfigPath(this.basePath)}`);
   }
 
   public test(filePath?: string, noCompile = false): Promise<vscode.TaskExecution> {
-    return this.runCli(`node ${this.redspotBin} test ${filePath || ''} ${noCompile ? '--no-compile' : ''}`);
+    return this.runCli(
+      `node ${this.redspotBin} test ${filePath || ''} ${noCompile ? '--no-compile' : ''} --config ${redspotConfigPath(
+        this.basePath
+      )}`
+    );
   }
 
   public getUserRedspotConfig(): RedspotConfig {

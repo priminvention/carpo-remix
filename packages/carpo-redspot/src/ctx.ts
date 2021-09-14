@@ -34,14 +34,14 @@ export class CarpoContext extends Redspot {
 
     fs.ensureDirSync(carpoConfigBase(this.basePath));
     fs.ensureFileSync(redspotConfigPath(this.basePath));
-    !fs.existsSync(redspotConfigPath(this.basePath)) &&
-      fs.writeFileSync(redspotConfigPath(this.basePath), redspotConfigTemplate(this.basePath));
+    fs.writeFileSync(redspotConfigPath(this.basePath), redspotConfigTemplate(this.basePath));
     !fs.existsSync(userSettingPath(this.basePath)) &&
       fs.writeJsonSync(userSettingPath(this.basePath), config, { spaces: 2 });
   }
 
   private async doInstall(): Promise<void> {
     await new Promise<void>((resolve, reject) => {
+      this.statusBar.text = 'Carpo: install deps';
       const installFunc = shouldUseYarn() ? doYarn : doNpm;
       const child = installFunc(this.basePath);
 
