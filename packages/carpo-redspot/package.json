@@ -19,27 +19,27 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "carpoView",
-          "title": "Carpo",
+          "id": "carpoRedspotView",
+          "title": "Carpo Redspot",
           "icon": "resources/icon.svg"
         }
       ]
     },
     "views": {
-      "carpoView": [
+      "carpoRedspotView": [
         {
           "type": "webview",
-          "id": "carpo.compileView",
+          "id": "carpoRedspot.compileView",
           "name": "Compile"
         },
         {
           "type": "webview",
-          "id": "carpo.runView",
+          "id": "carpoRedspot.runView",
           "name": "Run"
         },
         {
           "type": "webview",
-          "id": "carpo.testView",
+          "id": "carpoRedspot.testView",
           "name": "Test"
         }
       ]

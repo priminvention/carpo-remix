@@ -3,6 +3,8 @@
 import { CompileViewProvider } from '@carpo/compile/CompileViewProvider';
 import { RunViewProvider } from '@carpo/run/RunViewProvider';
 import { TestViewProvider } from '@carpo/test/TestViewProvider';
+import fs from 'fs-extra';
+import path from 'path';
 import * as vscode from 'vscode';
 
 import { CarpoContext } from './ctx';
@@ -14,9 +16,15 @@ export function activate(context: vscode.ExtensionContext): void {
     return;
   }
 
-  const ctx = vscode.workspace.workspaceFolders.map(({ uri }) => {
-    return new CarpoContext(uri.path);
+  const workspaceFolder = vscode.workspace.workspaceFolders.map(({ uri }) => {
+    return uri.path;
   })[0];
+
+  if (!fs.existsSync(path.resolve(workspaceFolder, 'redspot.config.ts'))) {
+    return;
+  }
+
+  const ctx = new CarpoContext(workspaceFolder);
 
   // This line of code will only be executed once when your extension is activated // Use the console to output diagnostic information (console.log) and errors (console.error)
   console.log('Congratulations, your extension "extension" is now active!');
