@@ -1,1 +1,1 @@
-# @carpo/config
+# @carpo-remix/config

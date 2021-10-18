@@ -1,1 +1,1 @@
-# @carpo/react-components
+# @carpo-remix/react-components

@@ -1,6 +1,6 @@
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Button, Input } from 'antd';
-import React, { FC, useCallback, useState, useEffect } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import RowItem from './RowItem';
 
@@ -38,6 +38,7 @@ const RowItemAddition: FC<{
     (index: number) => {
       sourceData.splice(index, 1);
       const newSourceData = sourceData.slice();
+
       handleChangeSourceData(newSourceData);
     },
     [handleChangeSourceData, sourceData]

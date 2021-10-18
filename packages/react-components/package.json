@@ -1,7 +1,7 @@
 {
-  "name": "@carpo/react-components",
+  "name": "@carpo-remix/react-components",
   "version": "0.0.0",
-  "description": "carpo extension react-components",
+  "description": "carpo-remix extension react-components",
   "main": "build/index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
   "author": "patractlabs",

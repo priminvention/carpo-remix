@@ -1,8 +1,8 @@
 {
-  "name": "carpo-extension",
+  "name": "carpo-remix",
   "version": "0.0.0",
-  "description": "carpo extension and vscode extension",
-  "main": "packages/carpo-redspot/build/index.js",
+  "description": "carpo remix and vscode extension",
+  "main": "packages/extension-core/build/index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
   "author": "patractlabs",
   "license": "MIT",
@@ -14,11 +14,14 @@
     "typescript": "^4.3.5",
     "webpack": "5.41.1"
   },
+  "bin": {
+    "build-browser": "./scripts/build-browser.js"
+  },
   "scripts": {
     "build": "yarn clean && yarn build:browser && yarn build:extension",
     "build:extension": "NODE_ENV=production yarn polkadot-dev-build-ts",
-    "build:browser": "cd packages/carpo-redspot && NODE_ENV=production yarn polkadot-exec-webpack --config webpack.browser.js --mode production",
-    "clean": "yarn polkadot-dev-clean-build && rimraf packages/carpo-redspot/dist",
+    "build:browser": "build-browser",
+    "clean": "yarn polkadot-dev-clean-build && rimraf packages/extension-core/dist",
     "lint": "polkadot-dev-run-lint"
   },
   "devDependencies": {
@@ -34,7 +37,6 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "redspot": "^0.11.8",
     "rimraf": "^3.0.2",
     "styled-components": "^5.3.1"
   }
