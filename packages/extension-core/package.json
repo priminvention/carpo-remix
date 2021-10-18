@@ -1,5 +1,5 @@
 {
-  "name": "@carpo-remix/extension-core",
+  "name": "carpo-core",
   "version": "0.0.0",
   "description": "carpo-remix extension and vscode extension",
   "main": "build/extension.js",
@@ -9,6 +9,7 @@
   "engines": {
     "vscode": "^1.59.0"
   },
+  "publisher": "carpo",
   "categories": [
     "Other"
   ],
