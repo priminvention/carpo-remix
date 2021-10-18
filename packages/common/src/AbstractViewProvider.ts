@@ -5,7 +5,7 @@ import type {
   TransportRequestMessage,
   TransportResponseMessage,
   TransportSubscriptionMessage
-} from './types';
+} from './types/messages';
 
 import * as vscode from 'vscode';
 

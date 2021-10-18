@@ -1594,74 +1594,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@carpo-remix/extension-compiler@workspace:packages/extension-compiler":
-  version: 0.0.0-use.local
-  resolution: "@carpo-remix/extension-compiler@workspace:packages/extension-compiler"
-  dependencies:
-    "@patract/dev": ^0.5.21
-    "@types/cross-spawn": ^6.0.2
-    "@types/fs-extra": ^9.0.12
-    "@types/semver": ^7.3.8
-    babel-loader: ^8.2.2
-    copy-webpack-plugin: ^9.0.1
-    cross-spawn: ^7.0.3
-    crypto-browserify: ^3.12.0
-    css-loader: ^6.2.0
-    file-loader: ^6.2.0
-    fs-extra: ^10.0.0
-    globby: ^12.0.2
-    html-loader: ^2.1.2
-    less: ^4.1.1
-    less-loader: ^10.0.1
-    markdown-loader: ^6.0.0
-    mini-css-extract-plugin: ^2.2.2
-    null-loader: ^4.0.1
-    path-browserify: ^1.0.1
-    semver: ^7.3.5
-    stream-browserify: ^3.0.0
-    style-loader: ^3.2.1
-    thread-loader: ^3.0.4
-    url-loader: ^4.1.1
-    webpack: ^5.44.0
-    webpack-cli: ^4.7.2
-    webpack-merge: ^5.8.0
-  languageName: unknown
-  linkType: soft
-
-"@carpo-remix/extension-core@workspace:packages/extension-core":
-  version: 0.0.0-use.local
-  resolution: "@carpo-remix/extension-core@workspace:packages/extension-core"
-  dependencies:
-    "@patract/dev": ^0.5.21
-    "@types/cross-spawn": ^6.0.2
-    "@types/fs-extra": ^9.0.12
-    "@types/semver": ^7.3.8
-    babel-loader: ^8.2.2
-    copy-webpack-plugin: ^9.0.1
-    cross-spawn: ^7.0.3
-    crypto-browserify: ^3.12.0
-    css-loader: ^6.2.0
-    file-loader: ^6.2.0
-    fs-extra: ^10.0.0
-    globby: ^12.0.2
-    html-loader: ^2.1.2
-    less: ^4.1.1
-    less-loader: ^10.0.1
-    markdown-loader: ^6.0.0
-    mini-css-extract-plugin: ^2.2.2
-    null-loader: ^4.0.1
-    path-browserify: ^1.0.1
-    semver: ^7.3.5
-    stream-browserify: ^3.0.0
-    style-loader: ^3.2.1
-    thread-loader: ^3.0.4
-    url-loader: ^4.1.1
-    webpack: ^5.44.0
-    webpack-cli: ^4.7.2
-    webpack-merge: ^5.8.0
-  languageName: unknown
-  linkType: soft
-
 "@carpo-remix/react-components@workspace:packages/react-components":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/react-components@workspace:packages/react-components"
@@ -3919,6 +3851,74 @@ __metadata:
   checksum: 0b9f10daca09e521da9599f34c8e7af14ad879c336e2bdeb19955b375398ae1c5bcc91ac9f2429944343057ee9ed028b1b2fb28816c384e0e55d70c439b226f4
   languageName: node
   linkType: hard
+
+"carpo-compiler@workspace:packages/extension-compiler":
+  version: 0.0.0-use.local
+  resolution: "carpo-compiler@workspace:packages/extension-compiler"
+  dependencies:
+    "@patract/dev": ^0.5.21
+    "@types/cross-spawn": ^6.0.2
+    "@types/fs-extra": ^9.0.12
+    "@types/semver": ^7.3.8
+    babel-loader: ^8.2.2
+    copy-webpack-plugin: ^9.0.1
+    cross-spawn: ^7.0.3
+    crypto-browserify: ^3.12.0
+    css-loader: ^6.2.0
+    file-loader: ^6.2.0
+    fs-extra: ^10.0.0
+    globby: ^12.0.2
+    html-loader: ^2.1.2
+    less: ^4.1.1
+    less-loader: ^10.0.1
+    markdown-loader: ^6.0.0
+    mini-css-extract-plugin: ^2.2.2
+    null-loader: ^4.0.1
+    path-browserify: ^1.0.1
+    semver: ^7.3.5
+    stream-browserify: ^3.0.0
+    style-loader: ^3.2.1
+    thread-loader: ^3.0.4
+    url-loader: ^4.1.1
+    webpack: ^5.44.0
+    webpack-cli: ^4.7.2
+    webpack-merge: ^5.8.0
+  languageName: unknown
+  linkType: soft
+
+"carpo-core@workspace:packages/extension-core":
+  version: 0.0.0-use.local
+  resolution: "carpo-core@workspace:packages/extension-core"
+  dependencies:
+    "@patract/dev": ^0.5.21
+    "@types/cross-spawn": ^6.0.2
+    "@types/fs-extra": ^9.0.12
+    "@types/semver": ^7.3.8
+    babel-loader: ^8.2.2
+    copy-webpack-plugin: ^9.0.1
+    cross-spawn: ^7.0.3
+    crypto-browserify: ^3.12.0
+    css-loader: ^6.2.0
+    file-loader: ^6.2.0
+    fs-extra: ^10.0.0
+    globby: ^12.0.2
+    html-loader: ^2.1.2
+    less: ^4.1.1
+    less-loader: ^10.0.1
+    markdown-loader: ^6.0.0
+    mini-css-extract-plugin: ^2.2.2
+    null-loader: ^4.0.1
+    path-browserify: ^1.0.1
+    semver: ^7.3.5
+    stream-browserify: ^3.0.0
+    style-loader: ^3.2.1
+    thread-loader: ^3.0.4
+    url-loader: ^4.1.1
+    webpack: ^5.44.0
+    webpack-cli: ^4.7.2
+    webpack-merge: ^5.8.0
+  languageName: unknown
+  linkType: soft
 
 "carpo-remix@workspace:.":
   version: 0.0.0-use.local

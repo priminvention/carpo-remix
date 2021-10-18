@@ -1,1 +1,1 @@
-# @carpo-remix/extension-core
+# carpo-core
