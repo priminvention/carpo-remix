@@ -66,9 +66,17 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
     this.statusBar.show();
 
     this.quickPick.onDidChangeSelection((items) => {
+      console.log(items[0].command, items[0].arg);
       execCommand(items[0].command, items[0].arg).catch(console.error);
       this.quickPick.hide();
     });
+  }
+
+  protected addCommand<T extends CommandTypes>(
+    command: T,
+    cb: (arg: CommandSignatures[T][0]) => Promise<CommandSignatures[T][1]> | CommandSignatures[T][1]
+  ): void {
+    this.#commands.push(registerCommand(command, cb));
   }
 
   public dispose(): void {
