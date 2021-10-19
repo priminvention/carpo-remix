@@ -1,7 +1,5 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import fs from 'fs-extra';
-import path from 'path';
 import * as vscode from 'vscode';
 
 import { CoreContext } from './ctx';
@@ -11,8 +9,7 @@ import { CoreContext } from './ctx';
 export function activate(context: vscode.ExtensionContext): void {
   const ctx = new CoreContext(context);
 
-  // This line of code will only be executed once when your extension is activated // Use the console to output diagnostic information (console.log) and errors (console.error)
-  console.log('Congratulations, your extension "extension" is now active!');
+  console.log('"carpo-core" is now active!');
 
   context.subscriptions.push(ctx);
 }
