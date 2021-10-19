@@ -3,20 +3,27 @@ import type {
   RequestTypes,
   ResponseTypes,
   TransportRequestMessage,
-  TransportResponseMessage,
-  TransportSubscriptionMessage
+  TransportResponseMessage
 } from './types/messages';
 
 import * as vscode from 'vscode';
 
-export abstract class AbstractViewProvider implements vscode.WebviewViewProvider {
-  private _view?: vscode.WebviewView;
-  private readonly _extensionUri: vscode.Uri;
-  private readonly _sourceName: string;
+export interface Handle {
+  <TMessageType extends MessageTypes>(id: string, type: TMessageType, request: RequestTypes[TMessageType]): Promise<
+    ResponseTypes[TMessageType]
+  >;
+}
 
-  constructor(_extensionUri: vscode.Uri, _sourceName: string) {
+export abstract class AbstractViewProvider implements vscode.WebviewViewProvider {
+  protected _view?: vscode.WebviewView;
+  protected readonly _extensionUri: vscode.Uri;
+  protected readonly _sourceName: string;
+  protected _handle: Handle;
+
+  constructor(_extensionUri: vscode.Uri, _sourceName: string, _handle: Handle) {
     this._extensionUri = _extensionUri;
     this._sourceName = _sourceName;
+    this._handle = _handle;
   }
 
   public resolveWebviewView<TMessageType extends MessageTypes>(
@@ -54,14 +61,21 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
     });
   }
 
-  private handle<TMessageType extends MessageTypes>(
+  private async handle<TMessageType extends MessageTypes>(
     id: string,
     type: TMessageType,
     request: RequestTypes[TMessageType]
-  ): Promise<ResponseTypes[keyof ResponseTypes]> {
-    switch (type) {
-      default:
-        throw new Error(`Unable to handle message of type ${type}`);
+  ): Promise<ResponseTypes[TMessageType]> {
+    try {
+      return this._handle(id, type, request);
+    } catch (error) {
+      switch (type) {
+        case 'workspace.path':
+          return Promise.resolve(this._extensionUri.path);
+
+        default:
+          throw new Error(`Unable to handle message of type ${type}`);
+      }
     }
   }
 
