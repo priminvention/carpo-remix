@@ -3,8 +3,9 @@ import type { ProjectConfig } from '@carpo-remix/config/types';
 import { commands, Disposable } from 'vscode';
 
 export interface CommandSignatures {
-  'carpo-core.openQuickPick': [void, void];
-  'carpo-core.genConfig': [ProjectConfig, ProjectConfig];
+  'carpo-core.openQuickPick': [undefined, void];
+  'carpo-core.genConfig': [ProjectConfig, ProjectConfig | undefined];
+  'carpo-core.createProject': [undefined, void];
 }
 
 export type CommandTypes = keyof CommandSignatures;

@@ -13,9 +13,7 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [
-    "workspaceContains:package.json"
-  ],
+  "activationEvents": [],
   "devDependencies": {
     "@patract/dev": "^0.5.21",
     "@types/cross-spawn": "^6.0.2",

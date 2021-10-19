@@ -4,7 +4,7 @@ export type Uri = {
 };
 
 export interface RequestSignatures {
-  'workspace.path': [null, string];
+  'workspace.path': [null, string | null];
 }
 
 export type MessageTypes = keyof RequestSignatures;

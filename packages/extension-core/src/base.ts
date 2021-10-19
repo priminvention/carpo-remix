@@ -1,6 +1,7 @@
 import type { Disposable, OutputChannel, QuickPickItem, StatusBarItem } from 'vscode';
 import type { InterfaceEvents } from './types';
 
+import { createWebviewPanel } from '@carpo-remix/common';
 import { CommandSignatures, CommandTypes, execCommand, registerCommand } from '@carpo-remix/common/commands';
 import { Events } from '@carpo-remix/common/events';
 import { Disposed } from '@carpo-remix/common/types';
@@ -10,32 +11,52 @@ import fs from 'fs-extra';
 import path from 'path';
 import * as vscode from 'vscode';
 
-interface CommandQuickPickItem extends QuickPickItem {
-  command: CommandTypes;
-  arg?: CommandSignatures[CommandTypes][0];
+interface CommandQuickPickItem<T extends CommandTypes> extends QuickPickItem {
+  command: T;
+  arg?: CommandSignatures[T][0];
 }
 
 export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> implements Disposed {
+  public static viewType = 'carpo-core.createProject';
+  public static viewName = 'Create Project';
+
   public outputChannel: OutputChannel;
   public statusBar: StatusBarItem;
-  #quickPick: vscode.QuickPick<CommandQuickPickItem>;
+  public ctx: vscode.ExtensionContext;
+  public workspace: string | null;
+  #quickPick: vscode.QuickPick<CommandQuickPickItem<CommandTypes>>;
   #commands: Disposable[];
 
-  constructor(workspace: string) {
+  constructor(ctx: vscode.ExtensionContext) {
     super();
+    this.ctx = ctx;
+    this.workspace =
+      vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
+        ? vscode.workspace.workspaceFolders.map(({ uri }) => {
+            return uri.path;
+          })[0]
+        : null;
+
     this.#quickPick = vscode.window.createQuickPick();
     this.#commands = [
       registerCommand('carpo-core.openQuickPick', () => {
-        this.#quickPick.items = [{ label: 'Create Project', command: 'carpo-core.genConfig', arg: {} }];
+        this.#quickPick.items = [
+          {
+            label: 'Create Project',
+            command: 'carpo-core.createProject'
+          } as CommandQuickPickItem<'carpo-core.createProject'>
+        ];
         this.#quickPick.show();
       }),
       registerCommand('carpo-core.genConfig', (arg: ProjectConfig) => {
-        fs.writeJsonSync(path.resolve(workspace, defaultConfigName), arg, {
+        if (!this.workspace) return;
+        fs.writeJsonSync(path.resolve(this.workspace, defaultConfigName), arg, {
           spaces: 2
         });
 
         return arg;
-      })
+      }),
+      registerCommand('carpo-core.createProject', this.createWebviewPanel)
     ];
 
     this.outputChannel = vscode.window.createOutputChannel('Carpo');
@@ -53,6 +74,10 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
       execCommand(items[0].command, items[0].arg).catch(console.error);
       this.#quickPick.hide();
     });
+  }
+
+  private createWebviewPanel() {
+    createWebviewPanel(Base.viewType, Base.viewName, vscode.ViewColumn.One, this.ctx.extensionUri, 'dist/main');
   }
 
   public dispose(): void {
