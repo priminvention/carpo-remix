@@ -12,7 +12,7 @@ export class CoreContext extends Base implements Disposed {
   constructor(ctx: vscode.ExtensionContext) {
     super(ctx);
     this.emit('ready', this);
-    this.addCommand('carpo-core.createProject', () => this.createWebviewPanel());
+    this.commands.registerCommand('carpo-core.createProject', () => this.createWebviewPanel());
   }
 
   private createWebviewPanel() {

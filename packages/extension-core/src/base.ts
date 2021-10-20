@@ -1,7 +1,6 @@
-import type { Disposable, OutputChannel, QuickPickItem, StatusBarItem } from 'vscode';
+import type { OutputChannel, QuickPickItem, StatusBarItem } from 'vscode';
 import type { InterfaceEvents } from './types';
 
-import { CommandSignatures, CommandTypes, execCommand, registerCommand } from '@carpo-remix/common/commands';
 import { Events } from '@carpo-remix/common/events';
 import { Disposed } from '@carpo-remix/common/types';
 import { defaultConfigName } from '@carpo-remix/config';
@@ -10,14 +9,16 @@ import fs from 'fs-extra';
 import path from 'path';
 import * as vscode from 'vscode';
 
-interface CommandQuickPickItem<T extends CommandTypes> extends QuickPickItem {
-  command: T;
-  arg?: CommandSignatures[T][0];
+import { CoreCommands, CoreCommandSignatures } from './commands';
+
+interface CommandQuickPickItem extends QuickPickItem {
+  command: keyof CoreCommandSignatures;
+  arg?: CoreCommandSignatures[keyof CoreCommandSignatures][0];
 }
 
 export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> implements Disposed {
-  #commands: Disposable[];
-  protected quickPick: vscode.QuickPick<CommandQuickPickItem<CommandTypes>>;
+  protected commands: CoreCommands;
+  protected quickPick: vscode.QuickPick<CommandQuickPickItem>;
   protected outputChannel: OutputChannel;
   protected statusBar: StatusBarItem;
   public ctx: vscode.ExtensionContext;
@@ -34,25 +35,7 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
         : null;
 
     this.quickPick = vscode.window.createQuickPick();
-    this.#commands = [
-      registerCommand('carpo-core.openQuickPick', () => {
-        this.quickPick.items = [
-          {
-            label: 'Create Project',
-            command: 'carpo-core.createProject'
-          } as CommandQuickPickItem<'carpo-core.createProject'>
-        ];
-        this.quickPick.show();
-      }),
-      registerCommand('carpo-core.genConfig', (arg: ProjectConfig) => {
-        if (!this.workspace) return;
-        fs.writeJsonSync(path.resolve(this.workspace, defaultConfigName), arg, {
-          spaces: 2
-        });
-
-        return arg;
-      })
-    ];
+    this.commands = new CoreCommands();
 
     this.outputChannel = vscode.window.createOutputChannel('Carpo');
     this.statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
@@ -65,22 +48,32 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
     this.statusBar.command = 'carpo-core.openQuickPick';
     this.statusBar.show();
 
+    this.commands.registerCommand('carpo-core.openQuickPick', () => {
+      this.quickPick.items = [
+        {
+          label: 'Create Project',
+          command: 'carpo-core.createProject'
+        }
+      ];
+      this.quickPick.show();
+    });
+    this.commands.registerCommand('carpo-core.genConfig', (arg: ProjectConfig) => {
+      if (!this.workspace) return;
+      fs.writeJsonSync(path.resolve(this.workspace, defaultConfigName), arg, {
+        spaces: 2
+      });
+
+      return arg;
+    });
+
     this.quickPick.onDidChangeSelection((items) => {
-      console.log(items[0].command, items[0].arg);
-      execCommand(items[0].command, items[0].arg).catch(console.error);
+      this.commands.execCommand(items[0].command, items[0].arg).catch(console.error);
       this.quickPick.hide();
     });
   }
 
-  protected addCommand<T extends CommandTypes>(
-    command: T,
-    cb: (arg: CommandSignatures[T][0]) => Promise<CommandSignatures[T][1]> | CommandSignatures[T][1]
-  ): void {
-    this.#commands.push(registerCommand(command, cb));
-  }
-
   public dispose(): void {
-    this.#commands.forEach((command) => command.dispose());
+    this.commands.dispose();
     this.quickPick.dispose();
     this.outputChannel.dispose();
     this.statusBar.dispose();
