@@ -4,16 +4,20 @@ export type NetworksConfig = {
   chainId: number;
 };
 
+export type PathsConfig = {
+  sources?: string;
+  artifacts?: string;
+  tests?: string;
+};
+
+export type SolidityConfig = {
+  version?: string;
+  settings?: any;
+};
+
 export type ProjectConfig = {
-  paths?: {
-    sources?: string;
-    artifacts?: string;
-    tests?: string;
-  };
+  paths?: PathsConfig;
   networks?: NetworksConfig;
   defaultNetwork?: string;
-  solidity?: {
-    version?: string;
-    settings?: any;
-  };
+  solidity?: SolidityConfig;
 };

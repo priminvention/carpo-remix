@@ -5,7 +5,7 @@ import type {
   SendRequest,
   TransportRequestMessage,
   TransportResponseMessage
-} from './types/messages';
+} from './types';
 
 let idCounter = 0;
 const handlers: Handlers = {};

@@ -1,6 +1,6 @@
 import { commands, Disposable } from 'vscode';
 
-import { Disposed } from './types';
+import { Disposed } from '../types';
 
 export abstract class AbstractCommands<Signatures extends Record<string, [unknown, unknown]>> implements Disposed {
   protected commands: Disposable[] = [];

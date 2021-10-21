@@ -16,7 +16,9 @@
   "activationEvents": [
     "workspaceContains:package.json"
   ],
-  "extensionDependencies": ["carpo.carpo-core"],
+  "extensionDependencies": [
+    "carpo.carpo-core"
+  ],
   "contributes": {
     "viewsContainers": {
       "activitybar": [

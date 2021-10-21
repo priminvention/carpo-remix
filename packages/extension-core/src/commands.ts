@@ -1,6 +1,6 @@
 import type { ProjectConfig } from '@carpo-remix/config/types';
 
-import { AbstractCommands } from '@carpo-remix/common/AbstractCommands';
+import { AbstractCommands } from '@carpo-remix/common';
 
 export type CoreCommandSignatures = {
   'carpo-core.openQuickPick': [undefined, void];
