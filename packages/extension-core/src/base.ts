@@ -59,6 +59,9 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
     });
     this.commands.registerCommand('carpo-core.genConfig', (arg: ProjectConfig) => {
       if (!this.workspace) return;
+      this.println('Generate carpo.json');
+      this.println(JSON.stringify(arg));
+
       fs.writeJsonSync(path.resolve(this.workspace, defaultConfigName), arg, {
         spaces: 2
       });

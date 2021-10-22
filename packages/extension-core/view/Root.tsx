@@ -1,6 +1,7 @@
-import type { PathsConfig } from '@carpo-remix/config/types';
+import type { PathsConfig, SolidityConfig } from '@carpo-remix/config/types';
 
-import React, { useState } from 'react';
+import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
+import React, { useCallback, useState } from 'react';
 
 import Paths from './Paths';
 import Solidity from './Solidity';
@@ -8,6 +9,11 @@ import Solidity from './Solidity';
 const Root: React.FC = () => {
   const [steps, setSteps] = useState(0);
   const [paths, setPaths] = useState<PathsConfig>();
+  const [solidity, setSolidity] = useState<SolidityConfig>();
+
+  const done = useCallback((paths?: PathsConfig, solidity?: SolidityConfig) => {
+    sendMessage('carpo-core.genConfig', { paths, solidity }).catch(console.error);
+  }, []);
 
   return (
     <>
@@ -21,8 +27,9 @@ const Root: React.FC = () => {
       )}
       {steps === 1 && (
         <Solidity
-          onDone={(...args) => {
-            console.log(args);
+          onDone={(solidity) => {
+            setSolidity(solidity);
+            done(paths, solidity);
           }}
         />
       )}

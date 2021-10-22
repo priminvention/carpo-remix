@@ -1,3 +1,5 @@
+import type { ProjectConfig } from '@carpo-remix/config/types';
+
 export type Uri = {
   path: string;
   scheme: string;
@@ -6,6 +8,7 @@ export type Uri = {
 export interface RequestSignatures {
   'workspace.path': [null, string | null];
   'solidity.releases': [null, Record<string, string>];
+  'carpo-core.genConfig': [ProjectConfig, ProjectConfig | undefined];
 }
 
 export type MessageTypes = keyof RequestSignatures;

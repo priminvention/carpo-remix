@@ -1,6 +1,6 @@
 import type { SolidityConfig } from '@carpo-remix/config/types';
 
-import { sendMessage } from '@carpo-remix/common';
+import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
 import { Button, Form, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 
@@ -9,7 +9,7 @@ interface Props {
 }
 
 const Solidity: React.FC<Props> = ({ onDone }) => {
-  const [version, setVersion] = useState('stable');
+  const [version, setVersion] = useState();
   const [releases, setReleases] = useState<Record<string, string>>({});
 
   useEffect(() => {
