@@ -1,7 +1,7 @@
-import type { ChildProcessWithoutNullStreams } from 'child_process';
-
 import { execSync } from 'child_process';
 import { spawn } from 'cross-spawn';
+
+import { processPromise } from './process';
 
 export function shouldUseYarn(): boolean {
   try {
@@ -13,26 +13,31 @@ export function shouldUseYarn(): boolean {
   }
 }
 
-export function doYarn(cwd: string): ChildProcessWithoutNullStreams {
+export function doYarn(cwd: string, output?: (msg: string) => void): Promise<void> {
   process.chdir(cwd);
 
-  return spawn(`yarn`, ['install']);
+  return processPromise(spawn(`yarn`, ['install']), output);
 }
 
-export function doNpm(cwd: string): ChildProcessWithoutNullStreams {
+export function doNpm(cwd: string, output?: (msg: string) => void): Promise<void> {
   process.chdir(cwd);
 
-  return spawn('npm', ['install']);
+  return processPromise(spawn('npm', ['install']), output);
 }
 
-export function doYarnAdd(cwd: string, pkg: string, version?: string): ChildProcessWithoutNullStreams {
+export function doYarnAdd(cwd: string, pkg: string, version?: string, output?: (msg: string) => void): Promise<void> {
   process.chdir(cwd);
 
-  return spawn('yarn', ['add', `${pkg}${version ? '@' + version : ''}`]);
+  return processPromise(spawn('yarn', ['add', `${pkg}${version ? '@' + version : ''}`]), output);
 }
 
-export function doNpmInstall(cwd: string, pkg: string, version?: string): ChildProcessWithoutNullStreams {
+export function doNpmInstall(
+  cwd: string,
+  pkg: string,
+  version?: string,
+  output?: (msg: string) => void
+): Promise<void> {
   process.chdir(cwd);
 
-  return spawn('npm', ['install', `${pkg}${version ? '@' + version : ''}`]);
+  return processPromise(spawn('npm', ['install', `${pkg}${version ? '@' + version : ''}`]), output);
 }

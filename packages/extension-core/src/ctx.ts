@@ -56,85 +56,53 @@ export class CoreContext extends Base implements Disposed {
         false
       );
 
-      watcher.onDidCreate(() => this.installDeps().then(() => this.installSolc()));
-      watcher.onDidChange(() => this.installDeps().then(() => this.installSolc()));
+      watcher.onDidCreate(() =>
+        this.installDeps()
+          .then(this.installSolc.bind(this))
+          .catch((error: Error) => {
+            toast.error(error.message);
+          })
+          .finally(() => (this.statusBar.text = 'Carpo'))
+      );
+      watcher.onDidChange(() =>
+        this.installDeps()
+          .then(this.installSolc.bind(this))
+          .catch((error: Error) => {
+            toast.error(error.message);
+          })
+          .finally(() => (this.statusBar.text = 'Carpo'))
+      );
 
       this.#watchers.push(watcher);
     }
   }
 
   private installDeps(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (!this.workspace) {
-        resolve();
+    if (!this.workspace) {
+      return Promise.reject(new Error('No workspace'));
+    }
 
-        return;
-      }
+    this.statusBar.text = 'Carpo: install deps';
+    const installFunc = npm.shouldUseYarn() ? npm.doYarn : npm.doNpm;
+    const child = installFunc(this.workspace, this.println.bind(this));
 
-      this.statusBar.text = 'Carpo: install deps';
-      const installFunc = npm.shouldUseYarn() ? npm.doYarn : npm.doNpm;
-      const child = installFunc(this.workspace);
-
-      child.stdout.on('data', (data) => {
-        this.println(data);
-      });
-
-      child.stderr.on('data', (data) => {
-        this.println(data);
-      });
-
-      child.on('close', (code) => {
-        this.println(`Install deps success with exit code: ${code}`);
-
-        if (code === 0) {
-          this.statusBar.text = 'Carpo';
-          toast.info(`Install deps done.`);
-          resolve();
-        } else {
-          toast.error(`Install deps exit with code: ${code}.`);
-          reject(new Error(`Install deps exit with code: ${code}.`));
-        }
-      });
-    });
+    return child;
   }
 
   private installSolc(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      if (!this.workspace) {
-        resolve();
+    if (!this.workspace) {
+      return Promise.reject(new Error('No workspace'));
+    }
 
-        return;
-      }
+    const config = getWorkspaceConfig(this.workspace);
+    const solcVersion = config?.solidity?.version;
+    const solcText = `solc${solcVersion ? '@' + solcVersion : ''}`;
 
-      const config = getWorkspaceConfig(this.workspace);
-      const solcVersion = config?.solidity?.version;
-      const solcText = `solc${solcVersion ? '@' + solcVersion : ''}`;
+    this.statusBar.text = `Carpo: install ${solcText}`;
+    const installFunc = npm.shouldUseYarn() ? npm.doYarnAdd : npm.doNpmInstall;
+    const child = installFunc(this.workspace, 'solc', solcVersion, this.println.bind(this));
 
-      this.statusBar.text = `Carpo: install ${solcText}`;
-      const installFunc = npm.shouldUseYarn() ? npm.doYarnAdd : npm.doNpmInstall;
-      const child = installFunc(this.workspace, 'solc', solcVersion);
-
-      child.stdout.on('data', (data) => {
-        this.println(data);
-      });
-
-      child.stderr.on('data', (data) => {
-        this.println(data);
-      });
-
-      child.on('close', (code) => {
-        this.println(`Install ${solcText} success with exit code: ${code}`);
-
-        if (code === 0) {
-          this.statusBar.text = 'Carpo';
-          toast.info(`Install ${solcText} done.`);
-          resolve();
-        } else {
-          toast.error(`Install ${solcText} exit with code: ${code}.`);
-          reject(new Error(`Install ${solcText} exit with code: ${code}.`));
-        }
-      });
-    });
+    return child;
   }
 
   public dispose(): any {
