@@ -1,7 +1,7 @@
 {
-  "name": "@carpo-remix/common",
+  "name": "@carpo-remix/utils",
   "version": "0.0.0",
-  "description": "carpo-remix extension common",
+  "description": "carpo-remix extension utils",
   "main": "build/index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
   "author": "patractlabs",

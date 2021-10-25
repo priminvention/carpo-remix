@@ -1,24 +1,28 @@
+import type { ProjectConfig } from '@carpo-remix/config/types';
+
 export type Uri = {
   path: string;
   scheme: string;
 };
 
 export interface RequestSignatures {
-  'workspace.path': [null, string];
+  'workspace.path': [null, string | null];
+  'solidity.releases': [null, Record<string, string>];
+  'carpo-core.genConfig': [ProjectConfig, ProjectConfig | undefined];
 }
 
 export type MessageTypes = keyof RequestSignatures;
 
 export type RequestTypes = {
-  [MessageType in keyof RequestSignatures]: RequestSignatures[MessageType][0];
+  [MessageType in MessageTypes]: RequestSignatures[MessageType][0];
 };
 
 export type ResponseTypes = {
-  [MessageType in keyof RequestSignatures]: RequestSignatures[MessageType][1];
+  [MessageType in MessageTypes]: RequestSignatures[MessageType][1];
 };
 
 export type SubscriptionTypes = {
-  [MessageType in keyof RequestSignatures]: RequestSignatures[MessageType][2];
+  [MessageType in MessageTypes]: RequestSignatures[MessageType][2];
 };
 
 export interface TransportRequestMessage<TMessageType extends MessageTypes> {

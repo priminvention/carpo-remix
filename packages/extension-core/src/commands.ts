@@ -1,28 +1,11 @@
-import type { Disposed } from '@carpo-remix/common/types';
 import type { ProjectConfig } from '@carpo-remix/config/types';
-import type { Disposable } from 'vscode';
 
-import { registerCommand } from '@carpo-remix/common/commands';
-import { defaultConfigName } from '@carpo-remix/config';
-import fs from 'fs-extra';
-import path from 'path';
+import { AbstractCommands } from '@carpo-remix/common';
 
-export class Commands implements Disposed {
-  #commands: Disposable[];
+export type CoreCommandSignatures = {
+  'carpo-core.openQuickPick': [undefined, void];
+  'carpo-core.genConfig': [ProjectConfig, ProjectConfig | undefined];
+  'carpo-core.createProject': [undefined, void];
+};
 
-  constructor(workspace: string) {
-    this.#commands = [
-      registerCommand('carpo-core.genConfig', (arg: ProjectConfig) => {
-        fs.writeJsonSync(path.resolve(workspace, defaultConfigName), arg, {
-          spaces: 2
-        });
-
-        return arg;
-      })
-    ];
-  }
-
-  public dispose(): void {
-    this.#commands.forEach((command) => command.dispose());
-  }
-}
+export class CoreCommands extends AbstractCommands<CoreCommandSignatures> {}
