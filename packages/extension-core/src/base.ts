@@ -5,6 +5,7 @@ import { Events } from '@carpo-remix/common/events';
 import { Disposed } from '@carpo-remix/common/types';
 import { defaultConfigName } from '@carpo-remix/config';
 import { ProjectConfig } from '@carpo-remix/config/types';
+import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import fs from 'fs-extra';
 import path from 'path';
 import * as vscode from 'vscode';
@@ -27,12 +28,7 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
   constructor(ctx: vscode.ExtensionContext) {
     super();
     this.ctx = ctx;
-    this.workspace =
-      vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
-        ? vscode.workspace.workspaceFolders.map(({ uri }) => {
-            return uri.path;
-          })[0]
-        : null;
+    this.workspace = getWorkspacePath();
 
     this.quickPick = vscode.window.createQuickPick();
     this.commands = new CoreCommands();
@@ -65,6 +61,7 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
       fs.writeJsonSync(path.resolve(this.workspace, defaultConfigName), arg, {
         spaces: 2
       });
+      this.println('Done.');
 
       return arg;
     });

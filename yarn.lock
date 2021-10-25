@@ -1529,6 +1529,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@carpo-remix/utils@workspace:packages/utils":
+  version: 0.0.0-use.local
+  resolution: "@carpo-remix/utils@workspace:packages/utils"
+  dependencies:
+    eventemitter3: ^4.0.7
+    superagent: ^6.1.0
+  languageName: unknown
+  linkType: soft
+
 "@cnakazawa/watch@npm:^1.0.3":
   version: 1.0.4
   resolution: "@cnakazawa/watch@npm:1.0.4"
