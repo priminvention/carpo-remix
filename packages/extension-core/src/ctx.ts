@@ -77,19 +77,18 @@ export class CoreContext extends Base implements Disposed {
     }
   }
 
-  private installDeps(): Promise<void> {
+  private async installDeps(): Promise<void> {
     if (!this.workspace) {
       return Promise.reject(new Error('No workspace'));
     }
 
     this.statusBar.text = 'Carpo: install deps';
     const installFunc = npm.shouldUseYarn() ? npm.doYarn : npm.doNpm;
-    const child = installFunc(this.workspace, this.println.bind(this));
 
-    return child;
+    await installFunc();
   }
 
-  private installSolc(): Promise<void> {
+  private async installSolc(): Promise<void> {
     if (!this.workspace) {
       return Promise.reject(new Error('No workspace'));
     }
@@ -100,9 +99,8 @@ export class CoreContext extends Base implements Disposed {
 
     this.statusBar.text = `Carpo: install ${solcText}`;
     const installFunc = npm.shouldUseYarn() ? npm.doYarnAdd : npm.doNpmInstall;
-    const child = installFunc(this.workspace, 'solc', solcVersion, this.println.bind(this));
 
-    return child;
+    await installFunc('solc', solcVersion);
   }
 
   public dispose(): any {

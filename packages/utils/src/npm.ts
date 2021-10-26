@@ -1,7 +1,6 @@
+import { NpmTask } from '@carpo-remix/common';
 import { execSync } from 'child_process';
-import { spawn } from 'cross-spawn';
-
-import { processPromise } from './process';
+import { TaskExecution } from 'vscode';
 
 export function shouldUseYarn(): boolean {
   try {
@@ -13,31 +12,28 @@ export function shouldUseYarn(): boolean {
   }
 }
 
-export function doYarn(cwd: string, output?: (msg: string) => void): Promise<void> {
-  process.chdir(cwd);
+export function doYarn(): Promise<TaskExecution> {
+  const task = new NpmTask('Carpo: yarn install', 'yarn install');
 
-  return processPromise(spawn(`yarn`, ['install']), output);
+  return task.execute();
 }
 
-export function doNpm(cwd: string, output?: (msg: string) => void): Promise<void> {
-  process.chdir(cwd);
+export function doNpm(): Promise<TaskExecution> {
+  const task = new NpmTask('Carpo: npm install', 'npm install');
 
-  return processPromise(spawn('npm', ['install']), output);
+  return task.execute();
 }
 
-export function doYarnAdd(cwd: string, pkg: string, version?: string, output?: (msg: string) => void): Promise<void> {
-  process.chdir(cwd);
+export function doYarnAdd(pkg: string, version?: string): Promise<TaskExecution> {
+  const pkgStr = `${pkg}${version ? '@' + version : ''}`;
+  const task = new NpmTask(`Carpo: yarn add ${pkgStr}`, `yarn add ${pkgStr}`);
 
-  return processPromise(spawn('yarn', ['add', `${pkg}${version ? '@' + version : ''}`]), output);
+  return task.execute();
 }
 
-export function doNpmInstall(
-  cwd: string,
-  pkg: string,
-  version?: string,
-  output?: (msg: string) => void
-): Promise<void> {
-  process.chdir(cwd);
+export function doNpmInstall(pkg: string, version?: string): Promise<TaskExecution> {
+  const pkgStr = `${pkg}${version ? '@' + version : ''}`;
+  const task = new NpmTask(`Carpo: npm install ${pkgStr}`, `npm install ${pkgStr}`);
 
-  return processPromise(spawn('npm', ['install', `${pkg}${version ? '@' + version : ''}`]), output);
+  return task.execute();
 }
