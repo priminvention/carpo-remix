@@ -16,8 +16,7 @@
 			"outFiles": [
 				"${workspaceFolder}/packages/extension-core/build/**/*.js",
         "${workspaceFolder}/packages/extension-compiler/build/**/*.js"
-			],
-			"preLaunchTask": "Build"
+			]
 		}
 	]
 }
