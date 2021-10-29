@@ -1,6 +1,6 @@
 {
   "name": "carpo-helper",
-  "version": "0.0.0",
+  "version": "0.0.1-0",
   "description": "carpo-remix extension helper",
   "main": "index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
@@ -10,7 +10,7 @@
     "solc": "*"
   },
   "dependencies": {
-    "@carpo-remix/config": "0.0.0",
+    "@carpo-remix/config": "0.0.1-0",
     "commander": "^8.3.0",
     "fs-extra": "^10.0.0"
   }

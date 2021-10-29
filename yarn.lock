@@ -1517,7 +1517,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@carpo-remix/config@0.0.0, @carpo-remix/config@workspace:packages/config":
+"@carpo-remix/config@0.0.1-0, @carpo-remix/config@workspace:packages/config":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/config@workspace:packages/config"
   languageName: unknown
@@ -4072,7 +4072,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "carpo-helper@workspace:packages/helper"
   dependencies:
-    "@carpo-remix/config": 0.0.0
+    "@carpo-remix/config": 0.0.1-0
     commander: ^8.3.0
     fs-extra: ^10.0.0
   peerDependencies:

@@ -1,6 +1,6 @@
 {
   "name": "@carpo-remix/config",
-  "version": "0.0.0",
+  "version": "0.0.1-0",
   "description": "carpo-remix extension config",
   "main": "index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",

@@ -1,6 +1,6 @@
 {
   "name": "@carpo-remix/common",
-  "version": "0.0.0",
+  "version": "0.0.1-0",
   "type": "module",
   "description": "carpo-remix extension common",
   "main": "index.js",
