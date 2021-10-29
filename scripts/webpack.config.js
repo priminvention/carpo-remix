@@ -80,10 +80,10 @@ module.exports = function () {
           ]
         },
         {
-          test: /\.less$/,
+          test: /\.(less|css)$/,
           // exclude: /node_modules/,
           use: [
-            DEV_ENV ? 'style-loader' : MiniCssExtractPlugin.loader,
+            MiniCssExtractPlugin.loader,
             'cache-loader',
             'css-loader',
             {
@@ -102,11 +102,6 @@ module.exports = function () {
               }
             }
           ]
-        },
-        {
-          include: /node_modules/,
-          test: /\.css$/,
-          use: [MiniCssExtractPlugin.loader, require.resolve('css-loader')]
         },
         {
           test: /.(png|jpe?g|gif|svg|webp)$/,
@@ -175,8 +170,8 @@ module.exports = function () {
           if (pathData.chunk.name.indexOf('view') > -1) return `${pkg}/build/view.css`;
 
           return `${pkg}/build/extension.css`;
-        },
-        chunkFilename: DEV_ENV ? '/css/[name].css' : 'statics/css/[name].[contenthash:5].css'
+        }
+        // chunkFilename: DEV_ENV ? '/css/[name].css' : 'statics/css/[name].[contenthash:5].css'
       })
     ]
   };
