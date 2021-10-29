@@ -3,21 +3,21 @@
 // Hover to view descriptions of existing attributes.
 // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
 {
-	"version": "0.2.0",
-	"configurations": [
-		{
-			"name": "Run {carpo-remix} Extensions",
-			"type": "extensionHost",
-			"request": "launch",
-			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}/packages/extension-core",
-				"--extensionDevelopmentPath=${workspaceFolder}/packages/extension-compiler"
-			],
-			"outFiles": [
-				"${workspaceFolder}/packages/extension-core/build/**/*.js",
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run {carpo-remix} Extensions",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/extension-core",
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/extension-compiler"
+      ],
+      "outFiles": [
+        "${workspaceFolder}/packages/extension-core/build/**/*.js",
         "${workspaceFolder}/packages/extension-compiler/build/**/*.js"
-			],
-			"preLaunchTask": "Build"
-		}
-	]
+      ]
+      // "preLaunchTask": "Build"
+    }
+  ]
 }

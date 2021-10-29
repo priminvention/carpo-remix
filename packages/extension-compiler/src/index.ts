@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext): void {
   const ctx = new CompilerContext();
 
   // This line of code will only be executed once when your extension is activated // Use the console to output diagnostic information (console.log) and errors (console.error)
-  console.log('Congratulations, your extension "extension" is now active!');
+  console.log('Congratulations, your extension "compiler extension" is now active!');
 
   context.subscriptions.push();
 }

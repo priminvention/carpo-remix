@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { getThemeVariables } = require('antd/dist/theme');
 
@@ -22,6 +22,7 @@ function createWebpack(context) {
   /** @type {import('webpack').Configuration} */
   const config = {
     context,
+    mode: NODE_ENV === 'development' ? 'development' : 'production',
     module: {
       rules: [
         {
@@ -57,10 +58,16 @@ function createWebpack(context) {
           ]
         },
         {
-          exclude: /(node_modules)/,
-          test: /\.(js|mjs|ts|tsx)$/,
+          exclude: /node_modules/,
+          test: /\.tsx?$/,
           use: [
-            require.resolve('thread-loader'),
+            'cache-loader',
+            {
+              loader: 'thread-loader',
+              options: {
+                workers: require('os').cpus().length - 1
+              }
+            },
             {
               loader: require.resolve('babel-loader'),
               options: require('../babel.config')
@@ -112,6 +119,30 @@ function createWebpack(context) {
     performance: {
       hints: false
     },
+    optimization: {
+      moduleIds: 'deterministic',
+      runtimeChunk: 'single',
+      splitChunks: {
+        cacheGroups: {
+          commons: {
+            name: 'commons',
+            chunks: 'initial',
+            minChunks: 2
+          },
+          vendor: {
+            test: /[\\/]node_modules[\\/]/,
+            name: 'vendor',
+            chunks: 'all'
+          },
+          styles: {
+            name: 'styles',
+            test: /\.css$/,
+            chunks: 'all',
+            enforce: true
+          }
+        }
+      }
+    },
     plugins: [
       // new webpack.ProvidePlugin({
       //   Buffer: ['buffer', 'Buffer'],
@@ -132,7 +163,7 @@ function createWebpack(context) {
         ...alias,
         'react/jsx-runtime': require.resolve('react/jsx-runtime')
       },
-      extensions: ['.js', '.jsx', '.mjs', '.ts', '.tsx'],
+      extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs'],
       fallback: {
         crypto: require.resolve('crypto-browserify'),
         path: require.resolve('path-browserify'),

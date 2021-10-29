@@ -29,7 +29,7 @@ export class CoreContext extends Base implements Disposed {
       CoreContext.viewName,
       vscode.ViewColumn.One,
       this.ctx.extensionUri,
-      'dist/main',
+      'build/view',
       this.handle
     );
   }
