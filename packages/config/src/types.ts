@@ -1,3 +1,5 @@
+import type { SoliditySettings } from 'solc';
+
 export type NetworksConfig = {
   rpc?: string;
   accounts?: string[];
@@ -12,7 +14,7 @@ export type PathsConfig = {
 
 export type SolidityConfig = {
   version?: string;
-  settings?: any;
+  settings?: SoliditySettings;
 };
 
 export type ProjectConfig = {

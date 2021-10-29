@@ -2,7 +2,7 @@
   "name": "@carpo-remix/config",
   "version": "0.0.0",
   "description": "carpo-remix extension config",
-  "main": "build/index.js",
+  "main": "index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
   "author": "patractlabs",
   "license": "MIT"

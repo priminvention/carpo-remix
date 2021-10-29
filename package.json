@@ -22,11 +22,15 @@
     "build:extension": "NODE_ENV=production yarn polkadot-dev-build-ts",
     "build:browser": "build-browser",
     "clean": "yarn polkadot-dev-clean-build && rimraf packages/extension-core/dist",
-    "lint": "polkadot-dev-run-lint"
+    "lint": "polkadot-dev-run-lint",
+    "test": "polkadot-dev-run-test --coverage --runInBand",
+    "test:one": "polkadot-dev-run-test",
+    "test:watch": "polkadot-dev-run-test --watch"
   },
   "devDependencies": {
     "@ant-design/icons": "^4.6.4",
     "@patract/dev": "^0.5.21",
+    "@types/jest": "^27.0.2",
     "@types/node": "14.x",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.2",
@@ -39,7 +43,8 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "rimraf": "^3.0.2",
-    "solc": "^0.8.9",
-    "styled-components": "^5.3.1"
+    "solc": "^0.7.6",
+    "styled-components": "^5.3.1",
+    "ts-jest": "^27.0.7"
   }
 }

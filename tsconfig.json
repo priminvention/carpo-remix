@@ -23,6 +23,6 @@
       "@carpo-remix/react-components/*": ["packages/react-components/src/*"]
     },
     "skipLibCheck": true,
-    "typeRoots": ["./node_modules/@polkadot/ts", "./node_modules/@types"]
+    "typeRoots": ["./node_modules/@polkadot/ts", "./node_modules/@types", "./typescript/@types"]
   }
 }

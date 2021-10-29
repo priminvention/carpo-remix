@@ -5,11 +5,8 @@ import path from 'path';
 
 import { defaultConfigName } from '.';
 
-export function getWorkspaceConfig(workspacePath: string): ProjectConfig;
-export function getWorkspaceConfig(workspacePath?: null): null;
-
-export function getWorkspaceConfig(workspacePath?: string | null): ProjectConfig | null {
-  if (workspacePath) {
+export function getWorkspaceConfig(workspacePath: string): ProjectConfig | null {
+  if (fs.existsSync(path.resolve(workspacePath, defaultConfigName))) {
     return fs.readJSONSync(path.resolve(workspacePath, defaultConfigName));
   }
 
