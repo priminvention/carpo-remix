@@ -148,8 +148,6 @@ module.exports = function () {
       // modules added here also need to be added in the .vsceignore file
     },
 
-    stats: 'errors-only',
-
     plugins: [
       // new HtmlWebpackPlugin({
       //   filename: 'index.html',

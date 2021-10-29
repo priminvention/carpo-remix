@@ -4,10 +4,23 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "build:browser",
+      "label": "dev:view",
       "type": "npm",
-      "script": "build:browser",
-      "problemMatcher": ["$ts-webpack-watch", "$tslint-webpack-watch"],
+      "script": "dev:view",
+      "problemMatcher": [
+        {
+          "base": "$ts-webpack",
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": {
+              "regexp": ".*"
+            },
+            "endsPattern": {
+              "regexp": "^webpack .* compiled"
+            }
+          }
+        }
+      ],
       "isBackground": true,
       "presentation": {
         "reveal": "never"
@@ -18,10 +31,23 @@
       }
     },
     {
-      "label": "build:extension",
+      "label": "dev:extension",
       "type": "npm",
-      "script": "build:extension",
-      "problemMatcher": ["$ts-webpack-watch", "$tslint-webpack-watch"],
+      "script": "dev:extension",
+      "problemMatcher": [
+        {
+          "base": "$ts-webpack",
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": {
+              "regexp": ".*"
+            },
+            "endsPattern": {
+              "regexp": "^webpack .* compiled"
+            }
+          }
+        }
+      ],
       "isBackground": true,
       "presentation": {
         "reveal": "never"
@@ -33,7 +59,7 @@
     },
     {
       "label": "Build",
-      "dependsOn": ["build:browser", "build:extension"]
+      "dependsOn": ["dev:view", "dev:extension"]
     }
   ]
 }
