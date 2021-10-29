@@ -17,9 +17,10 @@
     "build-browser": "./scripts/build-browser.js"
   },
   "scripts": {
-    "build": "yarn clean && yarn build:browser && yarn build:extension",
-    "build:extension": "NODE_ENV=production yarn polkadot-dev-build-ts",
-    "build:browser": "NODE_ENV=production yarn node ./scripts/build-browser.js",
+    "build": "yarn clean && yarn build:ts && yarn build:extension && yarn build:view",
+    "build:ts": "yarn polkadot-dev-build-ts",
+    "build:extension": "BUILD_TYPE=extension NODE_ENV=production webpack --config ./scripts/webpack.config.js",
+    "build:view": "BUILD_TYPE=view NODE_ENV=production webpack --config ./scripts/webpack.config.js",
     "dev:view": "BUILD_TYPE=view NODE_ENV=development webpack --config ./scripts/webpack.config.js --watch",
     "dev:extension": "BUILD_TYPE=extension NODE_ENV=development webpack --config ./scripts/webpack.config.js --watch",
     "dev": "concurrently \"yarn:dev:*\" ",
@@ -32,6 +33,7 @@
   "devDependencies": {
     "@ant-design/icons": "^4.6.4",
     "@patract/dev": "^0.5.21",
+    "@types/fs-extra": "^9.0.13",
     "@types/jest": "^27.0.2",
     "@types/mini-css-extract-plugin": "^2",
     "@types/node": "^14.17.32",
@@ -49,6 +51,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "fork-ts-checker-notifier-webpack-plugin": "^4.0.0",
     "fork-ts-checker-webpack-plugin": "^6.4.0",
+    "less": "^4.1.2",
     "less-loader": "^10.2.0",
     "mini-css-extract-plugin": "^2.4.3",
     "react": "^17.0.2",
