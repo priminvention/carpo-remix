@@ -158,4 +158,6 @@ declare module 'solc' {
   }
 
   export function compile(input: string, options?: CompilerOptions): string;
+
+  export function version(): string;
 }

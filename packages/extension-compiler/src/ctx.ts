@@ -1,6 +1,5 @@
 import type { Disposed } from '@carpo-remix/common/types';
 
-import { AbstractViewProvider } from '@carpo-remix/common';
 import { Events } from '@carpo-remix/common/events';
 import { compile } from '@carpo-remix/common/solidity';
 

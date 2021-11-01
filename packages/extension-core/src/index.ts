@@ -12,6 +12,8 @@ export function activate(context: vscode.ExtensionContext): void {
   console.log('"carpo-core" is now active!');
 
   context.subscriptions.push(ctx);
+
+  return { ctx };
 }
 
 // this method is called when your extension is deactivated
