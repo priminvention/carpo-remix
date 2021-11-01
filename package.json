@@ -24,7 +24,7 @@
     "dev:view": "BUILD_TYPE=view NODE_ENV=development webpack --config ./scripts/webpack.config.js --watch",
     "dev:extension": "BUILD_TYPE=extension NODE_ENV=development webpack --config ./scripts/webpack.config.js --watch",
     "dev": "concurrently \"yarn:dev:*\" ",
-    "clean": "yarn polkadot-dev-clean-build && rimraf packages/extension-core/dist",
+    "clean": "yarn polkadot-dev-clean-build",
     "lint": "polkadot-dev-run-lint",
     "test": "polkadot-dev-run-test --coverage --runInBand",
     "test:one": "polkadot-dev-run-test",

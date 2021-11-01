@@ -20,13 +20,6 @@
     "carpo.carpo-core"
   ],
   "contributes": {
-    "commands": [
-      {
-        "command": "carpo-core.openQuickPick",
-        "title": "test",
-        "category": "Carpo"
-      }
-    ],
     "viewsContainers": {
       "activitybar": [
         {

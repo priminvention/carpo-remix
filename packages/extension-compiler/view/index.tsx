@@ -1,3 +1,4 @@
+import { Button } from 'antd';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -8,4 +9,4 @@ if (!rootElement) {
   throw new Error(`Unable to find element with id '${rootId}'`);
 }
 
-ReactDOM.render(<div />, rootElement);
+ReactDOM.render(<Button type='primary'>Compiler</Button>, rootElement);

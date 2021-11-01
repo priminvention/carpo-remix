@@ -8,7 +8,10 @@
   "author": "patractlabs",
   "license": "MIT",
   "dependencies": {
+    "@carpo-remix/config": "0.0.1-0",
+    "@carpo-remix/utils": "0.0.1-0",
     "eventemitter3": "^4.0.7",
+    "fs-extra": "^10.0.0",
     "solc": "0.7.6",
     "superagent": "^6.1.0"
   }

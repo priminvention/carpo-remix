@@ -1512,13 +1512,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@carpo-remix/common@workspace:packages/common"
   dependencies:
+    "@carpo-remix/config": 0.0.1-0
+    "@carpo-remix/utils": 0.0.1-0
     eventemitter3: ^4.0.7
+    fs-extra: ^10.0.0
     solc: 0.7.6
     superagent: ^6.1.0
   languageName: unknown
   linkType: soft
 
-"@carpo-remix/config@workspace:packages/config":
+"@carpo-remix/config@0.0.1-0, @carpo-remix/config@workspace:packages/config":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/config@workspace:packages/config"
   dependencies:
@@ -1532,7 +1535,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@carpo-remix/utils@workspace:packages/utils":
+"@carpo-remix/utils@0.0.1-0, @carpo-remix/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/utils@workspace:packages/utils"
   dependencies:

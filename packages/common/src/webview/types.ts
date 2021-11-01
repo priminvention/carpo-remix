@@ -1,4 +1,5 @@
 import type { ProjectConfig } from '@carpo-remix/config/types';
+import type { CompilerOutput } from 'solc';
 
 export type Uri = {
   path: string;
@@ -9,6 +10,7 @@ export interface RequestSignatures {
   'workspace.path': [null, string | null];
   'solidity.releases': [null, Record<string, string>];
   'carpo-core.genConfig': [ProjectConfig, ProjectConfig | undefined];
+  'carpo-compiler.compile': [string[], CompilerOutput];
 }
 
 export type MessageTypes = keyof RequestSignatures;
