@@ -9,6 +9,7 @@
   "license": "MIT",
   "dependencies": {
     "eventemitter3": "^4.0.7",
+    "solc": "0.7.6",
     "superagent": "^6.1.0"
   }
 }

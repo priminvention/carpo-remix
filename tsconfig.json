@@ -11,8 +11,6 @@
       "carpo-core/*": ["packages/extension-core/src/*"],
       "carpo-compiler": ["packages/extension-compiler/src"],
       "carpo-compiler/*": ["packages/extension-compiler/src/*"],
-      "carpo-helper": ["packages/helper/src"],
-      "carpo-helper/*": ["packages/helper/src/*"],
       "@carpo-remix/common": ["packages/common/src"],
       "@carpo-remix/common/*": ["packages/common/src/*"],
       "@carpo-remix/config": ["packages/config/src"],

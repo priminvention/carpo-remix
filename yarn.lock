@@ -1513,13 +1513,16 @@ __metadata:
   resolution: "@carpo-remix/common@workspace:packages/common"
   dependencies:
     eventemitter3: ^4.0.7
+    solc: 0.7.6
     superagent: ^6.1.0
   languageName: unknown
   linkType: soft
 
-"@carpo-remix/config@0.0.1-0, @carpo-remix/config@workspace:packages/config":
+"@carpo-remix/config@workspace:packages/config":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/config@workspace:packages/config"
+  dependencies:
+    fs-extra: ^10.0.0
   languageName: unknown
   linkType: soft
 
@@ -3915,18 +3918,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"carpo-helper@workspace:packages/helper":
-  version: 0.0.0-use.local
-  resolution: "carpo-helper@workspace:packages/helper"
-  dependencies:
-    "@carpo-remix/config": 0.0.1-0
-    commander: ^8.3.0
-    fs-extra: ^10.0.0
-  peerDependencies:
-    solc: "*"
-  languageName: unknown
-  linkType: soft
-
 "carpo-remix@workspace:.":
   version: 0.0.0-use.local
   resolution: "carpo-remix@workspace:."
@@ -3957,7 +3948,6 @@ __metadata:
     react: ^17.0.2
     react-dom: ^17.0.2
     rimraf: ^3.0.2
-    solc: ^0.7.6
     style-loader: ^3.3.1
     styled-components: ^5.3.3
     thread-loader: ^3.0.4
@@ -4311,13 +4301,6 @@ __metadata:
   version: 7.2.0
   resolution: "commander@npm:7.2.0"
   checksum: 53501cbeee61d5157546c0bef0fedb6cdfc763a882136284bed9a07225f09a14b82d2a84e7637edfd1a679fb35ed9502fd58ef1d091e6287f60d790147f68ddc
-  languageName: node
-  linkType: hard
-
-"commander@npm:^8.3.0":
-  version: 8.3.0
-  resolution: "commander@npm:8.3.0"
-  checksum: 0f82321821fc27b83bd409510bb9deeebcfa799ff0bf5d102128b500b7af22872c0c92cb6a0ebc5a4cf19c6b550fba9cedfa7329d18c6442a625f851377bacf0
   languageName: node
   linkType: hard
 
@@ -11843,7 +11826,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"solc@npm:^0.7.6":
+"solc@npm:0.7.6":
   version: 0.7.6
   resolution: "solc@npm:0.7.6"
   dependencies:

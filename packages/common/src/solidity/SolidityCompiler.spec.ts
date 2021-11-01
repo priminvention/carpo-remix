@@ -1,6 +1,7 @@
+import type { CompilerInput } from 'solc';
+
 import fs from 'fs-extra';
 import path from 'path';
-import { CompilerInput } from 'solc';
 
 import { SolidityCompiler } from './SolidityCompiler';
 

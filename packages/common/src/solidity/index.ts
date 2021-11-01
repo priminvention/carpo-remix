@@ -7,3 +7,6 @@ export async function getSolidityReleases(): Promise<Record<string, string>> {
 
   return data.releases;
 }
+
+export * from './SolidityCompiler';
+export * from './compile';
