@@ -1,7 +1,7 @@
 import type { CompilerInput, CompilerOutput, Source } from 'solc';
 
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
-import { getWorkspacePath } from '@carpo-remix/utils/workspace';
+import { getWorkspacePath, NoWorkspaceError } from '@carpo-remix/utils/workspace';
 import fs from 'fs-extra';
 import path from 'path';
 
@@ -10,7 +10,7 @@ import { SolidityCompiler } from '.';
 export async function compile(filenames: string[]): Promise<CompilerOutput> {
   const workspacePath = getWorkspacePath();
 
-  if (!workspacePath) throw new Error('Not workspace');
+  if (!workspacePath) throw new NoWorkspaceError();
 
   const config = getWorkspaceConfig(workspacePath);
 
@@ -18,7 +18,7 @@ export async function compile(filenames: string[]): Promise<CompilerOutput> {
 
   for (const filename of filenames) {
     sources[filename] = {
-      content: fs.readFileSync(path.resolve(workspacePath, config?.paths?.sources ?? '', filename)).toString()
+      content: fs.readFileSync(path.resolve(workspacePath, filename)).toString()
     };
   }
 
@@ -50,7 +50,7 @@ export async function compile(filenames: string[]): Promise<CompilerOutput> {
     }
   };
 
-  const compiler = new SolidityCompiler(workspacePath, [config?.paths?.sources ?? 'contracts', 'node_modules']);
+  const compiler = new SolidityCompiler(workspacePath, ['node_modules']);
 
   const output = await compiler.compile(input);
 

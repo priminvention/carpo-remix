@@ -11,7 +11,7 @@ export function activate(context: vscode.ExtensionContext): void {
   const ctx = new CompilerContext();
 
   console.log('"carpo-compiler" is now active!');
-  const webviewProvider = new CompilerWebviewProvider(context.extensionUri, 'build/view', ctx);
+  const webviewProvider = new CompilerWebviewProvider(context.extensionUri, ctx);
 
   context.subscriptions.push(
     ctx,

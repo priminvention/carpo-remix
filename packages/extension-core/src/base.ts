@@ -5,7 +5,7 @@ import { Events } from '@carpo-remix/common/events';
 import { Disposed } from '@carpo-remix/common/types';
 import { defaultConfigName } from '@carpo-remix/config';
 import { ProjectConfig } from '@carpo-remix/config/types';
-import { getWorkspacePath } from '@carpo-remix/utils/workspace';
+import { getWorkspacePath, NoWorkspaceError } from '@carpo-remix/utils/workspace';
 import fs from 'fs-extra';
 import path from 'path';
 import * as vscode from 'vscode';
@@ -54,7 +54,7 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
       this.quickPick.show();
     });
     this.commands.registerCommand('carpo-core.genConfig', (arg: ProjectConfig) => {
-      if (!this.workspace) return;
+      if (!this.workspace) throw new NoWorkspaceError();
       this.println('Generate carpo.json');
       this.println(JSON.stringify(arg));
 

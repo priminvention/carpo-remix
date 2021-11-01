@@ -9,8 +9,8 @@ export default class CompilerWebviewProvider extends AbstractViewProvider {
 
   private ctx: CompilerContext;
 
-  constructor(_extensionUri: vscode.Uri, _sourceName: string, ctx: CompilerContext) {
-    super(_extensionUri, _sourceName, (id, type, request) => this.handle(id, type, request));
+  constructor(_extensionUri: vscode.Uri, ctx: CompilerContext) {
+    super(_extensionUri, 'build/view', (id, type, request) => this.handle(id, type, request));
     this.ctx = ctx;
   }
 

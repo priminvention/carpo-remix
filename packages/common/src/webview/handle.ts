@@ -2,7 +2,7 @@ import type { MessageTypes, RequestTypes, ResponseTypes } from './types';
 
 import * as vscode from 'vscode';
 
-import { getSolidityReleases } from '../solidity';
+import { findContracts, getSolidityReleases } from '../solidity';
 
 export interface Handle {
   <TMessageType extends MessageTypes>(id: string, type: TMessageType, request: RequestTypes[TMessageType]): Promise<
@@ -35,6 +35,9 @@ export async function handle<TMessageType extends MessageTypes>(
 
       case 'solidity.releases':
         return getSolidityReleases();
+
+      case 'solidity.contracts':
+        return findContracts();
 
       default:
         throw new Error(`Unable to handle message of type ${type}`);

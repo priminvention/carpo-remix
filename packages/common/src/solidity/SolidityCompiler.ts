@@ -8,7 +8,7 @@ import path from 'path';
 function findImports(filename: string, root: string, includes: string[]) {
   let contents: string | null = null;
 
-  for (const include of includes) {
+  for (const include of ['', ...includes]) {
     if (fs.existsSync(path.resolve(root, include, filename))) {
       contents = fs.readFileSync(path.resolve(root, include, filename)).toString();
       break;

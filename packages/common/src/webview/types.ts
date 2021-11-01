@@ -9,6 +9,7 @@ export type Uri = {
 export interface RequestSignatures {
   'workspace.path': [null, string | null];
   'solidity.releases': [null, Record<string, string>];
+  'solidity.contracts': [null, string[]];
   'carpo-core.genConfig': [ProjectConfig, ProjectConfig | undefined];
   'carpo-compiler.compile': [string[], CompilerOutput];
 }
