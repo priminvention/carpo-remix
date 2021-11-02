@@ -1,6 +1,6 @@
 {
   "name": "carpo-core",
-  "version": "0.0.1-0",
+  "version": "0.0.1",
   "description": "carpo-remix extension and vscode extension",
   "main": "build/extension.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
@@ -15,6 +15,7 @@
   ],
   "activationEvents": [],
   "dependencies": {
+    "@carpo-remix/common": "0.0.1",
     "fs-extra": "^10.0.0"
   }
 }

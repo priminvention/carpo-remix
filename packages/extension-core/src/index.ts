@@ -1,6 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import type { CoreApi } from './getCoreApi';
+
+import type { CoreApi } from '@carpo-remix/common/getCoreApi';
 
 import { ConfigManager } from '@carpo-remix/config/ConfigManager';
 import * as vscode from 'vscode';

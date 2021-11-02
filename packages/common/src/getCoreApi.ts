@@ -1,5 +1,5 @@
 import type { ConfigManager } from '@carpo-remix/config/ConfigManager';
-import type { CoreContext } from './ctx';
+import type { CoreContext } from 'carpo-core/ctx';
 
 import * as vscode from 'vscode';
 

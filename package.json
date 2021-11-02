@@ -1,6 +1,6 @@
 {
   "name": "carpo-remix",
-  "version": "0.0.1-0",
+  "version": "0.0.1",
   "description": "carpo remix and vscode extension",
   "main": "packages/extension-core/build/index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
@@ -64,6 +64,5 @@
     "ts-loader": "^9.2.6",
     "webpack": "5.41.1",
     "webpack-cli": "^4.9.1"
-  },
-  "stableVersion": "0.0.0"
+  }
 }
