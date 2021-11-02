@@ -53,7 +53,6 @@ export async function compile(filenames: string[]): Promise<CompilerOutput> {
 
   const compiler = new SolidityCompiler(workspacePath, ['node_modules']);
 
-  coreApi?.ctx.showOutput(true);
   coreApi?.ctx.println('');
   coreApi?.ctx.println(`Compiling ${filenames.length} files with ${(await compiler.getSolc()).version()}`);
   const output = await compiler.compile(input);

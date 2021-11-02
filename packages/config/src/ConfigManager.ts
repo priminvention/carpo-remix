@@ -2,9 +2,6 @@ import type { Disposed } from '@carpo-remix/common/types';
 
 import { Events } from '@carpo-remix/common/events';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
-import fs from 'fs-extra';
-import { merge } from 'lodash';
-import path from 'path';
 import * as vscode from 'vscode';
 
 import { getWorkspaceConfig } from './getWorkspaceConfig';
@@ -21,7 +18,7 @@ export interface ConfigManagerEvents {
 export class ConfigManager extends Events<ConfigManagerEvents, keyof ConfigManagerEvents> implements Disposed {
   #config: WorkspaceConfig | null = null;
   #workspacePath: string;
-  #watcher: vscode.FileSystemWatcher | null;
+  #watcher: vscode.FileSystemWatcher;
 
   constructor() {
     super();
@@ -37,9 +34,9 @@ export class ConfigManager extends Events<ConfigManagerEvents, keyof ConfigManag
       false
     );
 
-    this.#watcher?.onDidCreate(this.onDidCreate.bind(this));
-    this.#watcher?.onDidChange(this.onDidChange.bind(this));
-    this.#watcher?.onDidDelete(this.onDidDelete.bind(this));
+    this.#watcher.onDidCreate(this.onDidCreate.bind(this));
+    this.#watcher.onDidChange(this.onDidChange.bind(this));
+    this.#watcher.onDidDelete(this.onDidDelete.bind(this));
   }
 
   public get config(): WorkspaceConfig | null {
