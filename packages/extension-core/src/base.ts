@@ -87,6 +87,14 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
     this.outputChannel.appendLine(value.toString());
   }
 
+  public showOutput(preserveFocus?: boolean): void {
+    this.outputChannel.show(preserveFocus);
+  }
+
+  public hideOutput(): void {
+    this.outputChannel.hide();
+  }
+
   public runCli(command: string): Promise<vscode.TaskExecution> {
     return new Promise((resolve, reject) => {
       const task = new vscode.Task(

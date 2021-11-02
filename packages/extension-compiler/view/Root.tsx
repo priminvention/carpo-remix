@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 const Root: React.FC = () => {
   const [contracts, setContracts] = useState<string[]>([]);
-  const [selectedContract, setSelectedContract] = useState<string>();
+  const [selectedContract, setSelectedContract] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -16,7 +16,6 @@ const Root: React.FC = () => {
     setLoading(true);
 
     return sendMessage('carpo-compiler.compile', filenames)
-      .then(console.log)
       .catch(console.error)
       .finally(() => setLoading(false));
   }, []);
@@ -24,7 +23,13 @@ const Root: React.FC = () => {
   return (
     <>
       <RowItem label='Select File'>
-        <Select onChange={setSelectedContract} placeholder='Compile all' value={selectedContract}>
+        <Select
+          allowClear
+          mode='multiple'
+          onChange={setSelectedContract}
+          placeholder='Compile all'
+          value={selectedContract}
+        >
           {contracts.map((contract) => (
             <Select.Option key={contract} value={contract}>
               {contract}
@@ -32,8 +37,12 @@ const Root: React.FC = () => {
           ))}
         </Select>
       </RowItem>
-      <Button loading={loading} onClick={() => compile(contracts)} type='primary'>
-        Compile All
+      <Button
+        loading={loading}
+        onClick={() => compile(selectedContract.length === 0 ? contracts : selectedContract)}
+        type='primary'
+      >
+        Compile {selectedContract.length === 0 ? 'All' : 'Selected'}
       </Button>
     </>
   );

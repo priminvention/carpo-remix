@@ -15,12 +15,14 @@ export type Artifact = {
 };
 
 export function writeArtifacts(output: CompilerOutput, workspacePath: string, config?: ProjectConfig | null): void {
+  if (!output.contracts) return;
+
   const artifactsDir = path.resolve(workspacePath, config?.paths?.artifacts ?? 'artifacts');
 
   fs.ensureDirSync(artifactsDir);
 
-  Object.keys(output.contracts).forEach((key) => {
-    Object.keys(output.contracts[key]).forEach((contractName) => {
+  for (const key in output.contracts) {
+    for (const contractName in output.contracts[key]) {
       const contractPath = path.resolve(artifactsDir, key, contractName + '.json');
 
       const data = output.contracts[key][contractName];
@@ -38,8 +40,8 @@ export function writeArtifacts(output: CompilerOutput, workspacePath: string, co
       fs.writeJsonSync(contractPath, artifact, {
         spaces: 2
       });
-    });
-  });
+    }
+  }
 }
 
 export async function getArtifacts(workspacePath?: string | null): Promise<Artifact[]> {

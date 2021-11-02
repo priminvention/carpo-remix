@@ -108,7 +108,7 @@ declare module 'solc' {
   }
 
   export interface CompilerOutput {
-    errors: CompilerOutputError[];
+    errors?: CompilerOutputError[];
     // This contains the file-level outputs.
     // It can be limited/filtered by the outputSelection settings.
     sources: Record<
@@ -122,7 +122,7 @@ declare module 'solc' {
     >;
     // This contains the contract-level outputs.
     // It can be limited/filtered by the outputSelection settings.
-    contracts: Record<
+    contracts?: Record<
       string,
       Record<
         string,
