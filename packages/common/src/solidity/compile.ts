@@ -3,10 +3,10 @@ import type { CompilerInput, CompilerOutput, Source } from 'solc';
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { toast } from '@carpo-remix/utils';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
-import { getCoreApi } from 'carpo-core/getCoreApi';
 import fs from 'fs-extra';
 import path from 'path';
 
+import { getCoreApi } from '../getCoreApi';
 import { SolidityCompiler, writeArtifacts } from '.';
 
 export async function compile(filenames: string[]): Promise<CompilerOutput> {
