@@ -1,16 +1,22 @@
 import type { ProjectConfig } from '@carpo-remix/config/types';
 import type { CompilerOutput } from 'solc';
 
+import { Artifact } from '../solidity/artifacts';
+
 export type Uri = {
   path: string;
   scheme: string;
 };
 
 export interface RequestSignatures {
+  /** common */
   'workspace.path': [null, string | null];
   'solidity.releases': [null, Record<string, string>];
-  'solidity.contracts': [null, string[]];
+  'contracts.files': [null, string[]];
+  'artifacts.all': [null, Artifact[]];
+  /** carpo-core extension */
   'carpo-core.genConfig': [ProjectConfig, ProjectConfig | undefined];
+  /** carpo-compiler extension */
   'carpo-compiler.compile': [string[], CompilerOutput];
 }
 

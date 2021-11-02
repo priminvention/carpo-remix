@@ -9,7 +9,7 @@ const Root: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    sendMessage('solidity.contracts', null).then(setContracts).catch(console.error);
+    sendMessage('contracts.files', null).then(setContracts).catch(console.error);
   }, []);
 
   const compile = useCallback((filenames: string[]) => {

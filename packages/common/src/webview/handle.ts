@@ -1,8 +1,9 @@
 import type { MessageTypes, RequestTypes, ResponseTypes } from './types';
 
-import * as vscode from 'vscode';
+import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 
 import { findContracts, getSolidityReleases } from '../solidity';
+import { getArtifacts } from '../solidity/artifacts';
 
 export interface Handle {
   <TMessageType extends MessageTypes>(id: string, type: TMessageType, request: RequestTypes[TMessageType]): Promise<
@@ -25,19 +26,16 @@ export async function handle<TMessageType extends MessageTypes>(
   } catch (error) {
     switch (type) {
       case 'workspace.path':
-        return Promise.resolve(
-          vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0
-            ? vscode.workspace.workspaceFolders.map(({ uri }) => {
-                return uri.path;
-              })[0]
-            : null
-        );
+        return Promise.resolve(getWorkspacePath());
 
       case 'solidity.releases':
         return getSolidityReleases();
 
-      case 'solidity.contracts':
+      case 'contracts.files':
         return findContracts();
+
+      case 'artifacts.all':
+        return getArtifacts(getWorkspacePath());
 
       default:
         throw new Error(`Unable to handle message of type ${type}`);

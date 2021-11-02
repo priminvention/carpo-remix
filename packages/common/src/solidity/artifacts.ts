@@ -1,7 +1,9 @@
 import type { CompilerOutput } from 'solc';
 
+import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { ProjectConfig } from '@carpo-remix/config/types';
 import fs from 'fs-extra';
+import globby from 'globby';
 import path from 'path';
 
 export type Artifact = {
@@ -37,5 +39,23 @@ export function writeArtifacts(output: CompilerOutput, workspacePath: string, co
         spaces: 2
       });
     });
+  });
+}
+
+export async function getArtifacts(workspacePath?: string | null): Promise<Artifact[]> {
+  if (!workspacePath) return [];
+
+  const config = getWorkspaceConfig(workspacePath);
+
+  const files = await globby(config?.paths?.artifacts ?? 'artifacts', {
+    expandDirectories: {
+      extensions: ['json']
+    },
+    cwd: workspacePath,
+    onlyFiles: true
+  });
+
+  return files.map((file) => {
+    return fs.readJSONSync(path.resolve(workspacePath, file));
   });
 }

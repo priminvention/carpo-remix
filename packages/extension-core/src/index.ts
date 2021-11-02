@@ -6,7 +6,7 @@ import { CoreContext } from './ctx';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext): void {
+export function activate(context: vscode.ExtensionContext): { ctx: CoreContext } {
   const ctx = new CoreContext(context);
 
   console.log('"carpo-core" is now active!');
