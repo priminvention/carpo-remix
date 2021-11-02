@@ -1,6 +1,6 @@
 import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
 import { WorkspaceConfig } from '@carpo-remix/config/types';
-import { SolidityVersion } from '@carpo-remix/react-components';
+import { Artifacts, SolidityVersion } from '@carpo-remix/react-components';
 import { Button, Form, Select } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 
@@ -30,45 +30,48 @@ const Root: React.FC = () => {
   }, []);
 
   return (
-    <Form>
-      <Form.Item label='Compiler Version'>
-        <SolidityVersion
-          onChange={(version) => {
-            sendMessage('workspace.setConfig', {
-              solidity: {
-                version
-              }
-            }).catch(console.error);
-          }}
-          onSelect={setVersion}
-          value={version}
-        />
-      </Form.Item>
-      <Form.Item label='Select File'>
-        <Select
-          allowClear
-          mode='multiple'
-          onChange={setSelectedContract}
-          placeholder='Compile all'
-          value={selectedContract}
-        >
-          {contracts.map((contract) => (
-            <Select.Option key={contract} value={contract}>
-              {contract}
-            </Select.Option>
-          ))}
-        </Select>
-      </Form.Item>
-      <Form.Item>
-        <Button
-          loading={loading}
-          onClick={() => compile(selectedContract.length === 0 ? contracts : selectedContract)}
-          type='primary'
-        >
-          Compile {selectedContract.length === 0 ? 'All' : 'Selected'}
-        </Button>
-      </Form.Item>
-    </Form>
+    <>
+      <Form>
+        <Form.Item label='Compiler Version'>
+          <SolidityVersion
+            onChange={(version) => {
+              sendMessage('workspace.setConfig', {
+                solidity: {
+                  version
+                }
+              }).catch(console.error);
+            }}
+            onSelect={setVersion}
+            value={version}
+          />
+        </Form.Item>
+        <Form.Item label='Select File'>
+          <Select
+            allowClear
+            mode='multiple'
+            onChange={setSelectedContract}
+            placeholder='Compile all'
+            value={selectedContract}
+          >
+            {contracts.map((contract) => (
+              <Select.Option key={contract} value={contract}>
+                {contract}
+              </Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item>
+          <Button
+            loading={loading}
+            onClick={() => compile(selectedContract.length === 0 ? contracts : selectedContract)}
+            type='primary'
+          >
+            Compile {selectedContract.length === 0 ? 'All' : 'Selected'}
+          </Button>
+        </Form.Item>
+      </Form>
+      <Artifacts />
+    </>
   );
 };
 

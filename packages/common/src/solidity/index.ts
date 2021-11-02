@@ -28,3 +28,4 @@ export function findContracts(): Promise<string[]> {
 
 export * from './SolidityCompiler';
 export * from './compile';
+export * from './artifacts';

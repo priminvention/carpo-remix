@@ -33,8 +33,8 @@ export function writeArtifacts(output: CompilerOutput, workspacePath: string, co
         contractName,
         sourceName: key,
         abi: data.abi,
-        bytecode: data.evm.bytecode,
-        deployedBytecode: data.evm.deployedBytecode
+        bytecode: data.evm.bytecode.object,
+        deployedBytecode: data.evm.deployedBytecode.object
       };
 
       fs.writeJsonSync(contractPath, artifact, {

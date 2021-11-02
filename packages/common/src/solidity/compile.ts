@@ -7,8 +7,7 @@ import { getCoreApi } from 'carpo-core/getCoreApi';
 import fs from 'fs-extra';
 import path from 'path';
 
-import { writeArtifacts } from './artifacts';
-import { SolidityCompiler } from '.';
+import { SolidityCompiler, writeArtifacts } from '.';
 
 export async function compile(filenames: string[]): Promise<CompilerOutput> {
   const workspacePath = getWorkspacePath();

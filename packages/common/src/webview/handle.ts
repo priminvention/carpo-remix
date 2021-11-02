@@ -6,8 +6,7 @@ import { mergeWorkspaceConfig } from '@carpo-remix/config/mergeWorkspaceConfig';
 import { WorkspaceConfig } from '@carpo-remix/config/types';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 
-import { findContracts, getSolidityReleases } from '../solidity';
-import { getArtifacts } from '../solidity/artifacts';
+import { findContracts, getArtifacts, getSolidityReleases } from '../solidity';
 
 export interface Handle {
   <TMessageType extends MessageTypes>(id: string, type: TMessageType, request: RequestTypes[TMessageType]): Promise<
