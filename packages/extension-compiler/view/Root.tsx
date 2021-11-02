@@ -1,15 +1,24 @@
 import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
-import { RowItem } from '@carpo-remix/react-components';
-import { Button, Select } from 'antd';
+import { WorkspaceConfig } from '@carpo-remix/config/types';
+import { SolidityVersion } from '@carpo-remix/react-components';
+import { Button, Form, Select } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 
 const Root: React.FC = () => {
+  const [version, setVersion] = useState<string>();
   const [contracts, setContracts] = useState<string[]>([]);
   const [selectedContract, setSelectedContract] = useState<string[]>([]);
+  const [config, setConfig] = useState<WorkspaceConfig | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     sendMessage('contracts.files', null).then(setContracts).catch(console.error);
+    sendMessage('workspace.config', null)
+      .then((config) => {
+        setConfig(config);
+        setVersion(config?.solidity?.version);
+      })
+      .catch(console.error);
   }, []);
 
   const compile = useCallback((filenames: string[]) => {
@@ -21,8 +30,21 @@ const Root: React.FC = () => {
   }, []);
 
   return (
-    <>
-      <RowItem label='Select File'>
+    <Form>
+      <Form.Item label='Compiler Version'>
+        <SolidityVersion
+          onChange={(version) => {
+            sendMessage('workspace.setConfig', {
+              solidity: {
+                version
+              }
+            }).catch(console.error);
+          }}
+          onSelect={setVersion}
+          value={version}
+        />
+      </Form.Item>
+      <Form.Item label='Select File'>
         <Select
           allowClear
           mode='multiple'
@@ -36,15 +58,17 @@ const Root: React.FC = () => {
             </Select.Option>
           ))}
         </Select>
-      </RowItem>
-      <Button
-        loading={loading}
-        onClick={() => compile(selectedContract.length === 0 ? contracts : selectedContract)}
-        type='primary'
-      >
-        Compile {selectedContract.length === 0 ? 'All' : 'Selected'}
-      </Button>
-    </>
+      </Form.Item>
+      <Form.Item>
+        <Button
+          loading={loading}
+          onClick={() => compile(selectedContract.length === 0 ? contracts : selectedContract)}
+          type='primary'
+        >
+          Compile {selectedContract.length === 0 ? 'All' : 'Selected'}
+        </Button>
+      </Form.Item>
+    </Form>
   );
 };
 

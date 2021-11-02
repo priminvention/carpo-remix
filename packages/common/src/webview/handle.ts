@@ -1,5 +1,9 @@
+/* eslint-disable no-case-declarations */
 import type { MessageTypes, RequestTypes, ResponseTypes } from './types';
 
+import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
+import { mergeWorkspaceConfig } from '@carpo-remix/config/mergeWorkspaceConfig';
+import { WorkspaceConfig } from '@carpo-remix/config/types';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 
 import { findContracts, getSolidityReleases } from '../solidity';
@@ -17,6 +21,8 @@ export async function handle<TMessageType extends MessageTypes>(
   request: RequestTypes[TMessageType],
   cb?: Handle
 ): Promise<ResponseTypes[keyof ResponseTypes]> {
+  const workspacePath = getWorkspacePath();
+
   try {
     if (cb) {
       return cb(id, type, request);
@@ -26,7 +32,15 @@ export async function handle<TMessageType extends MessageTypes>(
   } catch (error) {
     switch (type) {
       case 'workspace.path':
-        return Promise.resolve(getWorkspacePath());
+        return Promise.resolve(workspacePath);
+
+      case 'workspace.config':
+        return Promise.resolve(getWorkspaceConfig(workspacePath));
+
+      case 'workspace.setConfig':
+        const config = getWorkspaceConfig(workspacePath);
+
+        return Promise.resolve(mergeWorkspaceConfig(workspacePath, config || {}, request as WorkspaceConfig));
 
       case 'solidity.releases':
         return getSolidityReleases();
@@ -35,7 +49,7 @@ export async function handle<TMessageType extends MessageTypes>(
         return findContracts();
 
       case 'artifacts.all':
-        return getArtifacts(getWorkspacePath());
+        return getArtifacts(workspacePath);
 
       default:
         throw new Error(`Unable to handle message of type ${type}`);

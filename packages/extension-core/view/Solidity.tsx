@@ -1,33 +1,22 @@
 import type { SolidityConfig } from '@carpo-remix/config/types';
 
-import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
-import { Button, Form, Select } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { SolidityVersion } from '@carpo-remix/react-components';
+import { Button, Form } from 'antd';
+import React, { useState } from 'react';
 
 interface Props {
   onDone: (solidity: SolidityConfig) => void;
 }
 
 const Solidity: React.FC<Props> = ({ onDone }) => {
-  const [version, setVersion] = useState();
-  const [releases, setReleases] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    sendMessage('solidity.releases', null).then(setReleases).catch(console.error);
-  }, []);
+  const [version, setVersion] = useState<string>();
 
   return (
     <>
       <h2>Solidity config</h2>
       <Form layout='vertical'>
         <Form.Item label='Version'>
-          <Select onSelect={setVersion} value={version}>
-            {Object.keys(releases).map((release) => (
-              <Select.Option key={release} value={release}>
-                {release}
-              </Select.Option>
-            ))}
-          </Select>
+          <SolidityVersion onSelect={setVersion} value={version} />
         </Form.Item>
         <Form.Item>
           <Button onClick={() => onDone({ version })} type='primary'>

@@ -1508,7 +1508,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@carpo-remix/common@workspace:packages/common":
+"@carpo-remix/common@0.0.1-0, @carpo-remix/common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/common@workspace:packages/common"
   dependencies:
@@ -1526,7 +1526,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@carpo-remix/config@workspace:packages/config"
   dependencies:
+    "@carpo-remix/common": 0.0.1-0
+    "@types/lodash": ^4
     fs-extra: ^10.0.0
+    lodash: ^4.17.21
   languageName: unknown
   linkType: soft
 
@@ -2233,6 +2236,13 @@ __metadata:
   dependencies:
     "@types/node": "*"
   checksum: b5f8aa592cc21c16d99e69aec0976f12b893b055e4456d90148a610a6b6088e297b2ba5f38f8c8280cef006cfd8f9ec99e069905020882619dc5fc8aa46f5f27
+  languageName: node
+  linkType: hard
+
+"@types/lodash@npm:^4":
+  version: 4.14.176
+  resolution: "@types/lodash@npm:4.14.176"
+  checksum: 9e949704dfffab60365b5cdca0477926af6eabe82c64b7be8f74b3a117bb373d58371be962c2b159dd0cf8fad49a7dcacc748564aea4ce6b6883c197a6f0bfa8
   languageName: node
   linkType: hard
 

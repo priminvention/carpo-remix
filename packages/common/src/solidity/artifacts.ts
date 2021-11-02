@@ -1,7 +1,7 @@
 import type { CompilerOutput } from 'solc';
 
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
-import { ProjectConfig } from '@carpo-remix/config/types';
+import { WorkspaceConfig } from '@carpo-remix/config/types';
 import fs from 'fs-extra';
 import globby from 'globby';
 import path from 'path';
@@ -14,7 +14,7 @@ export type Artifact = {
   deployedBytecode: string;
 };
 
-export function writeArtifacts(output: CompilerOutput, workspacePath: string, config?: ProjectConfig | null): void {
+export function writeArtifacts(output: CompilerOutput, workspacePath: string, config?: WorkspaceConfig | null): void {
   if (!output.contracts) return;
 
   const artifactsDir = path.resolve(workspacePath, config?.paths?.artifacts ?? 'artifacts');
@@ -44,9 +44,7 @@ export function writeArtifacts(output: CompilerOutput, workspacePath: string, co
   }
 }
 
-export async function getArtifacts(workspacePath?: string | null): Promise<Artifact[]> {
-  if (!workspacePath) return [];
-
+export async function getArtifacts(workspacePath: string): Promise<Artifact[]> {
   const config = getWorkspaceConfig(workspacePath);
 
   const files = await globby(config?.paths?.artifacts ?? 'artifacts', {

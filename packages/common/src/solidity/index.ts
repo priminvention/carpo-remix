@@ -1,5 +1,5 @@
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
-import { getWorkspacePath, NoWorkspaceError } from '@carpo-remix/utils/workspace';
+import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import globby from 'globby';
 import superagent from 'superagent';
 
@@ -13,8 +13,6 @@ export async function getSolidityReleases(): Promise<Record<string, string>> {
 
 export function findContracts(): Promise<string[]> {
   const workspacePath = getWorkspacePath();
-
-  if (!workspacePath) return Promise.reject(new NoWorkspaceError());
 
   const config = getWorkspaceConfig(workspacePath);
 
