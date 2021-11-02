@@ -1,9 +1,9 @@
 import type { Disposed } from '@carpo-remix/common/types';
-import type { ProjectConfig } from '@carpo-remix/config/types';
+import type { WorkspaceConfig } from '@carpo-remix/config/types';
 
 import { createWebviewPanel } from '@carpo-remix/common';
 import { Handle } from '@carpo-remix/common/webview/handle';
-import { defaultConfigName } from '@carpo-remix/config';
+import { ConfigManager } from '@carpo-remix/config/ConfigManager';
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { npm, toast } from '@carpo-remix/utils';
 import * as vscode from 'vscode';
@@ -14,13 +14,16 @@ export class CoreContext extends Base implements Disposed {
   public static viewType = 'carpo-core.createProjectView';
   public static viewName = 'Create Project';
 
-  #watchers: vscode.FileSystemWatcher[] = [];
+  #watcher: ConfigManager;
 
-  constructor(ctx: vscode.ExtensionContext) {
+  constructor(ctx: vscode.ExtensionContext, watcher: ConfigManager) {
     super(ctx);
-    this.emit('ready', this);
     this.commands.registerCommand('carpo-core.createProject', () => this.createWebviewPanel());
-    this.watchProjectConfig();
+    this.#watcher = watcher;
+    this.emit('ready', this);
+
+    this.#watcher.on('change', this.configChange.bind(this));
+    this.#watcher.on('create', this.configChange.bind(this));
   }
 
   private createWebviewPanel() {
@@ -37,51 +40,23 @@ export class CoreContext extends Base implements Disposed {
   private handle: Handle = (id, type, request) => {
     switch (type) {
       case 'carpo-core.genConfig':
-        return this.commands.execCommand('carpo-core.genConfig', request as ProjectConfig);
+        return this.commands.execCommand('carpo-core.genConfig', request as WorkspaceConfig);
 
       default:
         throw new Error(`Unable to handle message of type ${type}`);
     }
   };
 
-  private watchProjectConfig(): void {
-    if (this.workspace) {
-      const watcher = vscode.workspace.createFileSystemWatcher(
-        {
-          base: this.workspace,
-          pattern: defaultConfigName
-        },
-        false,
-        false,
-        false
-      );
-
-      watcher.onDidCreate(() =>
-        this.installDeps()
-          .then(this.installSolc.bind(this))
-          .catch((error: Error) => {
-            toast.error(error.message);
-          })
-          .finally(() => (this.statusBar.text = 'Carpo'))
-      );
-      watcher.onDidChange(() =>
-        this.installDeps()
-          .then(this.installSolc.bind(this))
-          .catch((error: Error) => {
-            toast.error(error.message);
-          })
-          .finally(() => (this.statusBar.text = 'Carpo'))
-      );
-
-      this.#watchers.push(watcher);
-    }
+  private configChange() {
+    this.installDeps()
+      .then(this.installSolc.bind(this))
+      .catch((error: Error) => {
+        toast.error(error.message);
+      })
+      .finally(() => (this.statusBar.text = 'Carpo'));
   }
 
   private async installDeps(): Promise<void> {
-    if (!this.workspace) {
-      return Promise.reject(new Error('No workspace'));
-    }
-
     this.statusBar.text = 'Carpo: install deps';
     const installFunc = npm.shouldUseYarn() ? npm.doYarn : npm.doNpm;
 
@@ -89,10 +64,6 @@ export class CoreContext extends Base implements Disposed {
   }
 
   private async installSolc(): Promise<void> {
-    if (!this.workspace) {
-      return Promise.reject(new Error('No workspace'));
-    }
-
     const config = getWorkspaceConfig(this.workspace);
     const solcVersion = config?.solidity?.version;
     const solcText = `solc${solcVersion ? '@' + solcVersion : ''}`;
@@ -105,6 +76,8 @@ export class CoreContext extends Base implements Disposed {
 
   public dispose(): any {
     super.dispose();
-    this.#watchers.forEach((watcher) => watcher.dispose());
+    this.#watcher.off('create', this.configChange.bind(this));
+    this.#watcher.off('change', this.configChange.bind(this));
+    this.#watcher.dispose();
   }
 }

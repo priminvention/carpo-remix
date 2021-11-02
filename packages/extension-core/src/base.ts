@@ -4,7 +4,7 @@ import type { InterfaceEvents } from './types';
 import { Events } from '@carpo-remix/common/events';
 import { Disposed } from '@carpo-remix/common/types';
 import { defaultConfigName } from '@carpo-remix/config';
-import { ProjectConfig } from '@carpo-remix/config/types';
+import { WorkspaceConfig } from '@carpo-remix/config/types';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import fs from 'fs-extra';
 import path from 'path';
@@ -23,7 +23,7 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
   protected outputChannel: OutputChannel;
   protected statusBar: StatusBarItem;
   public ctx: vscode.ExtensionContext;
-  public workspace: string | null;
+  public workspace: string;
 
   constructor(ctx: vscode.ExtensionContext) {
     super();
@@ -53,8 +53,7 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
       ];
       this.quickPick.show();
     });
-    this.commands.registerCommand('carpo-core.genConfig', (arg: ProjectConfig) => {
-      if (!this.workspace) return;
+    this.commands.registerCommand('carpo-core.genConfig', (arg: WorkspaceConfig) => {
       this.println('Generate carpo.json');
       this.println(JSON.stringify(arg));
 
@@ -85,6 +84,14 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
 
   public println(value: string | Buffer | { toString: () => string }): void {
     this.outputChannel.appendLine(value.toString());
+  }
+
+  public showOutput(preserveFocus?: boolean): void {
+    this.outputChannel.show(preserveFocus);
+  }
+
+  public hideOutput(): void {
+    this.outputChannel.hide();
   }
 
   public runCli(command: string): Promise<vscode.TaskExecution> {

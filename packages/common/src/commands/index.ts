@@ -20,10 +20,7 @@ export abstract class AbstractCommands<Signatures extends Record<string, [unknow
     return disposable;
   }
 
-  public execCommand<T extends keyof Signatures>(
-    command: T,
-    arg?: Signatures[T][0]
-  ): Promise<Signatures[T][1] | undefined> {
+  public execCommand<T extends keyof Signatures>(command: T, arg: Signatures[T][0]): Promise<Signatures[T][1]> {
     return new Promise((resolve, reject) => {
       commands.executeCommand<Signatures[T][1]>(command as string, arg).then(resolve, reject);
     });

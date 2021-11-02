@@ -20,13 +20,6 @@
     "carpo.carpo-core"
   ],
   "contributes": {
-    "commands": [
-      {
-        "command": "carpo-core.openQuickPick",
-        "title": "test",
-        "category": "Carpo"
-      }
-    ],
     "viewsContainers": {
       "activitybar": [
         {
@@ -49,7 +42,6 @@
   "dependencies": {
     "cross-spawn": "^7.0.3",
     "fs-extra": "^10.0.0",
-    "globby": "^12.0.2",
     "semver": "^7.3.5"
   }
 }

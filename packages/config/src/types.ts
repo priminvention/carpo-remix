@@ -17,7 +17,7 @@ export type SolidityConfig = {
   settings?: SoliditySettings;
 };
 
-export type ProjectConfig = {
+export type WorkspaceConfig = {
   paths?: PathsConfig;
   networks?: NetworksConfig;
   defaultNetwork?: string;

@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
+import CompilerWebviewProvider from './CompilerWebviewProvider';
 import { CompilerContext } from './ctx';
 
 // this method is called when your extension is activated
@@ -10,8 +11,12 @@ export function activate(context: vscode.ExtensionContext): void {
   const ctx = new CompilerContext();
 
   console.log('"carpo-compiler" is now active!');
+  const webviewProvider = new CompilerWebviewProvider(context.extensionUri, ctx);
 
-  context.subscriptions.push();
+  context.subscriptions.push(
+    ctx,
+    vscode.window.registerWebviewViewProvider(CompilerWebviewProvider.viewType, webviewProvider)
+  );
 }
 
 // this method is called when your extension is deactivated

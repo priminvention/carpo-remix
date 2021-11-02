@@ -17,7 +17,7 @@ const vscode: {
 
 export const sendMessage: SendRequest = <TMessageType extends MessageTypes>(
   message: TMessageType,
-  request?: RequestTypes[TMessageType],
+  request: RequestTypes[TMessageType],
   subscriber?: (data: unknown) => void
 ) => {
   return new Promise((resolve, reject): void => {

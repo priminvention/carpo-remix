@@ -1,10 +1,10 @@
-import type { ProjectConfig } from '@carpo-remix/config/types';
+import type { WorkspaceConfig } from '@carpo-remix/config/types';
 
 import { AbstractCommands } from '@carpo-remix/common';
 
 export type CoreCommandSignatures = {
   'carpo-core.openQuickPick': [undefined, void];
-  'carpo-core.genConfig': [ProjectConfig, ProjectConfig | undefined];
+  'carpo-core.genConfig': [WorkspaceConfig, WorkspaceConfig | undefined];
   'carpo-core.createProject': [undefined, void];
 };
 
