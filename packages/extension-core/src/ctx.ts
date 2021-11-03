@@ -15,6 +15,7 @@ export class CoreContext extends Base implements Disposed {
   public static viewName = 'Create Project';
 
   #watcher: ConfigManager;
+  #webviewPanel: vscode.WebviewPanel | null = null;
 
   constructor(ctx: vscode.ExtensionContext, watcher: ConfigManager) {
     super(ctx);
@@ -27,7 +28,7 @@ export class CoreContext extends Base implements Disposed {
   }
 
   private createWebviewPanel() {
-    createWebviewPanel(
+    this.#webviewPanel = createWebviewPanel(
       CoreContext.viewType,
       CoreContext.viewName,
       vscode.ViewColumn.One,
@@ -40,6 +41,9 @@ export class CoreContext extends Base implements Disposed {
   private handle: Handle = (id, type, request) => {
     switch (type) {
       case 'carpo-core.genConfig':
+        this.#webviewPanel?.dispose();
+        this.#webviewPanel = null;
+
         return this.commands.execCommand('carpo-core.genConfig', request as WorkspaceConfig);
 
       default:
@@ -49,7 +53,6 @@ export class CoreContext extends Base implements Disposed {
 
   private configChange() {
     this.installDeps()
-      .then(this.installSolc.bind(this))
       .catch((error: Error) => {
         toast.error(error.message);
       })
@@ -57,21 +60,30 @@ export class CoreContext extends Base implements Disposed {
   }
 
   private async installDeps(): Promise<void> {
-    this.statusBar.text = 'Carpo: install deps';
+    const config = getWorkspaceConfig(this.workspace);
     const installFunc = npm.shouldUseYarn() ? npm.doYarn : npm.doNpm;
+    const addFunc = npm.shouldUseYarn() ? npm.doYarnAdd : npm.doNpmInstall;
+
+    this.statusBar.text = 'Carpo: install deps';
 
     await installFunc();
-  }
 
-  private async installSolc(): Promise<void> {
-    const config = getWorkspaceConfig(this.workspace);
     const solcVersion = config?.solidity?.version;
-    const solcText = `solc${solcVersion ? '@' + solcVersion : ''}`;
 
-    this.statusBar.text = `Carpo: install ${solcText}`;
-    const installFunc = npm.shouldUseYarn() ? npm.doYarnAdd : npm.doNpmInstall;
+    this.statusBar.text = `Carpo: install solc,ganache,ganache-cli`;
 
-    await installFunc('solc', solcVersion);
+    await addFunc([
+      {
+        pkg: 'solc',
+        version: solcVersion
+      },
+      {
+        pkg: 'ganache'
+      },
+      {
+        pkg: 'ganache-cli'
+      }
+    ]);
   }
 
   public dispose(): any {

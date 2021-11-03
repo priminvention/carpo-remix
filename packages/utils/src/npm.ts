@@ -24,16 +24,16 @@ export function doNpm(): Promise<TaskExecution> {
   return task.execute();
 }
 
-export function doYarnAdd(pkg: string, version?: string): Promise<TaskExecution> {
-  const pkgStr = `${pkg}${version ? '@' + version : ''}`;
-  const task = new NpmTask(`Carpo: yarn add ${pkgStr}`, `yarn add ${pkgStr}`);
+export function doYarnAdd(deps: { pkg: string; version?: string }[], dev = true): Promise<TaskExecution> {
+  const pkgStr = deps.map(({ pkg, version }) => `${pkg}${version ? '@' + version : ''}`).join(' ');
+  const task = new NpmTask(`Carpo: yarn add ${pkgStr}`, `yarn add ${dev ? '-D' : ''} ${pkgStr}`);
 
   return task.execute();
 }
 
-export function doNpmInstall(pkg: string, version?: string): Promise<TaskExecution> {
-  const pkgStr = `${pkg}${version ? '@' + version : ''}`;
-  const task = new NpmTask(`Carpo: npm install ${pkgStr}`, `npm install ${pkgStr}`);
+export function doNpmInstall(deps: { pkg: string; version?: string }[], dev = true): Promise<TaskExecution> {
+  const pkgStr = deps.map(({ pkg, version }) => `${pkg}${version ? '@' + version : ''}`).join(' ');
+  const task = new NpmTask(`Carpo: npm install ${pkgStr}`, `npm install ${dev ? '--save-dev' : '--save'} ${pkgStr}`);
 
   return task.execute();
 }
