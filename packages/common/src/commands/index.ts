@@ -1,33 +1,21 @@
+import type { CommandArgs, CommandKeys, CommandReturns } from './types';
+
 import { commands, Disposable } from 'vscode';
 
-import { Disposed } from '../types';
+export function registerCommand<T extends CommandKeys>(
+  command: T,
+  cb: (arg: CommandArgs[T]) => Promise<CommandReturns[T]>
+): Disposable {
+  return commands.registerCommand(command, cb);
+}
 
-export abstract class AbstractCommands<Signatures extends Record<string, [unknown, unknown]>> implements Disposed {
-  protected commands: Disposable[] = [];
-  protected commandKeys: (keyof Signatures)[] = [];
+export async function execCommand<T extends CommandKeys>(
+  command: T,
+  args: CommandArgs[T]
+): Promise<CommandReturns[T] | undefined> {
+  const all = await commands.getCommands();
 
-  public registerCommand<T extends keyof Signatures>(
-    command: T,
-    cb: (arg: Signatures[T][0]) => Promise<Signatures[T][1]> | Signatures[T][1]
-  ): Disposable | undefined {
-    if (this.commandKeys.includes(command)) return;
+  if (!all.includes(command)) throw new Error(`No command named ${command}`);
 
-    const disposable = commands.registerCommand(command as string, cb);
-
-    this.commands.push(disposable);
-    this.commandKeys.push(command);
-
-    return disposable;
-  }
-
-  public execCommand<T extends keyof Signatures>(command: T, arg: Signatures[T][0]): Promise<Signatures[T][1]> {
-    return new Promise((resolve, reject) => {
-      commands.executeCommand<Signatures[T][1]>(command as string, arg).then(resolve, reject);
-    });
-  }
-
-  public dispose(): void {
-    this.commands.forEach((command) => command.dispose());
-    this.commandKeys = [];
-  }
+  return await commands.executeCommand<CommandReturns[T]>(command, args);
 }
