@@ -1,6 +1,7 @@
+import type { TaskExecution } from 'vscode';
+
 import { NpmTask } from '@carpo-remix/common';
 import { execSync } from 'child_process';
-import { TaskExecution } from 'vscode';
 
 export function shouldUseYarn(): boolean {
   try {

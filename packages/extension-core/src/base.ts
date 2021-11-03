@@ -5,6 +5,7 @@ import { Events } from '@carpo-remix/common/events';
 import { Disposed } from '@carpo-remix/common/types';
 import { defaultConfigName } from '@carpo-remix/config';
 import { WorkspaceConfig } from '@carpo-remix/config/types';
+import { node } from '@carpo-remix/utils';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import fs from 'fs-extra';
 import path from 'path';
@@ -49,6 +50,10 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
         {
           label: 'Create Project',
           command: 'carpo-core.createProject'
+        },
+        {
+          label: 'Run dev node',
+          command: 'carpo-core.runDevNode'
         }
       ];
       this.quickPick.show();
@@ -63,6 +68,9 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
       this.println('Done.');
 
       return arg;
+    });
+    this.commands.registerCommand('carpo-core.runDevNode', async () => {
+      await node.runDevNode(this.workspace);
     });
 
     this.quickPick.onDidChangeSelection((items) => {
