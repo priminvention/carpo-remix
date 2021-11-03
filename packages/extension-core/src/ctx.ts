@@ -1,11 +1,14 @@
 import type { Disposed } from '@carpo-remix/common/types';
 import type { WorkspaceConfig } from '@carpo-remix/config/types';
 
-import { createWebviewPanel } from '@carpo-remix/common';
+import { createWebviewPanel, execCommand } from '@carpo-remix/common';
 import { Handle } from '@carpo-remix/common/webview/handle';
+import { defaultConfigName } from '@carpo-remix/config';
 import { ConfigManager } from '@carpo-remix/config/ConfigManager';
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
-import { npm, toast } from '@carpo-remix/utils';
+import { node, npm, toast } from '@carpo-remix/utils';
+import fs from 'fs-extra';
+import path from 'path';
 import * as vscode from 'vscode';
 
 import { Base } from './base';
@@ -19,7 +22,6 @@ export class CoreContext extends Base implements Disposed {
 
   constructor(ctx: vscode.ExtensionContext, watcher: ConfigManager) {
     super(ctx);
-    this.commands.registerCommand('carpo-core.createProject', () => this.createWebviewPanel());
     this.#watcher = watcher;
     this.emit('ready', this);
 
@@ -27,7 +29,7 @@ export class CoreContext extends Base implements Disposed {
     this.#watcher.on('create', this.configChange.bind(this));
   }
 
-  private createWebviewPanel() {
+  public createWebviewPanel(): void {
     this.#webviewPanel = createWebviewPanel(
       CoreContext.viewType,
       CoreContext.viewName,
@@ -38,13 +40,29 @@ export class CoreContext extends Base implements Disposed {
     );
   }
 
+  public genConfig(config: WorkspaceConfig): WorkspaceConfig {
+    this.println('Generate carpo.json');
+    this.println(JSON.stringify(config));
+
+    fs.writeJsonSync(path.resolve(this.workspace, defaultConfigName), config, {
+      spaces: 2
+    });
+    this.println('Done.');
+
+    return config;
+  }
+
+  public async runDevNode(): Promise<void> {
+    await node.runDevNode(this.workspace);
+  }
+
   private handle: Handle = (id, type, request) => {
     switch (type) {
       case 'carpo-core.genConfig':
         this.#webviewPanel?.dispose();
         this.#webviewPanel = null;
 
-        return this.commands.execCommand('carpo-core.genConfig', request as WorkspaceConfig);
+        return execCommand('carpo-core.genConfig', request as WorkspaceConfig);
 
       default:
         throw new Error(`Unable to handle message of type ${type}`);

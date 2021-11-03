@@ -3,6 +3,7 @@
 
 import type { CoreApi } from '@carpo-remix/common/getCoreApi';
 
+import { registerCommand } from '@carpo-remix/common';
 import { ConfigManager } from '@carpo-remix/config/ConfigManager';
 import * as vscode from 'vscode';
 
@@ -16,7 +17,13 @@ export function activate(context: vscode.ExtensionContext): CoreApi {
 
   console.log('"carpo-core" is now active!');
 
-  context.subscriptions.push(ctx);
+  context.subscriptions.push(
+    ctx,
+    registerCommand('carpo-core.openQuickPick', () => Promise.resolve(ctx.openQuickPick())),
+    registerCommand('carpo-core.genConfig', (arg) => Promise.resolve(ctx.genConfig(arg))),
+    registerCommand('carpo-core.runDevNode', ctx.runDevNode.bind(ctx)),
+    registerCommand('carpo-core.createProject', () => Promise.resolve(ctx.createWebviewPanel()))
+  );
 
   return { ctx, configManager };
 }
