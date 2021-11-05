@@ -1,12 +1,19 @@
+import type { Artifact } from '@carpo-remix/common/solidity';
 import type { Disposed } from '@carpo-remix/common/types';
 import type { WorkspaceConfig } from '@carpo-remix/config/types';
+import type { ScriptArgs } from './types';
 
 import { createWebviewPanel, execCommand } from '@carpo-remix/common';
+import {
+  getArtifacts as getArtifactsFunc,
+  getNamedArtifact as getNamedArtifactFunc
+} from '@carpo-remix/common/solidity';
 import { Handle } from '@carpo-remix/common/webview/handle';
 import { defaultConfigName } from '@carpo-remix/config';
 import { ConfigManager } from '@carpo-remix/config/ConfigManager';
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { node, npm, toast } from '@carpo-remix/utils';
+import { importTsDefault } from '@carpo-remix/utils/importScript';
 import fs from 'fs-extra';
 import path from 'path';
 import * as vscode from 'vscode';
@@ -54,6 +61,25 @@ export class CoreContext extends Base implements Disposed {
 
   public async runDevNode(): Promise<void> {
     await node.runDevNode(this.workspace);
+  }
+
+  public async runScript(path: string): Promise<void> {
+    const getArtifacts = async (): Promise<Artifact[]> => getArtifactsFunc(this.workspace);
+    const getNamedArtifact = async (name: string): Promise<Artifact | null> =>
+      getNamedArtifactFunc(name, this.workspace);
+
+    try {
+      await importTsDefault<(args: ScriptArgs) => any>(path)({
+        getArtifacts,
+        getNamedArtifact
+      });
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('Unknown error');
+      }
+    }
   }
 
   private handle: Handle = (id, type, request) => {
