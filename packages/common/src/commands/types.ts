@@ -6,6 +6,7 @@ export interface CommandSignatures {
   'carpo-core.genConfig': [WorkspaceConfig, WorkspaceConfig | undefined];
   'carpo-core.createProject': [undefined, void];
   'carpo-core.runDevNode': [undefined, void];
+  'carpo-core.runScript': [string, any];
   'carpo-compiler.compile': [string[], CompilerOutput];
 }
 

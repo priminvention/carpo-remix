@@ -5,6 +5,7 @@ import type { CoreApi } from '@carpo-remix/common/getCoreApi';
 
 import { registerCommand } from '@carpo-remix/common';
 import { ConfigManager } from '@carpo-remix/config/ConfigManager';
+import { importTsDefault } from '@carpo-remix/utils/importScript';
 import * as vscode from 'vscode';
 
 import { CoreContext } from './ctx';
@@ -22,7 +23,16 @@ export function activate(context: vscode.ExtensionContext): CoreApi {
     registerCommand('carpo-core.openQuickPick', () => Promise.resolve(ctx.openQuickPick())),
     registerCommand('carpo-core.genConfig', (arg) => Promise.resolve(ctx.genConfig(arg))),
     registerCommand('carpo-core.runDevNode', ctx.runDevNode.bind(ctx)),
-    registerCommand('carpo-core.createProject', () => Promise.resolve(ctx.createWebviewPanel()))
+    registerCommand('carpo-core.createProject', () => Promise.resolve(ctx.createWebviewPanel())),
+    registerCommand('carpo-core.runScript', async (path: string) => {
+      try {
+        const returns = await importTsDefault<() => any>(path)();
+
+        return returns;
+      } catch (error) {
+        console.error(error);
+      }
+    })
   );
 
   return { ctx, configManager };
