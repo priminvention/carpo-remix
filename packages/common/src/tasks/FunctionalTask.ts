@@ -25,13 +25,13 @@ export class FunctionalTask extends AbstractTask {
           resolve({
             onDidWrite: this.writeEmitter.event,
             open: async () => {
-              this.writeEmitter.fire(`Run ${resolvedDefinition.name} task\n`);
+              this.writeEmitter.fire(`${resolvedDefinition.name} task\n`);
 
               try {
                 await cb(this.writeEmitter);
-                this.writeEmitter.fire(`\r\x1b[32mRun success: ${resolvedDefinition.name}\x1b[0m\n`);
+                this.writeEmitter.fire(`\r\x1b[32mSuccess: ${resolvedDefinition.name}\x1b[0m\n`);
               } catch (error) {
-                this.writeEmitter.fire(`\r\x1b[31mRun failed: ${resolvedDefinition.name}\x1b[0m\n`);
+                this.writeEmitter.fire(`\r\x1b[31mFailed: ${resolvedDefinition.name}\x1b[0m\n`);
               }
 
               this.writeEmitter.fire(`\rPress any key to close.\n`);

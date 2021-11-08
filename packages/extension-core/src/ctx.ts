@@ -63,8 +63,8 @@ export class CoreContext extends Base implements Disposed {
     await node.runDevNode(this.workspace);
   }
 
-  public async runFunction(func: (writeEmitter: vscode.EventEmitter<string>) => any): Promise<void> {
-    const functional = new FunctionalTask('Script', async (writeEmitter) => {
+  public async runFunction(name: string, func: (writeEmitter: vscode.EventEmitter<string>) => any): Promise<void> {
+    const functional = new FunctionalTask(name, async (writeEmitter) => {
       await func(writeEmitter);
     });
 
@@ -72,7 +72,7 @@ export class CoreContext extends Base implements Disposed {
   }
 
   public async runScript(path: string): Promise<void> {
-    return this.runFunction(async (writeEmitter) => {
+    return this.runFunction(`Run ${path}`, async (writeEmitter) => {
       const vm = new NodeVM({
         compiler: (code: string) => typescript.transpile(code),
         console: 'redirect',
