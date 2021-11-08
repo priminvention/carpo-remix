@@ -3933,6 +3933,12 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"carpo-deploy@workspace:packages/extension-deploy":
+  version: 0.0.0-use.local
+  resolution: "carpo-deploy@workspace:packages/extension-deploy"
+  languageName: unknown
+  linkType: soft
+
 "carpo-remix@workspace:.":
   version: 0.0.0-use.local
   resolution: "carpo-remix@workspace:."

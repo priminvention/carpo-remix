@@ -1,0 +1,42 @@
+{
+  "name": "carpo-deploy",
+  "version": "0.0.1",
+  "description": "carpo-remix extension and vscode extension",
+  "main": "build/extension.js",
+  "repository": "https://github.com/patractlabs/carpo-extension.git",
+  "author": "patractlabs",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.59.0"
+  },
+  "publisher": "carpo",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "workspaceContains:package.json"
+  ],
+  "extensionDependencies": [
+    "carpo.carpo-core"
+  ],
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "carpoDeploy",
+          "title": "Carpo",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "carpoDeploy": [
+        {
+          "type": "webview",
+          "id": "carpoDeploy.deployView",
+          "name": "Deploy & Run Transactions"
+        }
+      ]
+    }
+  }
+}

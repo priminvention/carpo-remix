@@ -11,11 +11,13 @@
       "request": "launch",
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}/packages/extension-core",
-        "--extensionDevelopmentPath=${workspaceFolder}/packages/extension-compiler"
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/extension-compiler",
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/extension-deploy"
       ],
       "outFiles": [
         "${workspaceFolder}/packages/extension-core/build/**/*.js",
-        "${workspaceFolder}/packages/extension-compiler/build/**/*.js"
+        "${workspaceFolder}/packages/extension-compiler/build/**/*.js",
+        "${workspaceFolder}/packages/extension-deploy/build/**/*.js"
       ],
       "preLaunchTask": "Build"
     }
