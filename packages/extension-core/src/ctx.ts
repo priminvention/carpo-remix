@@ -1,9 +1,8 @@
-import type { Artifact } from '@carpo-remix/common/solidity';
 import type { Disposed } from '@carpo-remix/common/types';
 import type { WorkspaceConfig } from '@carpo-remix/config/types';
 import type { ScriptArgs } from './types';
 
-import { createWebviewPanel, execCommand } from '@carpo-remix/common';
+import { createWebviewPanel, execCommand, FunctionalTask } from '@carpo-remix/common';
 import {
   getArtifacts as getArtifactsFunc,
   getNamedArtifact as getNamedArtifactFunc
@@ -13,9 +12,10 @@ import { defaultConfigName } from '@carpo-remix/config';
 import { ConfigManager } from '@carpo-remix/config/ConfigManager';
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { node, npm, toast } from '@carpo-remix/utils';
-import { importTsDefault } from '@carpo-remix/utils/importScript';
 import fs from 'fs-extra';
 import path from 'path';
+import typescript from 'typescript';
+import { NodeVM } from 'vm2';
 import * as vscode from 'vscode';
 
 import { Base } from './base';
@@ -64,22 +64,29 @@ export class CoreContext extends Base implements Disposed {
   }
 
   public async runScript(path: string): Promise<void> {
-    const getArtifacts = async (): Promise<Artifact[]> => getArtifactsFunc(this.workspace);
-    const getNamedArtifact = async (name: string): Promise<Artifact | null> =>
-      getNamedArtifactFunc(name, this.workspace);
-
-    try {
-      await importTsDefault<(args: ScriptArgs) => any>(path)({
-        getArtifacts,
-        getNamedArtifact
+    const functional = new FunctionalTask('Cart', async (writeEmitter) => {
+      const vm = new NodeVM({
+        compiler: (code: string) => typescript.transpile(code),
+        console: 'redirect',
+        sandbox: {},
+        require: {
+          external: true,
+          builtin: ['*']
+        }
       });
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error('Unknown error');
-      }
-    }
+      const exports: { default: (args: ScriptArgs) => Promise<any> } = vm.run(fs.readFileSync(path).toString());
+
+      vm.on('console.log', (data) => writeEmitter.fire(`\r${JSON.stringify(data)}\n`));
+      vm.on('console.error', (data) => writeEmitter.fire(`\r\x1b[31m${JSON.stringify(data)}\x1b[0m\n`));
+      vm.on('console.warn', (data) => writeEmitter.fire(`\r\x1b[33m${JSON.stringify(data)}\x1b[0m\n`));
+
+      await exports.default({
+        getArtifacts: () => getArtifactsFunc(this.workspace),
+        getNamedArtifact: (name: string) => getNamedArtifactFunc(name, this.workspace)
+      });
+    });
+
+    await functional.execute();
   }
 
   private handle: Handle = (id, type, request) => {

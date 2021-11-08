@@ -15,7 +15,7 @@
   ],
   "activationEvents": [],
   "dependencies": {
-    "ts-node": "^10.4.0",
-    "typescript": "^4.3.5"
+    "typescript": "^4.4.4",
+    "vm2": "^3.9.5"
   }
 }

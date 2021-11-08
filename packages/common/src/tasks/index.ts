@@ -1,3 +1,4 @@
 export * from './AbstractTask';
 export * from './NpmTask';
-export * from './GanacheTask';
+export * from './DevNodeTask';
+export * from './FunctionalTask';
