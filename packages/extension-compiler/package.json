@@ -40,6 +40,7 @@
     }
   },
   "dependencies": {
+    "@vscode/codicons": "^0.0.26",
     "cross-spawn": "^7.0.3",
     "fs-extra": "^10.0.0",
     "semver": "^7.3.5"

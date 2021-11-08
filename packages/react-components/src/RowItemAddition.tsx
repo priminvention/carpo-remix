@@ -1,6 +1,7 @@
-import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Button, Input } from 'antd';
-import React, { FC, useCallback, useEffect, useState } from 'react';
+// import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
+// import { Button, Input } from 'antd';
+import { VsButton, VsTextField } from './VscodeBaseComponents';
+import React, { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 
 import RowItem from './RowItem';
 
@@ -48,27 +49,24 @@ const RowItemAddition: FC<{
     <RowItem label={label}>
       {sourceData.map((source, index) => (
         <div key={index}>
-          <Input
-            onChange={(e) => {
+          <VsTextField
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
               changeItem(e.target.value, index);
             }}
-            suffix={<MinusCircleOutlined onClick={() => deleteItem(index)} />}
+            // suffix={<MinusCircleOutlined onClick={() => deleteItem(index)} />}
             value={source}
           />
         </div>
       ))}
-      <Button
-        block
-        icon={<PlusOutlined />}
-        onClick={() => {
+      <VsButton
+        onClick={(e) => {
           const newSourceData = [...sourceData, ''];
 
           handleChangeSourceData(newSourceData);
         }}
-        type='dashed'
       >
         {buttonTxt}
-      </Button>
+      </VsButton>
     </RowItem>
   );
 };

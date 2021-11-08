@@ -18,7 +18,6 @@ export function getHtmlForWebview(extensionUri: vscode.Uri, sourceName: string, 
       -->
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link href="${stylesMainUri}" rel="stylesheet">
-
       <title>Compile</title>
     </head>
     <body>

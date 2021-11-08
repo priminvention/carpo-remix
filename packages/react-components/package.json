@@ -5,5 +5,13 @@
   "main": "index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
   "author": "patractlabs",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@microsoft/fast-react-wrapper": "^0.1.12",
+    "@vscode/webview-ui-toolkit": "^0.8.4",
+    "react": "^17.0.2"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.33"
+  }
 }

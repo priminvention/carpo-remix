@@ -3,6 +3,7 @@ import type { Artifact } from '@carpo-remix/common/solidity';
 import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
 import { Space, Table, TableColumnType, Typography } from 'antd';
 import React, { useEffect, useMemo, useState } from 'react';
+import { VsDataGrid, VsDataGridRow, VsDataGridCell } from './VscodeBaseComponents';
 
 const { Text } = Typography;
 
@@ -51,14 +52,30 @@ const Artifacts: React.FC = () => {
   );
 
   return (
-    <Table
-      bordered={false}
-      columns={columns}
-      dataSource={artifacts}
-      pagination={false}
-      size='small'
-      style={{ backgroundColor: 'transparent' }}
-    />
+    // <Table
+    //   bordered={false}
+    //   columns={columns}
+    //   dataSource={artifacts}
+    //   pagination={false}
+    //   size='small'
+    //   style={{ backgroundColor: 'transparent' }}
+    // />
+    <VsDataGrid id='basic-grid' aria-label='Custom Column Widths'>
+      <VsDataGridRow row-type='header'>
+        <VsDataGridCell cell-type='columnheader' grid-column='1'>
+          Header 1
+        </VsDataGridCell>
+        <VsDataGridCell cell-type='columnheader' grid-column='2'>
+          Header 2
+        </VsDataGridCell>
+        <VsDataGridCell cell-type='columnheader' grid-column='3'>
+          Header 3
+        </VsDataGridCell>
+        <VsDataGridCell cell-type='columnheader' grid-column='3'>
+          Header 4
+        </VsDataGridCell>
+      </VsDataGridRow>
+    </VsDataGrid>
   );
 };
 
