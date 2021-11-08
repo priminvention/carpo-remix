@@ -59,3 +59,20 @@ export async function getArtifacts(workspacePath: string): Promise<Artifact[]> {
     return fs.readJSONSync(path.resolve(workspacePath, file));
   });
 }
+
+export async function getNamedArtifact(name: string, workspacePath: string): Promise<Artifact | null> {
+  const config = getWorkspaceConfig(workspacePath);
+
+  const files = await globby(config?.paths?.artifacts ?? 'artifacts', {
+    expandDirectories: {
+      files: [name],
+      extensions: ['json']
+    },
+    cwd: workspacePath,
+    onlyFiles: true
+  });
+
+  if (files.length === 0) return null;
+
+  return fs.readJSONSync(path.resolve(workspacePath, files[0]));
+}
