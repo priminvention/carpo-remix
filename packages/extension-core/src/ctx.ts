@@ -63,8 +63,16 @@ export class CoreContext extends Base implements Disposed {
     await node.runDevNode(this.workspace);
   }
 
+  public async runFunction(func: (writeEmitter: vscode.EventEmitter<string>) => any): Promise<void> {
+    const functional = new FunctionalTask('Script', async (writeEmitter) => {
+      await func(writeEmitter);
+    });
+
+    await functional.execute();
+  }
+
   public async runScript(path: string): Promise<void> {
-    const functional = new FunctionalTask('Cart', async (writeEmitter) => {
+    return this.runFunction(async (writeEmitter) => {
       const vm = new NodeVM({
         compiler: (code: string) => typescript.transpile(code),
         console: 'redirect',
@@ -85,8 +93,6 @@ export class CoreContext extends Base implements Disposed {
         getNamedArtifact: (name: string) => getNamedArtifactFunc(name, this.workspace)
       });
     });
-
-    await functional.execute();
   }
 
   private handle: Handle = (id, type, request) => {
