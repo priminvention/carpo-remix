@@ -3985,6 +3985,7 @@ __metadata:
     webpack-cli: ^4.9.1
   bin:
     build-browser: ./scripts/build-browser.js
+    npm-publish: ./scripts/npmPublish.js
   languageName: unknown
   linkType: soft
 
