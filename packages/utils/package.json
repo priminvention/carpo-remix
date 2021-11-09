@@ -1,6 +1,6 @@
 {
   "name": "@carpo-remix/utils",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "carpo-remix extension utils",
   "main": "index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",

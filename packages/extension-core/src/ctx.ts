@@ -122,6 +122,12 @@ export class CoreContext extends Base implements Disposed {
       },
       {
         pkg: 'ganache-cli'
+      },
+      {
+        pkg: '@carpo-remix/config'
+      },
+      {
+        pkg: '@carpo-remix/helper'
       }
     ]);
   }

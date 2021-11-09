@@ -1,7 +1,7 @@
+import type { WorkspaceConfig } from '@carpo-remix/config/types';
 import type { Artifact, CompilerOutput } from './types';
 
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
-import { WorkspaceConfig } from '@carpo-remix/config/types';
 import fs from 'fs-extra';
 import globby from 'globby';
 import path from 'path';

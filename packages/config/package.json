@@ -1,13 +1,13 @@
 {
   "name": "@carpo-remix/config",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "carpo-remix extension config",
   "main": "index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
   "author": "patractlabs",
   "license": "MIT",
   "dependencies": {
-    "@carpo-remix/common": "0.0.1",
+    "@babel/runtime": "^7.16.0",
     "fs-extra": "^10.0.0",
     "lodash": "^4.17.21"
   },

@@ -1466,7 +1466,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.11.1, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.8.4":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.10.1, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.11.1, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.16.0, @babel/runtime@npm:^7.8.4":
   version: 7.16.0
   resolution: "@babel/runtime@npm:7.16.0"
   dependencies:
@@ -1520,12 +1520,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@carpo-remix/common@0.0.1, @carpo-remix/common@workspace:packages/common":
+"@carpo-remix/common@workspace:packages/common":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/common@workspace:packages/common"
   dependencies:
-    "@carpo-remix/config": 0.0.1
-    "@carpo-remix/utils": 0.0.1
+    "@carpo-remix/config": 0.0.3
+    "@carpo-remix/utils": 0.0.3
     eventemitter3: ^4.0.7
     fs-extra: ^10.0.0
     globby: ^11.0.2
@@ -1534,11 +1534,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@carpo-remix/config@0.0.1, @carpo-remix/config@workspace:packages/config":
+"@carpo-remix/config@0.0.3, @carpo-remix/config@workspace:packages/config":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/config@workspace:packages/config"
   dependencies:
-    "@carpo-remix/common": 0.0.1
+    "@babel/runtime": ^7.16.0
     "@types/lodash": ^4
     fs-extra: ^10.0.0
     lodash: ^4.17.21
@@ -1549,7 +1549,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@carpo-remix/helper@workspace:packages/helper"
   dependencies:
-    "@carpo-remix/config": 0.0.1
+    "@babel/runtime": ^7.16.0
+    "@carpo-remix/config": 0.0.3
     fs-extra: ^10.0.0
     globby: ^11.0.2
   languageName: unknown
@@ -1561,7 +1562,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@carpo-remix/utils@0.0.1, @carpo-remix/utils@workspace:packages/utils":
+"@carpo-remix/utils@0.0.3, @carpo-remix/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/utils@workspace:packages/utils"
   dependencies:
