@@ -12,7 +12,7 @@ export interface ConfigManagerEvents {
 }
 
 export class AbstractConfigManager extends Events<ConfigManagerEvents, keyof ConfigManagerEvents> {
-  protected config: WorkspaceConfig | null = null;
+  public config: WorkspaceConfig | null = null;
   protected workspacePath: string;
 
   constructor(workspacePath: string) {

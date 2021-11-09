@@ -1524,9 +1524,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@carpo-remix/common@workspace:packages/common"
   dependencies:
-    "@carpo-remix/config": 0.0.3
-    "@carpo-remix/utils": 0.0.3
-    eventemitter3: ^4.0.7
+    "@carpo-remix/config": 0.0.4-0
+    "@carpo-remix/utils": 0.0.4-0
     fs-extra: ^10.0.0
     globby: ^11.0.2
     solc: 0.7.6
@@ -1534,23 +1533,25 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@carpo-remix/config@0.0.3, @carpo-remix/config@workspace:packages/config":
+"@carpo-remix/config@0.0.4-0, @carpo-remix/config@workspace:packages/config":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/config@workspace:packages/config"
   dependencies:
     "@babel/runtime": ^7.16.0
+    "@carpo-remix/helper": 0.0.4-0
     "@types/lodash": ^4
     fs-extra: ^10.0.0
     lodash: ^4.17.21
   languageName: unknown
   linkType: soft
 
-"@carpo-remix/helper@workspace:packages/helper":
+"@carpo-remix/helper@0.0.4-0, @carpo-remix/helper@workspace:packages/helper":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/helper@workspace:packages/helper"
   dependencies:
     "@babel/runtime": ^7.16.0
-    "@carpo-remix/config": 0.0.3
+    "@carpo-remix/config": 0.0.4-0
+    eventemitter3: ^4.0.7
     fs-extra: ^10.0.0
     globby: ^11.0.2
   languageName: unknown
@@ -1562,11 +1563,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@carpo-remix/utils@0.0.3, @carpo-remix/utils@workspace:packages/utils":
+"@carpo-remix/utils@0.0.4-0, @carpo-remix/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/utils@workspace:packages/utils"
   dependencies:
-    eventemitter3: ^4.0.7
     superagent: ^6.1.0
   languageName: unknown
   linkType: soft

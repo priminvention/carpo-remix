@@ -1,13 +1,12 @@
 {
   "name": "@carpo-remix/utils",
-  "version": "0.0.3",
+  "version": "0.0.4-0",
   "description": "carpo-remix extension utils",
   "main": "index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
   "author": "patractlabs",
   "license": "MIT",
   "dependencies": {
-    "eventemitter3": "^4.0.7",
     "superagent": "^6.1.0"
   }
 }

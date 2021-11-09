@@ -18,6 +18,8 @@ export class CoreContext extends Base implements Disposed {
 
   #watcher: ConfigManager;
   #webviewPanel: vscode.WebviewPanel | null = null;
+  #installing = false;
+  #prevConfig: WorkspaceConfig | null = null;
 
   constructor(ctx: vscode.ExtensionContext, watcher: ConfigManager) {
     super(ctx);
@@ -26,6 +28,7 @@ export class CoreContext extends Base implements Disposed {
 
     this.#watcher.on('change', this.configChange.bind(this));
     this.#watcher.on('create', this.configChange.bind(this));
+    this.#prevConfig = this.#watcher.config;
   }
 
   public createWebviewPanel(): void {
@@ -83,11 +86,17 @@ export class CoreContext extends Base implements Disposed {
   };
 
   private configChange() {
+    if (this.#installing) return;
+
+    this.#installing = true;
     this.installDeps()
       .catch((error: Error) => {
         toast.error(error.message);
       })
-      .finally(() => (this.statusBar.text = 'Carpo'));
+      .finally(() => {
+        this.statusBar.text = 'Carpo';
+        this.#installing = false;
+      });
   }
 
   private async installDeps(): Promise<void> {
