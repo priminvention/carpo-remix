@@ -3927,9 +3927,6 @@ __metadata:
 "carpo-core@workspace:packages/extension-core":
   version: 0.0.0-use.local
   resolution: "carpo-core@workspace:packages/extension-core"
-  dependencies:
-    typescript: ^4.4.4
-    vm2: ^3.9.5
   languageName: unknown
   linkType: soft
 
@@ -13075,15 +13072,6 @@ resolve@^2.0.0-next.3:
     core-util-is: 1.0.2
     extsprintf: ^1.2.0
   checksum: c431df0bedf2088b227a4e051e0ff4ca54df2c114096b0c01e1cbaadb021c30a04d7dd5b41ab277bcd51246ca135bf931d4c4c796ecae7a4fef6d744ecef36ea
-  languageName: node
-  linkType: hard
-
-"vm2@npm:^3.9.5":
-  version: 3.9.5
-  resolution: "vm2@npm:3.9.5"
-  bin:
-    vm2: bin/vm2
-  checksum: d83dbe929ca4d1c9fca71cda34a5aee9a6b4bdc1de1ddb11777c4f6e1e48a471764195258dbf608f962df1a1c3d6ae917c9755f11a8f37b9e0bbf691313a725c
   languageName: node
   linkType: hard
 

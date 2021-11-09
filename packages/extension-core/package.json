@@ -13,9 +13,5 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
-  "dependencies": {
-    "typescript": "^4.4.4",
-    "vm2": "^3.9.5"
-  }
+  "activationEvents": []
 }

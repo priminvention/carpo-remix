@@ -31,6 +31,7 @@ export class FunctionalTask extends AbstractTask {
                 await cb(this.writeEmitter);
                 this.writeEmitter.fire(`\r\x1b[32mSuccess: ${resolvedDefinition.name}\x1b[0m\n`);
               } catch (error) {
+                console.log(error);
                 this.writeEmitter.fire(`\r\x1b[31mFailed: ${resolvedDefinition.name}\x1b[0m\n`);
               }
 

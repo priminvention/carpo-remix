@@ -1,12 +1,7 @@
 import type { Disposed } from '@carpo-remix/common/types';
 import type { WorkspaceConfig } from '@carpo-remix/config/types';
-import type { ScriptArgs } from './types';
 
-import { createWebviewPanel, execCommand, FunctionalTask } from '@carpo-remix/common';
-import {
-  getArtifacts as getArtifactsFunc,
-  getNamedArtifact as getNamedArtifactFunc
-} from '@carpo-remix/common/solidity';
+import { createWebviewPanel, execCommand, FunctionalTask, NpmTask } from '@carpo-remix/common';
 import { Handle } from '@carpo-remix/common/webview/handle';
 import { defaultConfigName } from '@carpo-remix/config';
 import { ConfigManager } from '@carpo-remix/config/ConfigManager';
@@ -14,8 +9,6 @@ import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { node, npm, toast } from '@carpo-remix/utils';
 import fs from 'fs-extra';
 import path from 'path';
-import typescript from 'typescript';
-import { NodeVM } from 'vm2';
 import * as vscode from 'vscode';
 
 import { Base } from './base';
@@ -71,28 +64,10 @@ export class CoreContext extends Base implements Disposed {
     await functional.execute();
   }
 
-  public async runScript(path: string): Promise<void> {
-    return this.runFunction(`Run ${path}`, async (writeEmitter) => {
-      const vm = new NodeVM({
-        compiler: (code: string) => typescript.transpile(code),
-        console: 'redirect',
-        sandbox: {},
-        require: {
-          external: true,
-          builtin: ['*']
-        }
-      });
-      const exports: { default: (args: ScriptArgs) => Promise<any> } = vm.run(fs.readFileSync(path).toString());
+  public async runScript(_path: string): Promise<void> {
+    const task = new NpmTask('Script', `node -r ts-node/register ${path.resolve(this.workspace, _path)}`);
 
-      vm.on('console.log', (data) => writeEmitter.fire(`\r${JSON.stringify(data)}\n`));
-      vm.on('console.error', (data) => writeEmitter.fire(`\r\x1b[31m${JSON.stringify(data)}\x1b[0m\n`));
-      vm.on('console.warn', (data) => writeEmitter.fire(`\r\x1b[33m${JSON.stringify(data)}\x1b[0m\n`));
-
-      await exports.default({
-        getArtifacts: () => getArtifactsFunc(this.workspace),
-        getNamedArtifact: (name: string) => getNamedArtifactFunc(name, this.workspace)
-      });
-    });
+    await task.execute();
   }
 
   private handle: Handle = (id, type, request) => {
@@ -130,6 +105,15 @@ export class CoreContext extends Base implements Disposed {
     this.statusBar.text = `Carpo: install solc,ganache,ganache-cli`;
 
     await addFunc([
+      {
+        pkg: 'ts-node'
+      },
+      {
+        pkg: '@types/node'
+      },
+      {
+        pkg: 'typescript'
+      },
       {
         pkg: 'solc',
         version: solcVersion
