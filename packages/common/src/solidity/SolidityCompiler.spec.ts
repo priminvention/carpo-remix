@@ -1,4 +1,4 @@
-import type { CompilerInput } from 'solc';
+import type { CompilerInput } from '@carpo-remix/helper/types';
 
 import fs from 'fs-extra';
 import path from 'path';

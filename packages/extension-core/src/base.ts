@@ -3,8 +3,8 @@ import type { OutputChannel, QuickPickItem, StatusBarItem } from 'vscode';
 import type { InterfaceEvents } from './types';
 
 import { execCommand } from '@carpo-remix/common';
-import { Events } from '@carpo-remix/common/events';
 import { Disposed } from '@carpo-remix/common/types';
+import { Events } from '@carpo-remix/helper/events';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import * as vscode from 'vscode';
 

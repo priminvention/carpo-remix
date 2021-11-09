@@ -1,10 +1,9 @@
 import type { Disposed } from '@carpo-remix/common/types';
 import type { WorkspaceConfig } from '@carpo-remix/config/types';
 
-import { createWebviewPanel, execCommand, FunctionalTask, NpmTask } from '@carpo-remix/common';
+import { ConfigManager, createWebviewPanel, execCommand, FunctionalTask, NpmTask } from '@carpo-remix/common';
 import { Handle } from '@carpo-remix/common/webview/handle';
 import { defaultConfigName } from '@carpo-remix/config';
-import { ConfigManager } from '@carpo-remix/config/ConfigManager';
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { node, npm, toast } from '@carpo-remix/utils';
 import fs from 'fs-extra';

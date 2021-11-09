@@ -1,11 +1,11 @@
-import type { ConfigManager } from '@carpo-remix/config/ConfigManager';
+import type { AbstractConfigManager } from '@carpo-remix/config';
 import type { CoreContext } from 'carpo-core/ctx';
 
 import * as vscode from 'vscode';
 
 export interface CoreApi {
   ctx: CoreContext;
-  configManager: ConfigManager;
+  configManager: AbstractConfigManager;
 }
 
 export function getCoreApi(): CoreApi | null {

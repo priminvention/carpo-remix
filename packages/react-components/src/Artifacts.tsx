@@ -1,4 +1,4 @@
-import type { Artifact } from '@carpo-remix/common/solidity';
+import type { Artifact } from '@carpo-remix/helper/types';
 
 import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
 import { Space, Table, TableColumnType, Typography } from 'antd';

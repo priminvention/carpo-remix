@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import type { CompilerInput, CompilerOutput } from 'solc';
+import type { CompilerInput, CompilerOutput } from '@carpo-remix/helper/types';
 import type solc from 'solc';
 
 import fs from 'fs-extra';

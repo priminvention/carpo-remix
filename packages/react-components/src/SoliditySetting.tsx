@@ -1,4 +1,4 @@
-import type { SoliditySettings } from 'solc';
+import type { SoliditySettings } from '@carpo-remix/helper/types';
 
 import { Button, Checkbox, Input, Space } from 'antd';
 import React from 'react';

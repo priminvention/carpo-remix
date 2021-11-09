@@ -3,9 +3,8 @@
 
 import type { CoreApi } from '@carpo-remix/common/getCoreApi';
 
-import { execCommand, registerCommand } from '@carpo-remix/common';
-import { ConfigManager } from '@carpo-remix/config/ConfigManager';
-import path from 'path';
+import { registerCommand } from '@carpo-remix/common';
+import { ConfigManager } from '@carpo-remix/common/ConfigManager';
 import * as vscode from 'vscode';
 
 import { CoreContext } from './ctx';
@@ -26,8 +25,6 @@ export function activate(context: vscode.ExtensionContext): CoreApi {
     registerCommand('carpo-core.createProject', () => Promise.resolve(ctx.createWebviewPanel())),
     registerCommand('carpo-core.runScript', ctx.runScript.bind(ctx))
   );
-
-  execCommand('carpo-core.runScript', path.resolve(ctx.workspace, 'aaa.ts')).catch(console.error);
 
   return { ctx, configManager };
 }

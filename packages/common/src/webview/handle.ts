@@ -4,9 +4,10 @@ import type { MessageTypes, RequestTypes, ResponseTypes } from './types';
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { mergeWorkspaceConfig } from '@carpo-remix/config/mergeWorkspaceConfig';
 import { WorkspaceConfig } from '@carpo-remix/config/types';
+import { getArtifacts } from '@carpo-remix/helper';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 
-import { findContracts, getArtifacts, getSolidityReleases } from '../solidity';
+import { findContracts, getSolidityReleases } from '../solidity';
 
 export interface Handle {
   <TMessageType extends MessageTypes>(id: string, type: TMessageType, request: RequestTypes[TMessageType]): Promise<

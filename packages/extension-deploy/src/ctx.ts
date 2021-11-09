@@ -1,7 +1,7 @@
 import type { Disposed } from '@carpo-remix/common/types';
 import type { InterfaceEvents } from './types';
 
-import { Events } from '@carpo-remix/common/events';
+import { Events } from '@carpo-remix/helper/events';
 
 export class DeployContext extends Events<InterfaceEvents, keyof InterfaceEvents> implements Disposed {
   constructor() {

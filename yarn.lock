@@ -1545,6 +1545,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@carpo-remix/helper@workspace:packages/helper":
+  version: 0.0.0-use.local
+  resolution: "@carpo-remix/helper@workspace:packages/helper"
+  dependencies:
+    "@carpo-remix/config": 0.0.1
+    fs-extra: ^10.0.0
+    globby: ^11.0.2
+  languageName: unknown
+  linkType: soft
+
 "@carpo-remix/react-components@workspace:packages/react-components":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/react-components@workspace:packages/react-components"

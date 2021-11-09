@@ -1,7 +1,5 @@
 import type { WorkspaceConfig } from '@carpo-remix/config/types';
-import type { CompilerOutput } from 'solc';
-
-import { Artifact } from '../solidity/artifacts';
+import type { Artifact, CompilerOutput } from '@carpo-remix/helper/types';
 
 export type Uri = {
   path: string;

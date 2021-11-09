@@ -1,4 +1,4 @@
-import type { SoliditySettings } from 'solc';
+import type { SoliditySettings } from '@carpo-remix/helper/types';
 
 export type NetworksConfig = {
   rpc?: string;

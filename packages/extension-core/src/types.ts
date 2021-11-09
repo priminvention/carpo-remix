@@ -1,4 +1,4 @@
-import type { Artifact } from '@carpo-remix/common/solidity';
+import type { Artifact } from '@carpo-remix/helper/types';
 import type { CoreContext } from './ctx';
 
 export type InterfaceEvents = {

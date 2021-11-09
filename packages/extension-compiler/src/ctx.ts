@@ -1,9 +1,9 @@
 import type { Disposed } from '@carpo-remix/common/types';
-import type { CompilerOutput } from 'solc';
+import type { CompilerOutput } from '@carpo-remix/helper/types';
 import type { InterfaceEvents } from './types';
 
-import { Events } from '@carpo-remix/common/events';
 import { compile } from '@carpo-remix/common/solidity';
+import { Events } from '@carpo-remix/helper/events';
 
 export class CompilerContext extends Events<InterfaceEvents, keyof InterfaceEvents> implements Disposed {
   constructor() {

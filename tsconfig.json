@@ -19,6 +19,8 @@
       "@carpo-remix/config/*": ["packages/config/src/*"],
       "@carpo-remix/utils": ["packages/utils/src"],
       "@carpo-remix/utils/*": ["packages/utils/src/*"],
+      "@carpo-remix/helper": ["packages/helper/src"],
+      "@carpo-remix/helper/*": ["packages/helper/src/*"],
       "@carpo-remix/react-components": ["packages/react-components/src"],
       "@carpo-remix/react-components/*": ["packages/react-components/src/*"]
     },

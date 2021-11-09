@@ -1,4 +1,4 @@
-import type { SoliditySettings } from 'solc';
+import type { SoliditySettings } from '@carpo-remix/helper/types';
 
 import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
 import { WorkspaceConfig } from '@carpo-remix/config/types';

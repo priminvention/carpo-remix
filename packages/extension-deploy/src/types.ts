@@ -1,5 +1,5 @@
-import { CompilerContext } from './ctx';
+import { DeployContext } from './ctx';
 
 export type InterfaceEvents = {
-  ready: CompilerContext;
+  ready: DeployContext;
 };
