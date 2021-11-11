@@ -27,8 +27,6 @@ export function activate(context: vscode.ExtensionContext): CoreApi {
     registerCommand('carpo-core.runTest', ctx.runTest.bind(ctx))
   );
 
-  ctx.runTest().catch(console.error);
-
   return { ctx, configManager };
 }
 

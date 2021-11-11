@@ -53,6 +53,10 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
       {
         label: 'Run dev node',
         command: 'carpo-core.runDevNode'
+      },
+      {
+        label: 'Test all',
+        command: 'carpo-core.runTest'
       }
     ];
     this.quickPick.show();
