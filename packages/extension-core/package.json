@@ -15,5 +15,8 @@
   ],
   "activationEvents": [
     "*"
-  ]
+  ],
+  "dependencies": {
+    "solc": "0.7.6"
+  }
 }

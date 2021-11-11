@@ -1,11 +1,11 @@
 import type { Disposed } from '@carpo-remix/common/types';
 import type { WorkspaceConfig } from '@carpo-remix/config/types';
 
-import { ConfigManager, createWebviewPanel, execCommand, FunctionalTask, NpmTask } from '@carpo-remix/common';
+import { ConfigManager, createWebviewPanel, execCommand, FunctionalTask, NpmTask, TestTask } from '@carpo-remix/common';
 import { Handle } from '@carpo-remix/common/webview/handle';
 import { defaultConfigName } from '@carpo-remix/config';
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
-import { node, npm, toast } from '@carpo-remix/utils';
+import { node, npm, test, toast } from '@carpo-remix/utils';
 import fs from 'fs-extra';
 import path from 'path';
 import * as vscode from 'vscode';
@@ -72,6 +72,10 @@ export class CoreContext extends Base implements Disposed {
     await task.execute();
   }
 
+  public async runTest(_path?: string): Promise<void> {
+    await test.runTest(this.workspace, _path);
+  }
+
   private handle: Handle = (id, type, request) => {
     switch (type) {
       case 'carpo-core.genConfig':
@@ -131,6 +135,12 @@ export class CoreContext extends Base implements Disposed {
       },
       {
         pkg: 'ganache-cli'
+      },
+      {
+        pkg: 'mocha'
+      },
+      {
+        pkg: '@types/mocha'
       },
       {
         pkg: '@carpo-remix/config'

@@ -3938,6 +3938,8 @@ __metadata:
 "carpo-core@workspace:packages/extension-core":
   version: 0.0.0-use.local
   resolution: "carpo-core@workspace:packages/extension-core"
+  dependencies:
+    solc: 0.7.6
   languageName: unknown
   linkType: soft
 

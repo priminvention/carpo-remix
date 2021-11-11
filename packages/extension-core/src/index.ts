@@ -12,7 +12,6 @@ import { CoreContext } from './ctx';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext): CoreApi {
-  console.log(111);
   const configManager = new ConfigManager();
   const ctx = new CoreContext(context, configManager);
 
@@ -24,8 +23,11 @@ export function activate(context: vscode.ExtensionContext): CoreApi {
     registerCommand('carpo-core.genConfig', (arg) => Promise.resolve(ctx.genConfig(arg))),
     registerCommand('carpo-core.runDevNode', ctx.runDevNode.bind(ctx)),
     registerCommand('carpo-core.createProject', () => Promise.resolve(ctx.createWebviewPanel())),
-    registerCommand('carpo-core.runScript', ctx.runScript.bind(ctx))
+    registerCommand('carpo-core.runScript', ctx.runScript.bind(ctx)),
+    registerCommand('carpo-core.runTest', ctx.runTest.bind(ctx))
   );
+
+  ctx.runTest().catch(console.error);
 
   return { ctx, configManager };
 }
