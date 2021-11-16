@@ -16,19 +16,19 @@ export class CoreContext extends Base implements Disposed {
   public static viewType = 'carpo-core.createProjectView';
   public static viewName = 'Create Project';
 
-  #watcher: ConfigManager;
+  #configManager: ConfigManager;
   #webviewPanel: vscode.WebviewPanel | null = null;
   #installing = false;
   #prevConfig: WorkspaceConfig | null = null;
 
   constructor(ctx: vscode.ExtensionContext, watcher: ConfigManager) {
     super(ctx);
-    this.#watcher = watcher;
+    this.#configManager = watcher;
     this.emit('ready', this);
 
-    this.#watcher.on('change', this.configChange.bind(this));
-    this.#watcher.on('create', this.configChange.bind(this));
-    this.#prevConfig = this.#watcher.config;
+    this.#configManager.on('change', this.configChange.bind(this));
+    this.#configManager.on('create', this.configChange.bind(this));
+    this.#prevConfig = this.#configManager.config;
   }
 
   public createWebviewPanel(): void {
@@ -153,8 +153,8 @@ export class CoreContext extends Base implements Disposed {
 
   public dispose(): any {
     super.dispose();
-    this.#watcher.off('create', this.configChange.bind(this));
-    this.#watcher.off('change', this.configChange.bind(this));
-    this.#watcher.dispose();
+    this.#configManager.off('create', this.configChange.bind(this));
+    this.#configManager.off('change', this.configChange.bind(this));
+    this.#configManager.dispose();
   }
 }

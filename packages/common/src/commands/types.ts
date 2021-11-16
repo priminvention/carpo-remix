@@ -8,6 +8,7 @@ export interface CommandSignatures {
   'carpo-core.runDevNode': [undefined, void];
   'carpo-core.runScript': [string, any];
   'carpo-core.runTest': [string | undefined, any];
+  'carpo-core.runTestOne': [any, any];
   'carpo-compiler.compile': [string[], CompilerOutput];
 }
 
