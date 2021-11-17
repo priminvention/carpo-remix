@@ -1,6 +1,6 @@
 {
   "name": "carpo-core",
-  "version": "0.0.4-0",
+  "version": "0.0.4-1",
   "description": "carpo-remix extension and vscode extension",
   "main": "build/extension.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
@@ -34,7 +34,7 @@
       {
         "command": "carpo-core.runTestOne",
         "title": "Run test on this file",
-        "icon":{
+        "icon": {
           "light": "./resources/test-light.svg",
           "dark": "./resources/test-dark.svg"
         }
