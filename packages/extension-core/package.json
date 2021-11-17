@@ -15,5 +15,42 @@
   ],
   "activationEvents": [
     "*"
-  ]
+  ],
+  "contributes": {
+    "configuration": [
+      {
+        "title": "Carpo configuration",
+        "properties": {
+          "carpo-core.runTestOne": {
+            "title": "Test",
+            "type": "object",
+            "default": false,
+            "description": "Run test on this file"
+          }
+        }
+      }
+    ],
+    "commands": [
+      {
+        "command": "carpo-core.runTestOne",
+        "title": "Run test on this file",
+        "icon":{
+          "light": "./resources/test-light.svg",
+          "dark": "./resources/test-dark.svg"
+        }
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceExtname == .ts || resourceExtname == .js",
+          "command": "carpo-core.runTestOne",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "solc": "0.7.6"
+  }
 }
