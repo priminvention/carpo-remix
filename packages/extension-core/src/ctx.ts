@@ -1,10 +1,9 @@
 import type { Disposed } from '@carpo-remix/common/types';
 import type { WorkspaceConfig } from '@carpo-remix/config/types';
 
-import { ConfigManager, createWebviewPanel, execCommand, FunctionalTask, NpmTask, TestTask } from '@carpo-remix/common';
+import { ConfigManager, createWebviewPanel, execCommand, FunctionalTask, NpmTask } from '@carpo-remix/common';
 import { Handle } from '@carpo-remix/common/webview/handle';
 import { defaultConfigName } from '@carpo-remix/config';
-import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { node, npm, test, toast } from '@carpo-remix/utils';
 import fs from 'fs-extra';
 import path from 'path';
@@ -19,16 +18,14 @@ export class CoreContext extends Base implements Disposed {
   #configManager: ConfigManager;
   #webviewPanel: vscode.WebviewPanel | null = null;
   #installing = false;
-  #prevConfig: WorkspaceConfig | null = null;
 
   constructor(ctx: vscode.ExtensionContext, watcher: ConfigManager) {
     super(ctx);
     this.#configManager = watcher;
     this.emit('ready', this);
 
-    this.#configManager.on('change', this.configChange.bind(this));
-    this.#configManager.on('create', this.configChange.bind(this));
-    this.#prevConfig = this.#configManager.config;
+    this.#configManager.on('change:solidity', this.solidityChange.bind(this));
+    this.#configManager.on('create', this.configCreated.bind(this));
   }
 
   public createWebviewPanel(): void {
@@ -89,7 +86,7 @@ export class CoreContext extends Base implements Disposed {
     }
   };
 
-  private configChange() {
+  private configCreated() {
     if (this.#installing) return;
 
     this.#installing = true;
@@ -103,8 +100,28 @@ export class CoreContext extends Base implements Disposed {
       });
   }
 
+  private async solidityChange(): Promise<void> {
+    if (this.#configManager.prevConfig?.solidity?.version === this.#configManager.config?.solidity?.version) return;
+
+    const config = this.#configManager.config;
+    const addFunc = npm.shouldUseYarn() ? npm.doYarnAdd : npm.doNpmInstall;
+
+    const solcVersion = config?.solidity?.version;
+
+    this.statusBar.text = `Carpo: install solc`;
+
+    await addFunc([
+      {
+        pkg: 'solc',
+        version: solcVersion
+      }
+    ]);
+
+    this.statusBar.text = 'Carpo';
+  }
+
   private async installDeps(): Promise<void> {
-    const config = getWorkspaceConfig(this.workspace);
+    const config = this.#configManager.config;
     const installFunc = npm.shouldUseYarn() ? npm.doYarn : npm.doNpm;
     const addFunc = npm.shouldUseYarn() ? npm.doYarnAdd : npm.doNpmInstall;
 
@@ -153,8 +170,8 @@ export class CoreContext extends Base implements Disposed {
 
   public dispose(): any {
     super.dispose();
-    this.#configManager.off('create', this.configChange.bind(this));
-    this.#configManager.off('change', this.configChange.bind(this));
+    this.#configManager.off('create', this.configCreated.bind(this));
+    this.#configManager.off('change:solidity', this.solidityChange.bind(this));
     this.#configManager.dispose();
   }
 }
