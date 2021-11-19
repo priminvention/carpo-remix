@@ -1,9 +1,9 @@
 {
   "name": "carpo-remix",
-  "version": "0.0.1",
+  "version": "0.0.4-1",
   "description": "carpo remix and vscode extension",
   "main": "packages/extension-core/build/index.js",
-  "repository": "https://github.com/patractlabs/carpo-extension.git",
+  "repository": "https://github.com/patractlabs/carpo-remix.git",
   "author": "patractlabs",
   "license": "MIT",
   "private": true,
@@ -14,7 +14,8 @@
     "typescript": "^4.3.5"
   },
   "bin": {
-    "build-browser": "./scripts/build-browser.js"
+    "build-browser": "./scripts/build-browser.js",
+    "npm-publish": "./scripts/npmPublish.js"
   },
   "scripts": {
     "build": "yarn clean && yarn build:ts && yarn build:extension && yarn build:view",

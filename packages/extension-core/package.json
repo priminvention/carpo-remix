@@ -1,6 +1,6 @@
 {
   "name": "carpo-core",
-  "version": "0.0.1",
+  "version": "0.0.4-1",
   "description": "carpo-remix extension and vscode extension",
   "main": "build/extension.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
@@ -13,5 +13,44 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": []
+  "activationEvents": [
+    "*"
+  ],
+  "contributes": {
+    "configuration": [
+      {
+        "title": "Carpo configuration",
+        "properties": {
+          "carpo-core.runTestOne": {
+            "title": "Test",
+            "type": "object",
+            "default": false,
+            "description": "Run test on this file"
+          }
+        }
+      }
+    ],
+    "commands": [
+      {
+        "command": "carpo-core.runTestOne",
+        "title": "Run test on this file",
+        "icon": {
+          "light": "./resources/test-light.svg",
+          "dark": "./resources/test-dark.svg"
+        }
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceExtname == .ts || resourceExtname == .js",
+          "command": "carpo-core.runTestOne",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "solc": "0.7.6"
+  }
 }

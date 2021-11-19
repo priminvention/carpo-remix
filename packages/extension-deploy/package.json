@@ -1,6 +1,6 @@
 {
   "name": "carpo-deploy",
-  "version": "0.0.1",
+  "version": "0.0.4-1",
   "description": "carpo-remix extension and vscode extension",
   "main": "build/extension.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
@@ -14,7 +14,7 @@
     "Other"
   ],
   "activationEvents": [
-    "workspaceContains:package.json"
+    "*"
   ],
   "extensionDependencies": [
     "carpo.carpo-core"

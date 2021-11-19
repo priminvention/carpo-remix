@@ -4,8 +4,7 @@ import type { WorkspaceConfig } from '@carpo-remix/config/types';
 import { ConfigManager, createWebviewPanel, execCommand, FunctionalTask, NpmTask } from '@carpo-remix/common';
 import { Handle } from '@carpo-remix/common/webview/handle';
 import { defaultConfigName } from '@carpo-remix/config';
-import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
-import { node, npm, toast } from '@carpo-remix/utils';
+import { node, npm, test, toast } from '@carpo-remix/utils';
 import fs from 'fs-extra';
 import path from 'path';
 import * as vscode from 'vscode';
@@ -16,16 +15,17 @@ export class CoreContext extends Base implements Disposed {
   public static viewType = 'carpo-core.createProjectView';
   public static viewName = 'Create Project';
 
-  #watcher: ConfigManager;
+  #configManager: ConfigManager;
   #webviewPanel: vscode.WebviewPanel | null = null;
+  #installing = false;
 
   constructor(ctx: vscode.ExtensionContext, watcher: ConfigManager) {
     super(ctx);
-    this.#watcher = watcher;
+    this.#configManager = watcher;
     this.emit('ready', this);
 
-    this.#watcher.on('change', this.configChange.bind(this));
-    this.#watcher.on('create', this.configChange.bind(this));
+    this.#configManager.on('change:solidity', this.solidityChange.bind(this));
+    this.#configManager.on('create', this.configCreated.bind(this));
   }
 
   public createWebviewPanel(): void {
@@ -69,6 +69,10 @@ export class CoreContext extends Base implements Disposed {
     await task.execute();
   }
 
+  public async runTest(_path?: string): Promise<void> {
+    await test.runTest(this.workspace, _path);
+  }
+
   private handle: Handle = (id, type, request) => {
     switch (type) {
       case 'carpo-core.genConfig':
@@ -82,16 +86,42 @@ export class CoreContext extends Base implements Disposed {
     }
   };
 
-  private configChange() {
+  private configCreated() {
+    if (this.#installing) return;
+
+    this.#installing = true;
     this.installDeps()
       .catch((error: Error) => {
         toast.error(error.message);
       })
-      .finally(() => (this.statusBar.text = 'Carpo'));
+      .finally(() => {
+        this.statusBar.text = 'Carpo';
+        this.#installing = false;
+      });
+  }
+
+  private async solidityChange(): Promise<void> {
+    if (this.#configManager.prevConfig?.solidity?.version === this.#configManager.config?.solidity?.version) return;
+
+    const config = this.#configManager.config;
+    const addFunc = npm.shouldUseYarn() ? npm.doYarnAdd : npm.doNpmInstall;
+
+    const solcVersion = config?.solidity?.version;
+
+    this.statusBar.text = `Carpo: install solc`;
+
+    await addFunc([
+      {
+        pkg: 'solc',
+        version: solcVersion
+      }
+    ]);
+
+    this.statusBar.text = 'Carpo';
   }
 
   private async installDeps(): Promise<void> {
-    const config = getWorkspaceConfig(this.workspace);
+    const config = this.#configManager.config;
     const installFunc = npm.shouldUseYarn() ? npm.doYarn : npm.doNpm;
     const addFunc = npm.shouldUseYarn() ? npm.doYarnAdd : npm.doNpmInstall;
 
@@ -122,14 +152,26 @@ export class CoreContext extends Base implements Disposed {
       },
       {
         pkg: 'ganache-cli'
+      },
+      {
+        pkg: 'mocha'
+      },
+      {
+        pkg: '@types/mocha'
+      },
+      {
+        pkg: '@carpo-remix/config'
+      },
+      {
+        pkg: '@carpo-remix/helper'
       }
     ]);
   }
 
   public dispose(): any {
     super.dispose();
-    this.#watcher.off('create', this.configChange.bind(this));
-    this.#watcher.off('change', this.configChange.bind(this));
-    this.#watcher.dispose();
+    this.#configManager.off('create', this.configCreated.bind(this));
+    this.#configManager.off('change:solidity', this.solidityChange.bind(this));
+    this.#configManager.dispose();
   }
 }

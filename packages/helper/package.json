@@ -1,13 +1,15 @@
 {
   "name": "@carpo-remix/helper",
-  "version": "0.0.1",
+  "version": "0.0.4-1",
   "description": "carpo-remix extension helper",
   "main": "index.js",
   "repository": "https://github.com/patractlabs/carpo-extension.git",
   "author": "patractlabs",
   "license": "MIT",
   "dependencies": {
-    "@carpo-remix/config": "0.0.1",
+    "@babel/runtime": "^7.16.0",
+    "@carpo-remix/config": "0.0.4-1",
+    "eventemitter3": "^4.0.7",
     "fs-extra": "^10.0.0",
     "globby": "^11.0.2"
   }
