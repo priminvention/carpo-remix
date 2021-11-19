@@ -21,7 +21,16 @@ export function activate(context: vscode.ExtensionContext): CoreApi {
     ctx,
     registerCommand('carpo-core.openQuickPick', () => Promise.resolve(ctx.openQuickPick())),
     registerCommand('carpo-core.genConfig', (arg) => Promise.resolve(ctx.genConfig(arg))),
+    // registerCommand('carpo-core.runDevNode', () => {
+    //   ctx.runDevNode.bind(ctx);
+    //   return new Promise((resolve) => {
+    //     setTimeout(() => {
+    //       resolve(true);
+    //     }, 3000);
+    //   });
+    // }),
     registerCommand('carpo-core.runDevNode', ctx.runDevNode.bind(ctx)),
+    // ctx.runDevNode.bind(ctx)
     registerCommand('carpo-core.createProject', () => Promise.resolve(ctx.createWebviewPanel())),
     registerCommand('carpo-core.runScript', ctx.runScript.bind(ctx))
   );

@@ -2,7 +2,7 @@ import type {
   Handlers,
   MessageTypes,
   RequestTypes,
-  SendRequest,
+  ResponseTypes,
   TransportRequestMessage,
   TransportResponseMessage
 } from './types';
@@ -15,11 +15,11 @@ const vscode: {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
 } = (window as any).acquireVsCodeApi();
 
-export const sendMessage: SendRequest = <TMessageType extends MessageTypes>(
+export const sendMessage = <TMessageType extends MessageTypes>(
   message: TMessageType,
   request: RequestTypes[TMessageType],
   subscriber?: (data: unknown) => void
-) => {
+): Promise<ResponseTypes[TMessageType]> => {
   return new Promise((resolve, reject): void => {
     const id = `${Date.now()}.${++idCounter}`;
 
@@ -62,7 +62,6 @@ const handleResponse = <TMessageType extends MessageTypes>(
   }
 
   if (data.subscription) {
-    // eslint-disable-next-line @typescript-eslint/ban-types
     (handler.subscriber as Function)(data.subscription);
   } else if (data.error) {
     handler.reject(new Error(data.error));

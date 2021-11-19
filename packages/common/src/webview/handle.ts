@@ -52,7 +52,7 @@ export async function handle<TMessageType extends MessageTypes>(
         return getArtifacts(workspacePath);
 
       default:
-        throw new Error(`Unable to handle message of type ${type}`);
+        throw new Error(`Unable to handle message of type ${type} in common`);
     }
   }
 }

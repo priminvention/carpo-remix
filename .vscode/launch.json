@@ -18,8 +18,8 @@
         "${workspaceFolder}/packages/extension-core/build/**/*.js",
         "${workspaceFolder}/packages/extension-compiler/build/**/*.js",
         "${workspaceFolder}/packages/extension-deploy/build/**/*.js"
-      ],
-      "preLaunchTask": "Build"
+      ]
+      // "preLaunchTask": "Build"
     }
   ]
 }

@@ -38,12 +38,14 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
 
       promise
         .then((response) => {
+          console.log('extension post success', response);
           return webviewView.webview.postMessage({
             id: data.id,
             response
           } as TransportResponseMessage<TMessageType>);
         })
         .catch((error: Error) => {
+          console.log('extension post error');
           return webviewView.webview.postMessage({
             error: error.message,
             id: data.id

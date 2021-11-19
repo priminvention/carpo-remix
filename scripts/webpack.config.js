@@ -34,6 +34,7 @@ const entries = (function () {
 
 module.exports = function () {
   return {
+    devtool: 'source-map',
     target: BUILD_TYPE === 'view' ? 'web' : 'node',
     entry: entries,
 

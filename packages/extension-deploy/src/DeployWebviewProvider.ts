@@ -1,7 +1,8 @@
 import type { Handle } from '@carpo-remix/common/webview/handle';
 
-import { AbstractViewProvider } from '@carpo-remix/common';
+import { AbstractViewProvider, execCommand } from '@carpo-remix/common';
 import * as vscode from 'vscode';
+import { toast } from '@carpo-remix/utils';
 
 export default class DeployWebviewProvider extends AbstractViewProvider {
   public static readonly viewType = 'carpoDeploy.deployView';
@@ -12,6 +13,14 @@ export default class DeployWebviewProvider extends AbstractViewProvider {
 
   private handle: Handle = (id, type, request) => {
     switch (type) {
+      case 'workspace.toast':
+        toast.info(<string>request);
+      case 'workspace.runDevNode':
+        const devNodeTask = vscode.tasks.taskExecutions.find((taskExecution) => taskExecution.task.name === 'Dev node');
+        if (!devNodeTask) {
+          return execCommand('carpo-core.runDevNode');
+        }
+        return Promise.resolve();
       default:
         throw new Error(`Unable to handle message of type ${type}`);
     }

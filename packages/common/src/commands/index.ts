@@ -11,7 +11,7 @@ export function registerCommand<T extends CommandKeys>(
 
 export async function execCommand<T extends CommandKeys>(
   command: T,
-  args: CommandArgs[T]
+  args?: CommandArgs[T]
 ): Promise<CommandReturns[T] | undefined> {
   const all = await commands.getCommands();
 
