@@ -1,5 +1,6 @@
 import type { WorkspaceConfig } from '@carpo-remix/config/types';
 import type { Artifact, CompilerOutput } from '@carpo-remix/helper/types';
+import { TaskExecution } from 'vscode';
 
 export type Uri = {
   path: string;
@@ -11,6 +12,8 @@ export interface RequestSignatures {
   'workspace.path': [null, string | null];
   'workspace.config': [null, WorkspaceConfig | null];
   'workspace.setConfig': [WorkspaceConfig, WorkspaceConfig];
+  'workspace.toast': [string, void];
+  'workspace.runDevNode': [null, void];
   'solidity.releases': [null, Record<string, string>];
   'contracts.files': [null, string[]];
   'artifacts.all': [null, Artifact[]];
@@ -50,17 +53,6 @@ export interface TransportSubscriptionMessage<TMessageType extends MessageTypes>
   id: string;
   subscription?: ResponseTypes[TMessageType];
   error?: string;
-}
-
-export interface SendRequest {
-  <TMessageType extends MessageTypes>(message: TMessageType, request: RequestTypes[TMessageType]): Promise<
-    ResponseTypes[TMessageType]
-  >;
-  <TMessageType extends MessageTypes>(
-    message: TMessageType,
-    request: RequestTypes[TMessageType],
-    subscriber: (data: SubscriptionTypes[TMessageType]) => void
-  ): Promise<ResponseTypes[TMessageType]>;
 }
 
 export interface Handler {

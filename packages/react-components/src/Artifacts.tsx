@@ -1,17 +1,12 @@
 import type { Artifact } from '@carpo-remix/helper/types';
-
-import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
 import { Space, Table, TableColumnType, Typography } from 'antd';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
+import useArtifacts from './useArtifacts';
 
 const { Text } = Typography;
 
 const Artifacts: React.FC = () => {
-  const [artifacts, setArtifacts] = useState<Artifact[]>();
-
-  useEffect(() => {
-    sendMessage('artifacts.all', null).then(setArtifacts).catch(console.error);
-  }, []);
+  const artifacts = useArtifacts();
 
   const columns = useMemo(
     (): TableColumnType<Artifact>[] => [
@@ -57,6 +52,7 @@ const Artifacts: React.FC = () => {
       dataSource={artifacts}
       pagination={false}
       size='small'
+      rowKey={(record) => record.bytecode}
       style={{ backgroundColor: 'transparent' }}
     />
   );

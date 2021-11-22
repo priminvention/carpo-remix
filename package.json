@@ -65,5 +65,8 @@
     "ts-loader": "^9.2.6",
     "webpack": "5.41.1",
     "webpack-cli": "^4.9.1"
+  },
+  "dependencies": {
+    "ethers": "^5.5.1"
   }
 }

@@ -1,5 +1,6 @@
 import type { WorkspaceConfig } from '@carpo-remix/config/types';
 import type { CompilerOutput } from '@carpo-remix/helper/types';
+import { TaskExecution } from 'vscode';
 
 export interface CommandSignatures {
   'carpo-core.openQuickPick': [undefined, void];
