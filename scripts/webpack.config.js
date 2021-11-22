@@ -141,14 +141,13 @@ module.exports = function () {
         ...alias
         // 'react-dom': '@hot-loader/react-dom'
       },
-      symlinks: false
+      symlinks: false,
+      mainFields: BUILD_TYPE === 'view' ? ['browser', 'module', 'main'] : ['main', 'module']
     },
 
     externals: {
-      vscode: 'commonjs vscode', // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
+      vscode: 'commonjs vscode' // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
       // modules added here also need to be added in the .vsceignore file
-      vm2: 'commonjs vm2',
-      typescript: 'commonjs typescript'
     },
 
     plugins: [
