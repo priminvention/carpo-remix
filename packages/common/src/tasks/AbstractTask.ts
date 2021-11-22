@@ -11,7 +11,7 @@ export abstract class AbstractTask extends Task {
         this.taskExcution = _execution;
         tasks.onDidEndTask((e) => {
           if (e.execution === _execution) {
-            reject(e.execution);
+            resolve(e.execution);
             _execution.terminate();
           }
         });
