@@ -51,8 +51,8 @@ export class CoreContext extends Base implements Disposed {
     return config;
   }
 
-  public async runDevNode(): Promise<vscode.TaskExecution> {
-    return await node.runDevNode(this.workspace);
+  public async runDevNode(): Promise<void> {
+    await node.runDevNode(this.workspace);
   }
 
   public async runFunction(name: string, func: (writeEmitter: vscode.EventEmitter<string>) => any): Promise<void> {

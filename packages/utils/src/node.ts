@@ -10,7 +10,6 @@ export async function runDevNode(workspacePath: string): Promise<TaskExecution> 
   if (!checkGanache(workspacePath)) {
     await installGanache();
   }
-  console.log('runDevNode processing !');
 
   const devNodeTask = new DevNodeTask();
 

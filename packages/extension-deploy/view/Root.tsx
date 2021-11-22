@@ -65,7 +65,6 @@ const Root: React.FC = () => {
   const updateAccountList = async (currentAccount: string) => {
     const signer = curProvider.current!.getSigner(currentAccount);
     const balance = await signer?.getBalance();
-    console.log('updateAccountList: ', ethers.utils.formatEther(balance ?? 0));
     const accountLists = accountList.map((accountInfo) =>
       accountInfo.address === currentAccount
         ? { address: accountInfo.address, balance: ethers.utils.formatEther(balance ?? 0) }
@@ -104,13 +103,10 @@ const Root: React.FC = () => {
     try {
       const res = inputs.length > 0 ? await contract[name](...inputArgs) : await contract[name]();
       if (res.wait) {
-        res.wait().then((confirm: any) => {
-          console.log('confirm:', ethers.utils.formatEther(confirm.gasUsed));
-        });
         updateAccountList(currentAccount!);
       }
     } catch (error) {
-      console.log('handle ', error);
+      console.log(error);
     }
   };
 
@@ -181,7 +177,7 @@ const Root: React.FC = () => {
           {deployedRes.length > 0 ? (
             <Collapse>
               {deployedRes.map((info, contractIdx) => (
-                <>
+                <div key={contractIdx}>
                   <Collapse.Panel
                     className='deployed-panel'
                     header={<span className='head'>{info[0].address}</span>}
@@ -189,7 +185,7 @@ const Root: React.FC = () => {
                   >
                     {info[1].map((fragment, fragmentIndex) => {
                       return (
-                        <>
+                        <div key={fragmentIndex}>
                           <div className='frag'>
                             {fragment.inputs.map((ipt, innerIndex) => (
                               <Input
@@ -201,7 +197,6 @@ const Root: React.FC = () => {
                                   }
 
                                   fnFragmentsArgs.current[info[0].address][fragmentIndex][innerIndex] = e.target.value;
-                                  console.log(fnFragmentsArgs.current[info[0].address][fragmentIndex]);
                                 }}
                               />
                             ))}
@@ -209,11 +204,11 @@ const Root: React.FC = () => {
                               {fragment.name}
                             </Button>
                           </div>
-                        </>
+                        </div>
                       );
                     })}
                   </Collapse.Panel>
-                </>
+                </div>
               ))}
             </Collapse>
           ) : (

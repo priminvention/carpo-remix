@@ -13,7 +13,7 @@ export interface RequestSignatures {
   'workspace.config': [null, WorkspaceConfig | null];
   'workspace.setConfig': [WorkspaceConfig, WorkspaceConfig];
   'workspace.toast': [string, void];
-  'workspace.runDevNode': [null, TaskExecution];
+  'workspace.runDevNode': [null, void];
   'solidity.releases': [null, Record<string, string>];
   'contracts.files': [null, string[]];
   'artifacts.all': [null, Artifact[]];

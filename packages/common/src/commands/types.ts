@@ -6,7 +6,7 @@ export interface CommandSignatures {
   'carpo-core.openQuickPick': [undefined, void];
   'carpo-core.genConfig': [WorkspaceConfig, WorkspaceConfig | undefined];
   'carpo-core.createProject': [undefined, void];
-  'carpo-core.runDevNode': [undefined, TaskExecution];
+  'carpo-core.runDevNode': [undefined, void];
   'carpo-core.runScript': [string, any];
   'carpo-core.runTest': [string | undefined, any];
   'carpo-core.runTestOne': [any, any];
