@@ -154,61 +154,58 @@ const Root: React.FC = () => {
             ))}
           </Select>
         </Form.Item>
+        <Form.Item label='Deploy'>
+          {constractParams.map((item, index) => (
+            <Input
+              key={index}
+              className='deployed-ipt-field'
+              addonBefore={item.name}
+              onChange={(e) => {
+                item.value = e.target.value;
+                setConstractParams([...constractParams]);
+              }}
+              placeholder={item.type}
+            />
+          ))}
+          <Button onClick={deploy} className='deployed-btn' disabled={!currentAccount || !currentArtifact}>
+            Deploy
+          </Button>
+        </Form.Item>
       </Form>
-      <Space direction='vertical'>
-        {constractParams.map((item, index) => (
-          <Input
-            key={index}
-            addonBefore={item.name}
-            onChange={(e) => {
-              item.value = e.target.value;
-              setConstractParams([...constractParams]);
-            }}
-            placeholder={item.type}
-          />
-        ))}
-        <Button onClick={deploy} disabled={!currentAccount || !currentArtifact}>
-          Deploy
-        </Button>
-      </Space>
       <div className='deployed'>
         <div className='deployed-title'>Deployed Contracts</div>
         <div className='deployed-result'>
           {deployedRes.length > 0 ? (
             <Collapse>
               {deployedRes.map((info, contractIdx) => (
-                <div key={contractIdx}>
-                  <Collapse.Panel
-                    className='deployed-panel'
-                    header={<span className='head'>{info[0].address}</span>}
-                    key={info[0].address}
-                  >
-                    {info[1].map((fragment, fragmentIndex) => {
-                      return (
-                        <div key={fragmentIndex}>
-                          <div className='frag'>
-                            {fragment.inputs.map((ipt, innerIndex) => (
-                              <Input
-                                key={ipt.name}
-                                placeholder={ipt.baseType}
-                                onChange={(e) => {
-                                  if (!fnFragmentsArgs.current[info[0].address][fragmentIndex]) {
-                                    fnFragmentsArgs.current[info[0].address][fragmentIndex] = [];
-                                  }
+                <Collapse.Panel
+                  className='deployed-panel'
+                  header={<span className='head'>{info[0].address}</span>}
+                  key={info[0].address}
+                >
+                  {info[1].map((fragment, fragmentIndex) => {
+                    return (
+                      <div key={fragmentIndex}>
+                        <div className='frag'>
+                          {fragment.inputs.map((ipt, innerIndex) => (
+                            <Input
+                              key={ipt.name}
+                              placeholder={ipt.baseType}
+                              onChange={(e) => {
+                                if (!fnFragmentsArgs.current[info[0].address][fragmentIndex]) {
+                                  fnFragmentsArgs.current[info[0].address][fragmentIndex] = [];
+                                }
 
-                                  fnFragmentsArgs.current[info[0].address][fragmentIndex][innerIndex] = e.target.value;
-                                }}
-                              />
-                            ))}
-                            <Button onClick={() => handleContractFn(contractIdx, fragmentIndex)}>
-                              {fragment.name}
-                            </Button>
-                          </div>
+                                fnFragmentsArgs.current[info[0].address][fragmentIndex][innerIndex] = e.target.value;
+                              }}
+                            />
+                          ))}
+                          <Button onClick={() => handleContractFn(contractIdx, fragmentIndex)}>{fragment.name}</Button>
                         </div>
-                      );
-                    })}
-                  </Collapse.Panel>
-                </div>
+                      </div>
+                    );
+                  })}
+                </Collapse.Panel>
               ))}
             </Collapse>
           ) : (
