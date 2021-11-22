@@ -15,12 +15,6 @@ export default class DeployWebviewProvider extends AbstractViewProvider {
     switch (type) {
       case 'workspace.toast':
         toast.info(<string>request);
-      case 'workspace.runDevNode':
-        const devNodeTask = vscode.tasks.taskExecutions.find((taskExecution) => taskExecution.task.name === 'Dev node');
-        if (!devNodeTask) {
-          return execCommand('carpo-core.runDevNode');
-        }
-        return Promise.resolve();
       default:
         throw new Error(`Unable to handle message of type ${type}`);
     }
