@@ -3,13 +3,14 @@ import type { SoliditySettings } from '@carpo-remix/helper/types';
 import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
 import { WorkspaceConfig } from '@carpo-remix/config/types';
 import { Artifacts, SoliditySetting, SolidityVersion } from '@carpo-remix/react-components';
-import { Button, Form, Select } from 'antd';
+import { Button, Checkbox, Form, Select } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 
 const Root: React.FC = () => {
   const [version, setVersion] = useState<string>();
   const [contracts, setContracts] = useState<string[]>([]);
   const [selectedContract, setSelectedContract] = useState<string[]>([]);
+  const [autoCompile, setAutoCompile] = useState<boolean>();
   const [config, setConfig] = useState<WorkspaceConfig | null>(null);
   const [loading, setLoading] = useState(false);
   const [soliditySetting, setSoliditySetting] = useState<SoliditySettings>();
@@ -52,6 +53,18 @@ const Root: React.FC = () => {
             onSelect={setVersion}
             value={version}
           />
+        </Form.Item>
+        <Form.Item label='Auto Compile'>
+          <Checkbox
+            checked={autoCompile ?? false}
+            onChange={(e) => {
+              sendMessage('workspace.setConfig', {
+                autoCompile: e.target.checked
+              }).catch(console.error);
+            }}
+          >
+            Enable optimization
+          </Checkbox>
         </Form.Item>
         <Form.Item label='Settings'>
           <SoliditySetting
