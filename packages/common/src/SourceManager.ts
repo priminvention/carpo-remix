@@ -2,16 +2,13 @@ import type { WorkspaceConfig } from '@carpo-remix/config/types';
 import type { GlobPattern } from 'vscode';
 import type { Disposed } from './types';
 
-import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import path from 'path';
 
 import { FilesManager } from './FilesManager';
 import { ConfigManager } from '.';
 
 export class SourceManager extends FilesManager implements Disposed {
-  public static getGlobPattern(config: WorkspaceConfig | null): GlobPattern {
-    const workspacePath = getWorkspacePath();
-
+  public static getGlobPattern(workspacePath: string, config: WorkspaceConfig | null): GlobPattern {
     return {
       base: path.resolve(workspacePath, config?.paths?.sources ?? 'sources'),
       pattern: '*.sol'
@@ -19,11 +16,14 @@ export class SourceManager extends FilesManager implements Disposed {
   }
 
   #configManager: ConfigManager;
+  private workspacePath: string;
 
-  constructor() {
-    const configManager = new ConfigManager();
+  constructor(workspacePath: string) {
+    const configManager = new ConfigManager(workspacePath);
 
-    super(SourceManager.getGlobPattern(configManager.config));
+    super(SourceManager.getGlobPattern(workspacePath, configManager.config));
+
+    this.workspacePath = workspacePath;
 
     configManager.on('change:paths', this.configChange.bind(this));
     configManager.on('create', this.configCreateOrDelete.bind(this));
@@ -32,11 +32,11 @@ export class SourceManager extends FilesManager implements Disposed {
   }
 
   private configChange([config]: [WorkspaceConfig | null, WorkspaceConfig | null]): void {
-    this.createWatcher(SourceManager.getGlobPattern(config));
+    this.createWatcher(SourceManager.getGlobPattern(this.workspacePath, config));
   }
 
   private configCreateOrDelete(config: WorkspaceConfig | null): void {
-    this.createWatcher(SourceManager.getGlobPattern(config));
+    this.createWatcher(SourceManager.getGlobPattern(this.workspacePath, config));
   }
 
   public dispose(): void {

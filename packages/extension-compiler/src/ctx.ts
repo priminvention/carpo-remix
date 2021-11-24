@@ -7,15 +7,16 @@ import { setContext, SourceManager } from '@carpo-remix/common';
 import { compile } from '@carpo-remix/common/solidity';
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { Events } from '@carpo-remix/helper/events';
-import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import * as vscode from 'vscode';
 
 export class CompilerContext extends Events<InterfaceEvents, keyof InterfaceEvents> implements Disposed {
   #sourceManager: SourceManager;
+  private workspacePath: string;
 
-  constructor(sourceManager: SourceManager) {
+  constructor(workspacePath: string, sourceManager: SourceManager) {
     super();
 
+    this.workspacePath = workspacePath;
     this.#sourceManager = sourceManager;
     this.#sourceManager.on('change', this.sourceChange.bind(this));
 
@@ -33,7 +34,7 @@ export class CompilerContext extends Events<InterfaceEvents, keyof InterfaceEven
   }
 
   private sourceChange(filename: string | Uri): void {
-    const config = getWorkspaceConfig(getWorkspacePath());
+    const config = getWorkspaceConfig(this.workspacePath);
 
     if (config?.autoCompile) {
       this.compileOne(filename).catch(console.error);
@@ -41,7 +42,7 @@ export class CompilerContext extends Events<InterfaceEvents, keyof InterfaceEven
   }
 
   public compile(filenames: string[]): Promise<CompilerOutput> {
-    return compile(filenames);
+    return compile(this.workspacePath, filenames);
   }
 
   public compileOne(filename: Uri | string): Promise<CompilerOutput> {

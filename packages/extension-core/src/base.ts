@@ -5,7 +5,6 @@ import type { InterfaceEvents } from './types';
 import { execCommand } from '@carpo-remix/common';
 import { Disposed } from '@carpo-remix/common/types';
 import { Events } from '@carpo-remix/helper/events';
-import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import * as vscode from 'vscode';
 
 interface CommandQuickPickItem extends QuickPickItem {
@@ -20,10 +19,10 @@ export class Base extends Events<InterfaceEvents, keyof InterfaceEvents> impleme
   public ctx: vscode.ExtensionContext;
   public workspace: string;
 
-  constructor(ctx: vscode.ExtensionContext) {
+  constructor(ctx: vscode.ExtensionContext, workspacePath: string) {
     super();
     this.ctx = ctx;
-    this.workspace = getWorkspacePath();
+    this.workspace = workspacePath;
 
     this.quickPick = vscode.window.createQuickPick();
 

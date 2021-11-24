@@ -29,8 +29,13 @@ export class CoreContext extends Base implements Disposed {
   #webviewPanel: vscode.WebviewPanel | null = null;
   #installing = false;
 
-  constructor(ctx: vscode.ExtensionContext, configManager: ConfigManager, testManager: TestManager) {
-    super(ctx);
+  constructor(
+    ctx: vscode.ExtensionContext,
+    workspacePath: string,
+    configManager: ConfigManager,
+    testManager: TestManager
+  ) {
+    super(ctx, workspacePath);
     this.#configManager = configManager;
     this.#testManager = testManager;
     this.#configManager.on('change:solidity', this.solidityChange.bind(this));
