@@ -51,12 +51,12 @@
     "menus": {
       "editor/title": [
         {
-          "when": "editorFocus && carpo-core.testViewOpen",
+          "when": "carpo-core.testViewOpen",
           "command": "carpo-core.runTestOne",
           "group": "navigation"
         },
         {
-          "when": "editorFocus && carpo-core.scriptViewOpen",
+          "when": "resourceExtname == .js || resourceExtname == .ts",
           "command": "carpo-core.runScript",
           "group": "navigation"
         }
