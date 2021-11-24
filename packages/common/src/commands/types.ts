@@ -3,6 +3,7 @@ import type { CompilerOutput } from '@carpo-remix/helper/types';
 
 export interface ContextKeyValues {
   'carpo-core.testViewOpen': boolean;
+  'carpo-compiler.sourceViewOpen': boolean;
 }
 
 export interface CommandSignatures {
@@ -14,6 +15,7 @@ export interface CommandSignatures {
   'carpo-core.runTest': [string | undefined, any];
   'carpo-core.runTestOne': [any, any];
   'carpo-compiler.compile': [string[], CompilerOutput];
+  'carpo-compiler.compileOne': [string, CompilerOutput];
 }
 
 export type CommandKeys = keyof CommandSignatures;

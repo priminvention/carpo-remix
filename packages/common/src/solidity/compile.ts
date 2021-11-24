@@ -13,6 +13,10 @@ import { SolidityCompiler } from '.';
 export async function compile(filenames: string[]): Promise<CompilerOutput> {
   const workspacePath = getWorkspacePath();
 
+  filenames = filenames.map((filename) =>
+    path.isAbsolute(filename) ? path.relative(workspacePath, filename) : filename
+  );
+
   const config = getWorkspaceConfig(workspacePath);
 
   const sources: Source = {};
