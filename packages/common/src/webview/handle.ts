@@ -46,7 +46,7 @@ export async function handle<TMessageType extends MessageTypes>(
         return getSolidityReleases();
 
       case 'contracts.files':
-        return findContracts();
+        return findContracts(workspacePath);
 
       case 'artifacts.all':
         return getArtifacts(workspacePath);

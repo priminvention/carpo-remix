@@ -5,6 +5,7 @@ import type { CoreApi } from '@carpo-remix/common/getCoreApi';
 
 import { execCommand, registerCommand, TestManager } from '@carpo-remix/common';
 import { ConfigManager } from '@carpo-remix/common/ConfigManager';
+import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import * as vscode from 'vscode';
 
 import { CoreContext } from './ctx';
@@ -12,9 +13,10 @@ import { CoreContext } from './ctx';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext): CoreApi {
-  const configManager = new ConfigManager();
-  const testManager = new TestManager();
-  const ctx = new CoreContext(context, configManager, testManager);
+  const workspacePath = getWorkspacePath();
+  const configManager = new ConfigManager(workspacePath);
+  const testManager = new TestManager(workspacePath);
+  const ctx = new CoreContext(context, workspacePath, configManager, testManager);
 
   console.log('"carpo-core" is now active!');
 

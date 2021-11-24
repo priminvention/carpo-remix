@@ -3,16 +3,13 @@ import type { CompilerInput, CompilerOutput, Source } from '@carpo-remix/helper/
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { writeArtifacts } from '@carpo-remix/helper';
 import { toast } from '@carpo-remix/utils';
-import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import fs from 'fs-extra';
 import path from 'path';
 
 import { getCoreApi } from '../getCoreApi';
 import { SolidityCompiler } from '.';
 
-export async function compile(filenames: string[]): Promise<CompilerOutput> {
-  const workspacePath = getWorkspacePath();
-
+export async function compile(workspacePath: string, filenames: string[]): Promise<CompilerOutput> {
   filenames = filenames.map((filename) =>
     path.isAbsolute(filename) ? path.relative(workspacePath, filename) : filename
   );

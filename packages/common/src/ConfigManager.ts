@@ -2,17 +2,16 @@ import type { Disposed } from './types';
 
 import { defaultConfigName } from '@carpo-remix/config';
 import { AbstractConfigManager } from '@carpo-remix/config/AbstratConfigManager';
-import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import * as vscode from 'vscode';
 
 export class ConfigManager extends AbstractConfigManager implements Disposed {
   #watcher: vscode.FileSystemWatcher;
 
-  constructor() {
-    super(getWorkspacePath());
+  constructor(workspacePath: string) {
+    super(workspacePath);
     this.#watcher = vscode.workspace.createFileSystemWatcher(
       {
-        base: this.workspacePath,
+        base: workspacePath,
         pattern: defaultConfigName
       },
       false,
