@@ -1,13 +1,14 @@
-import type { SourceManager } from '@carpo-remix/common';
 import type { Disposed } from '@carpo-remix/common/types';
 import type { CompilerOutput } from '@carpo-remix/helper/types';
 import type { Uri } from 'vscode';
 import type { InterfaceEvents } from './types';
 
+import { setContext, SourceManager } from '@carpo-remix/common';
 import { compile } from '@carpo-remix/common/solidity';
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { Events } from '@carpo-remix/helper/events';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
+import * as vscode from 'vscode';
 
 export class CompilerContext extends Events<InterfaceEvents, keyof InterfaceEvents> implements Disposed {
   #sourceManager: SourceManager;
@@ -16,8 +17,18 @@ export class CompilerContext extends Events<InterfaceEvents, keyof InterfaceEven
     super();
 
     this.#sourceManager = sourceManager;
-
     this.#sourceManager.on('change', this.sourceChange.bind(this));
+
+    vscode.window.onDidChangeActiveTextEditor(async (e) => {
+      await sourceManager.isInit;
+
+      if (e && sourceManager.files.includes(e.document.uri.path)) {
+        setContext('carpo-compiler.sourceViewOpen', true).catch(console.error);
+      } else {
+        setContext('carpo-compiler.sourceViewOpen', false).catch(console.error);
+      }
+    });
+
     this.emit('ready', this);
   }
 

@@ -3,7 +3,7 @@
 
 import type { CoreApi } from '@carpo-remix/common/getCoreApi';
 
-import { execCommand, registerCommand, setContext, TestManager } from '@carpo-remix/common';
+import { execCommand, registerCommand, TestManager } from '@carpo-remix/common';
 import { ConfigManager } from '@carpo-remix/common/ConfigManager';
 import * as vscode from 'vscode';
 
@@ -14,17 +14,9 @@ import { CoreContext } from './ctx';
 export function activate(context: vscode.ExtensionContext): CoreApi {
   const configManager = new ConfigManager();
   const testManager = new TestManager();
-  const ctx = new CoreContext(context, configManager);
+  const ctx = new CoreContext(context, configManager, testManager);
 
   console.log('"carpo-core" is now active!');
-
-  vscode.window.onDidChangeActiveTextEditor(async (e) => {
-    if (e && (await testManager.getFiles()).includes(e.document.uri.path)) {
-      setContext('carpo-core.testViewOpen', true).catch(console.error);
-    } else {
-      setContext('carpo-core.testViewOpen', false).catch(console.error);
-    }
-  });
 
   context.subscriptions.push(
     ctx,
