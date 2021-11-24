@@ -1,5 +1,6 @@
 import type { Disposed } from '@carpo-remix/common/types';
 import type { WorkspaceConfig } from '@carpo-remix/config/types';
+import type { Uri } from 'vscode';
 
 import { ConfigManager, createWebviewPanel, execCommand, FunctionalTask, NpmTask } from '@carpo-remix/common';
 import { Handle } from '@carpo-remix/common/webview/handle';
@@ -63,14 +64,17 @@ export class CoreContext extends Base implements Disposed {
     await functional.execute();
   }
 
-  public async runScript(_path: string): Promise<void> {
-    const task = new NpmTask('Script', `node -r ts-node/register ${path.resolve(this.workspace, _path)}`);
+  public async runScript(_path: string | Uri): Promise<void> {
+    const task = new NpmTask(
+      'Script',
+      `node -r ts-node/register ${path.resolve(this.workspace, typeof _path === 'string' ? _path : _path.path)}`
+    );
 
     await task.execute();
   }
 
-  public async runTest(_path?: string): Promise<void> {
-    await test.runTest(this.workspace, _path);
+  public async runTest(_path?: string | Uri): Promise<void> {
+    await test.runTest(this.workspace, typeof _path === 'string' ? _path : _path?.path);
   }
 
   private handle: Handle = (id, type, request) => {

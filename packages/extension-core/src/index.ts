@@ -34,7 +34,7 @@ export function activate(context: vscode.ExtensionContext): CoreApi {
     registerCommand('carpo-core.createProject', () => Promise.resolve(ctx.createWebviewPanel())),
     registerCommand('carpo-core.runScript', ctx.runScript.bind(ctx)),
     registerCommand('carpo-core.runTest', ctx.runTest.bind(ctx)),
-    registerCommand('carpo-core.runTestOne', (args) => execCommand('carpo-core.runTest', (args as vscode.Uri).path))
+    registerCommand('carpo-core.runTestOne', (args) => execCommand('carpo-core.runTest', args))
   );
 
   return { ctx, configManager, testManager };
