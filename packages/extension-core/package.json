@@ -38,13 +38,26 @@
           "light": "./resources/test-light.svg",
           "dark": "./resources/test-dark.svg"
         }
+      },
+      {
+        "command": "carpo-core.runScript",
+        "title": "Run script file",
+        "icon": {
+          "light": "./resources/script-light.svg",
+          "dark": "./resources/script-dark.svg"
+        }
       }
     ],
     "menus": {
       "editor/title": [
         {
-          "when": "editorFocus && carpo-core.testViewOpen",
+          "when": "carpo-core.testViewOpen",
           "command": "carpo-core.runTestOne",
+          "group": "navigation"
+        },
+        {
+          "when": "resourceExtname == .js || resourceExtname == .ts",
+          "command": "carpo-core.runScript",
           "group": "navigation"
         }
       ]

@@ -51,7 +51,7 @@
     "menus": {
       "editor/title": [
         {
-          "when": "editorFocus && carpo-compiler.sourceViewOpen",
+          "when": "carpo-compiler.sourceViewOpen",
           "command": "carpo-compiler.compileOne",
           "group": "navigation"
         }
