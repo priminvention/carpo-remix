@@ -4,6 +4,7 @@ import type { InterfaceEvents } from './types';
 
 import { SourceManager } from '@carpo-remix/common';
 import { compile } from '@carpo-remix/common/solidity';
+import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { Events } from '@carpo-remix/helper/events';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import path from 'path';
@@ -21,7 +22,11 @@ export class CompilerContext extends Events<InterfaceEvents, keyof InterfaceEven
   }
 
   private sourceChange(filePath: string): void {
-    this.compile([path.relative(getWorkspacePath(), filePath)]).catch(console.error);
+    const config = getWorkspaceConfig(getWorkspacePath());
+
+    if (config?.autoCompile) {
+      this.compile([path.relative(getWorkspacePath(), filePath)]).catch(console.error);
+    }
   }
 
   public compile(filenames: string[]): Promise<CompilerOutput> {

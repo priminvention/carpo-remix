@@ -22,6 +22,7 @@ const Root: React.FC = () => {
         setConfig(config);
         setSoliditySetting(config?.solidity?.settings);
         setVersion(config?.solidity?.version);
+        setAutoCompile(config?.autoCompile ?? false);
       })
       .catch(console.error);
   }, []);
@@ -61,9 +62,10 @@ const Root: React.FC = () => {
               sendMessage('workspace.setConfig', {
                 autoCompile: e.target.checked
               }).catch(console.error);
+              setAutoCompile(e.target.checked);
             }}
           >
-            Enable optimization
+            Auto Compile
           </Checkbox>
         </Form.Item>
         <Form.Item label='Settings'>
