@@ -43,7 +43,7 @@
     "menus": {
       "editor/title": [
         {
-          "when": "resourceExtname == .ts || resourceExtname == .js",
+          "when": "editorFocus && carpo-core.testViewOpen",
           "command": "carpo-core.runTestOne",
           "group": "navigation"
         }

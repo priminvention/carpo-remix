@@ -1,7 +1,16 @@
 import type { Disposed } from '@carpo-remix/common/types';
 import type { WorkspaceConfig } from '@carpo-remix/config/types';
+import type { Uri } from 'vscode';
 
-import { ConfigManager, createWebviewPanel, execCommand, FunctionalTask, NpmTask } from '@carpo-remix/common';
+import {
+  ConfigManager,
+  createWebviewPanel,
+  execCommand,
+  FunctionalTask,
+  NpmTask,
+  setContext,
+  TestManager
+} from '@carpo-remix/common';
 import { Handle } from '@carpo-remix/common/webview/handle';
 import { defaultConfigName } from '@carpo-remix/config';
 import { node, npm, test, toast } from '@carpo-remix/utils';
@@ -16,16 +25,28 @@ export class CoreContext extends Base implements Disposed {
   public static viewName = 'Create Project';
 
   #configManager: ConfigManager;
+  #testManager: TestManager;
   #webviewPanel: vscode.WebviewPanel | null = null;
   #installing = false;
 
-  constructor(ctx: vscode.ExtensionContext, watcher: ConfigManager) {
+  constructor(ctx: vscode.ExtensionContext, configManager: ConfigManager, testManager: TestManager) {
     super(ctx);
-    this.#configManager = watcher;
-    this.emit('ready', this);
-
+    this.#configManager = configManager;
+    this.#testManager = testManager;
     this.#configManager.on('change:solidity', this.solidityChange.bind(this));
     this.#configManager.on('create', this.configCreated.bind(this));
+
+    vscode.window.onDidChangeActiveTextEditor(async (e) => {
+      await this.#testManager.isInit;
+
+      if (e && testManager.files.includes(e.document.uri.path)) {
+        setContext('carpo-core.testViewOpen', true).catch(console.error);
+      } else {
+        setContext('carpo-core.testViewOpen', false).catch(console.error);
+      }
+    });
+
+    this.emit('ready', this);
   }
 
   public createWebviewPanel(): void {
@@ -63,14 +84,17 @@ export class CoreContext extends Base implements Disposed {
     await functional.execute();
   }
 
-  public async runScript(_path: string): Promise<void> {
-    const task = new NpmTask('Script', `node -r ts-node/register ${path.resolve(this.workspace, _path)}`);
+  public async runScript(_path: string | Uri): Promise<void> {
+    const task = new NpmTask(
+      'Script',
+      `node -r ts-node/register ${path.resolve(this.workspace, typeof _path === 'string' ? _path : _path.path)}`
+    );
 
     await task.execute();
   }
 
-  public async runTest(_path?: string): Promise<void> {
-    await test.runTest(this.workspace, _path);
+  public async runTest(_path?: string | Uri): Promise<void> {
+    await test.runTest(this.workspace, typeof _path === 'string' ? _path : _path?.path);
   }
 
   private handle: Handle = (id, type, request) => {

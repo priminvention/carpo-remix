@@ -14,7 +14,7 @@ import { CoreContext } from './ctx';
 export function activate(context: vscode.ExtensionContext): CoreApi {
   const configManager = new ConfigManager();
   const testManager = new TestManager();
-  const ctx = new CoreContext(context, configManager);
+  const ctx = new CoreContext(context, configManager, testManager);
 
   console.log('"carpo-core" is now active!');
 
@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext): CoreApi {
     registerCommand('carpo-core.createProject', () => Promise.resolve(ctx.createWebviewPanel())),
     registerCommand('carpo-core.runScript', ctx.runScript.bind(ctx)),
     registerCommand('carpo-core.runTest', ctx.runTest.bind(ctx)),
-    registerCommand('carpo-core.runTestOne', (args) => execCommand('carpo-core.runTest', (args as vscode.Uri).path))
+    registerCommand('carpo-core.runTestOne', (args) => execCommand('carpo-core.runTest', args))
   );
 
   return { ctx, configManager, testManager };

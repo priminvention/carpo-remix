@@ -29,12 +29,31 @@
         }
       ]
     },
+    "commands": [
+      {
+        "command": "carpo-compiler.compileOne",
+        "title": "Compile this file",
+        "icon": {
+          "light": "./resources/compile-light.svg",
+          "dark": "./resources/compile-dark.svg"
+        }
+      }
+    ],
     "views": {
       "carpoCompiler": [
         {
           "type": "webview",
           "id": "carpoCompiler.compileView",
           "name": "Compiler"
+        }
+      ]
+    },
+    "menus": {
+      "editor/title": [
+        {
+          "when": "editorFocus && carpo-compiler.sourceViewOpen",
+          "command": "carpo-compiler.compileOne",
+          "group": "navigation"
         }
       ]
     }

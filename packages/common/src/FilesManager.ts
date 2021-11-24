@@ -5,6 +5,7 @@ import { Events } from '@carpo-remix/helper';
 import * as vscode from 'vscode';
 
 interface FilesManagerEvents {
+  init: FilesManager;
   change: string;
   create: string;
   delete: string;
@@ -14,12 +15,20 @@ export abstract class FilesManager extends Events<FilesManagerEvents, keyof File
   #watcher: vscode.FileSystemWatcher;
   #globPattern: GlobPattern;
   public files: string[] = [];
+  public isInit: Promise<this>;
 
   constructor(globPattern: GlobPattern) {
     super();
 
     this.#globPattern = globPattern;
     this.#watcher = this.createWatcher(globPattern);
+
+    this.isInit = this.getFiles().then((files) => {
+      this.files = files;
+      this.emit('init', this);
+
+      return this;
+    });
   }
 
   protected createWatcher(globPattern: GlobPattern): vscode.FileSystemWatcher {
