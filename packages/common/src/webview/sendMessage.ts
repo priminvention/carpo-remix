@@ -9,15 +9,13 @@ import type {
 
 let idCounter = 0;
 const handlers: Handlers = {};
+import { Webview } from 'vscode';
 
-const vscode: {
-  postMessage: (data: any) => void;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-} = (window as any).acquireVsCodeApi();
+const vscodeWebview: Pick<Webview, 'postMessage'> = (window as any).acquireVsCodeApi();
 
 export const sendMessage = <TMessageType extends MessageTypes>(
   message: TMessageType,
-  request: RequestTypes[TMessageType],
+  request?: RequestTypes[TMessageType],
   subscriber?: (data: unknown) => void
 ): Promise<ResponseTypes[TMessageType]> => {
   return new Promise((resolve, reject): void => {
@@ -30,8 +28,7 @@ export const sendMessage = <TMessageType extends MessageTypes>(
       message,
       request: request || (null as RequestTypes[TMessageType])
     };
-
-    vscode.postMessage(transportRequestMessage);
+    vscodeWebview.postMessage(transportRequestMessage);
   });
 };
 
