@@ -2,7 +2,7 @@ import type { WorkspaceConfig } from '@carpo-remix/config/types';
 import type { CompilerOutput } from '@carpo-remix/helper/types';
 
 export interface ContextKeyValues {
-  'carpo-core.viewTypes': ('source' | 'test' | 'script')[];
+  'carpo-core.testViewOpen': boolean;
 }
 
 export interface CommandSignatures {

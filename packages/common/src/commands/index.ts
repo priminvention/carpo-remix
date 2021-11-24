@@ -21,7 +21,7 @@ export async function execCommand<T extends CommandKeys>(
 }
 
 export async function setContext<Key extends keyof ContextKeyValues>(
-  key: keyof Key,
+  key: Key,
   value: ContextKeyValues[Key]
 ): Promise<void> {
   return await commands.executeCommand('setContext', key, value);
