@@ -54,8 +54,10 @@ export async function compile(filenames: string[]): Promise<CompilerOutput> {
 
   const compiler = new SolidityCompiler(workspacePath, ['node_modules']);
 
+  const showName = filenames.length === 1 ? filenames[0] : `${filenames.length} files`;
+
   coreApi?.ctx.println('');
-  coreApi?.ctx.println(`Compiling ${filenames.length} files with ${(await compiler.getSolc()).version()}`);
+  coreApi?.ctx.println(`Compiling ${showName} with ${(await compiler.getSolc()).version()}`);
   const output = await compiler.compile(input);
 
   const success = !output.errors || output.errors.filter((error) => error.severity === 'error').length === 0;
@@ -64,8 +66,8 @@ export async function compile(filenames: string[]): Promise<CompilerOutput> {
     output.errors?.forEach((error) => {
       coreApi?.ctx.println(`${error.type}: ${error.formattedMessage}`);
     });
-    coreApi?.ctx.println('Compilation finished successfully');
-    toast.info('Compilation finished successfully');
+    coreApi?.ctx.println(`Compilation ${showName} successfully`);
+    toast.info(`Compilation ${showName} successfully`);
   } else {
     toast.error('Compilation failed');
     output.errors
