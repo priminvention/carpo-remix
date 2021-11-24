@@ -62,6 +62,7 @@ const handleResponse = <TMessageType extends MessageTypes>(
   }
 
   if (data.subscription) {
+    // eslint-disable-next-line @typescript-eslint/ban-types
     (handler.subscriber as Function)(data.subscription);
   } else if (data.error) {
     handler.reject(new Error(data.error));

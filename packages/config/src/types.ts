@@ -22,4 +22,5 @@ export type WorkspaceConfig = {
   networks?: NetworksConfig;
   defaultNetwork?: string;
   solidity?: SolidityConfig;
+  autoCompile?: boolean;
 };

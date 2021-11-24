@@ -1,6 +1,5 @@
 import type { WorkspaceConfig } from '@carpo-remix/config/types';
 import type { Artifact, CompilerOutput } from '@carpo-remix/helper/types';
-import { TaskExecution } from 'vscode';
 
 export type Uri = {
   path: string;

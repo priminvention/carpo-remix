@@ -1,6 +1,8 @@
 import type { Artifact } from '@carpo-remix/helper/types';
+
 import { Space, Table, TableColumnType, Typography } from 'antd';
 import React, { useMemo } from 'react';
+
 import useArtifacts from './useArtifacts';
 
 const { Text } = Typography;
@@ -51,8 +53,8 @@ const Artifacts: React.FC = () => {
       columns={columns}
       dataSource={artifacts}
       pagination={false}
-      size='small'
       rowKey={(record) => record.bytecode}
+      size='small'
       style={{ backgroundColor: 'transparent' }}
     />
   );
