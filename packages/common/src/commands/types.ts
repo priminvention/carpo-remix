@@ -4,6 +4,7 @@ import type { Uri } from 'vscode';
 
 export interface ContextKeyValues {
   'carpo-core.testViewOpen': boolean;
+  'carpo-core.scriptViewOpen': boolean;
   'carpo-compiler.sourceViewOpen': boolean;
 }
 

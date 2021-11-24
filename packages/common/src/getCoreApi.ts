@@ -10,12 +10,12 @@ export interface CoreApi {
   testManager: TestManager;
 }
 
-export function getCoreApi(): CoreApi | null {
+export function getCoreApi(): CoreApi {
   const carpoCore = vscode.extensions.getExtension('carpo.carpo-core');
 
   if (carpoCore) {
     return carpoCore.exports;
   } else {
-    return null;
+    throw new Error('No carpo-core extension find');
   }
 }

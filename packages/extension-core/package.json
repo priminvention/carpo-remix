@@ -38,6 +38,14 @@
           "light": "./resources/test-light.svg",
           "dark": "./resources/test-dark.svg"
         }
+      },
+      {
+        "command": "carpo-core.runScript",
+        "title": "Run script file",
+        "icon": {
+          "light": "./resources/script-light.svg",
+          "dark": "./resources/script-dark.svg"
+        }
       }
     ],
     "menus": {
@@ -45,6 +53,11 @@
         {
           "when": "editorFocus && carpo-core.testViewOpen",
           "command": "carpo-core.runTestOne",
+          "group": "navigation"
+        },
+        {
+          "when": "editorFocus && carpo-core.scriptViewOpen",
+          "command": "carpo-core.runScript",
           "group": "navigation"
         }
       ]
