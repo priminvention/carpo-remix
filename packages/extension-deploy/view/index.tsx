@@ -1,8 +1,9 @@
+import './index.less';
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Root from './Root';
-import './index.less';
 
 const rootId = 'root';
 const rootElement = document.getElementById(rootId);

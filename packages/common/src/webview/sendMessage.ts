@@ -7,9 +7,10 @@ import type {
   TransportResponseMessage
 } from './types';
 
+import { Webview } from 'vscode';
+
 let idCounter = 0;
 const handlers: Handlers = {};
-import { Webview } from 'vscode';
 
 const vscodeWebview: Pick<Webview, 'postMessage'> = (window as any).acquireVsCodeApi();
 
@@ -28,6 +29,7 @@ export const sendMessage = <TMessageType extends MessageTypes>(
       message,
       request: request || (null as RequestTypes[TMessageType])
     };
+
     vscodeWebview.postMessage(transportRequestMessage);
   });
 };

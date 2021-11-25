@@ -23,6 +23,7 @@ module.exports = {
     // required as 'off' since typescript-eslint has own versions
     'prettier/prettier': ['error', {}, { usePrettierrc: true }],
     indent: 'off',
+    'no-unused-expressions': 'off',
     'no-use-before-define': 'off',
     '@typescript-eslint/indent': 'off',
     // specific overrides
@@ -62,6 +63,9 @@ module.exports = {
     '@typescript-eslint/no-unsafe-member-access': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
     '@typescript-eslint/no-unsafe-return': 'off',
+    '@typescript-eslint/no-floating-promises': 'off',
+    '@typescript-eslint/no-unsafe-call': 'warn',
+    '@typescript-eslint/explicit-module-boundary-types': 'warn',
     'header/header': 'off',
     'object-curly-newline': 'off',
     'sort-keys': 'off',
