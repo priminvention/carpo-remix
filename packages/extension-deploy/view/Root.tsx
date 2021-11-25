@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button, Form, Select, Input, Row, Col, Collapse } from 'antd';
-import { ethers } from 'ethers';
 import useArtifacts from '@carpo-remix/react-components/useArtifacts';
 import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
-import connectToProvider, { ProviderType, AccountType, NetworkType } from './utils/provider';
-import { ContractDeployResType } from '@carpo-remix/common/webview/types';
+import { ContractDeployResType, AccountType } from '@carpo-remix/common/webview/types';
 
 type AbiInput = {
   name: string;
   type: string;
 };
+
+type NetworkType = 'local' | 'wallet';
 
 const networkTypes: NetworkType[] = ['local', 'wallet'];
 
@@ -27,7 +27,6 @@ const Root: React.FC = () => {
   const [currentArtifact, setCurrentArtifact] = useState('');
   const [deployedRes, setDeployedRes] = useState<ContractDeployResType>([]);
   const artifacts = useArtifacts();
-  let curProvider = useRef<ProviderType>();
   let fnFragmentsArgs = useRef<{ [conAddr: string]: { [key: string]: unknown[] } }>({});
 
   /**
