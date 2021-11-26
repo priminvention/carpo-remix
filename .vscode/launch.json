@@ -12,12 +12,14 @@
       "args": [
         "--extensionDevelopmentPath=${workspaceFolder}/packages/extension-core",
         "--extensionDevelopmentPath=${workspaceFolder}/packages/extension-compiler",
-        "--extensionDevelopmentPath=${workspaceFolder}/packages/extension-deploy"
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/extension-deploy",
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/extension-flattener"
       ],
       "outFiles": [
         "${workspaceFolder}/packages/extension-core/build/**/*.js",
         "${workspaceFolder}/packages/extension-compiler/build/**/*.js",
-        "${workspaceFolder}/packages/extension-deploy/build/**/*.js"
+        "${workspaceFolder}/packages/extension-deploy/build/**/*.js",
+        "${workspaceFolder}/packages/extension-flattener/build/**/*.js"
       ],
       "preLaunchTask": "Build"
     }

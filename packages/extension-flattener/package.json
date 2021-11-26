@@ -1,0 +1,48 @@
+{
+  "name": "carpo-flattener",
+  "version": "0.0.4-2",
+  "description": "carpo-remix extension and vscode extension",
+  "main": "build/extension.js",
+  "repository": "https://github.com/patractlabs/carpo-extension.git",
+  "author": "patractlabs",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.59.0"
+  },
+  "publisher": "carpo",
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "extensionDependencies": [
+    "carpo.carpo-core"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "carpo-flattener.flatten",
+        "title": "Flatten .sol file",
+        "icon": {
+          "light": "./resources/flattener-light.svg",
+          "dark": "./resources/flattener-dark.svg"
+        }
+      }
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "when": "resourceExtname == .sol",
+          "command": "carpo-flattener.flatten",
+          "group": "navigation"
+        }
+      ]
+    }
+  },
+  "dependencies": {
+    "@resolver-engine/imports-fs": "^0.3.3",
+    "@solidity-parser/parser": "^0.14.0",
+    "tsort": "^0.0.1"
+  }
+}

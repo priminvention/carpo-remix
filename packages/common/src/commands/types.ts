@@ -17,6 +17,7 @@ export interface CommandSignatures {
   'carpo-core.runTestOne': [string | Uri, any];
   'carpo-compiler.compile': [string[], CompilerOutput];
   'carpo-compiler.compileOne': [string | Uri, CompilerOutput];
+  'carpo-flattener.flatten': [string | Uri, string];
 }
 
 export type CommandKeys = keyof CommandSignatures;
