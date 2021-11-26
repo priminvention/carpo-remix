@@ -5,6 +5,39 @@ import {
   ContractDeployResType
 } from '@carpo-remix/common/webview/types';
 import { ethers } from 'ethers';
+import { Artifact } from '@carpo-remix/helper/types';
+import * as fs from 'fs-extra';
+import path from 'path';
+import { getWorkspacePath } from '@carpo-remix/utils/workspace';
+import { getNamedArtifact } from '@carpo-remix/helper';
+
+interface Deployment extends Artifact {
+  address: string;
+  transactionHash: string;
+  receipt: any;
+  chainId: number;
+}
+
+async function writeDeployedResult(name: string, contract: ethers.Contract) {
+  const workspacePath = getWorkspacePath();
+  const { address, deployTransaction } = contract;
+  const { hash, chainId, wait } = deployTransaction;
+  const receipt = await wait();
+  const contractArtifact = (await getNamedArtifact(name, workspacePath)) as Artifact;
+
+  const jsonData: Deployment = {
+    ...contractArtifact,
+    address: address,
+    transactionHash: hash,
+    receipt: receipt,
+    chainId: chainId
+  };
+  const artifactsDir = path.resolve(workspacePath, 'deployments', `chainId_${chainId.toString()}`, `${name}.json`);
+  fs.ensureFileSync(artifactsDir);
+  fs.writeJsonSync(artifactsDir, jsonData, {
+    spaces: 2
+  });
+}
 
 export default class InnerProvider {
   static providerInstance: ethers.providers.JsonRpcProvider;
@@ -37,9 +70,9 @@ export default class InnerProvider {
     );
   }
 
-  public static async deploy(params: ContractDeployReqType) {
+  public static async deploy(params: ContractDeployReqType): Promise<ContractDeployResType> {
     const { account, artifact, constractParams } = params;
-    const { abi, bytecode } = JSON.parse(artifact);
+    const { contractName, abi, bytecode } = JSON.parse(artifact);
     const provider = await InnerProvider.getProviderInstance();
     const signer = provider.getSigner(account);
     const factory = new ethers.ContractFactory(abi, bytecode, signer);
@@ -47,6 +80,7 @@ export default class InnerProvider {
 
     InnerProvider.contracts[contract.address] = contract;
     InnerProvider.deployedRes.push({ addr: contract.address, fnFragment: Object.values(contract.interface.functions) });
+    writeDeployedResult(contractName, contract);
 
     return InnerProvider.deployedRes;
   }

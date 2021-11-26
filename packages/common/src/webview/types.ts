@@ -14,7 +14,6 @@ export interface RequestSignatures {
   'workspace.path': [null, string | null];
   'workspace.config': [null, WorkspaceConfig | null];
   'workspace.setConfig': [WorkspaceConfig, WorkspaceConfig];
-  'workspace.toast': [string, void];
   'workspace.runDevNode': [null, void];
   'solidity.releases': [null, Record<string, string>];
   'contracts.files': [null, string[]];

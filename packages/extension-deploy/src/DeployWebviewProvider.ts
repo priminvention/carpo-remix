@@ -20,9 +20,6 @@ export default class DeployWebviewProvider extends AbstractViewProvider {
     const workspacePath = getWorkspacePath();
 
     switch (type) {
-      case 'workspace.toast':
-        return toast.info(<string>request);
-
       case 'carpo-deploy.accounts':
         return Provider.getAccountList();
       case 'carpo-deploy.run':
