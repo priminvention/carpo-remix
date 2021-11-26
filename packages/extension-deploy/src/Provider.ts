@@ -4,12 +4,12 @@ import {
   ContractDeployReqType,
   ContractDeployResType
 } from '@carpo-remix/common/webview/types';
-import { ethers } from 'ethers';
+import { getNamedArtifact } from '@carpo-remix/helper';
 import { Artifact } from '@carpo-remix/helper/types';
+import { getWorkspacePath } from '@carpo-remix/utils/workspace';
+import { ethers } from 'ethers';
 import * as fs from 'fs-extra';
 import path from 'path';
-import { getWorkspacePath } from '@carpo-remix/utils/workspace';
-import { getNamedArtifact } from '@carpo-remix/helper';
 
 interface Deployment extends Artifact {
   address: string;
@@ -21,7 +21,7 @@ interface Deployment extends Artifact {
 async function writeDeployedResult(name: string, contract: ethers.Contract) {
   const workspacePath = getWorkspacePath();
   const { address, deployTransaction } = contract;
-  const { hash, chainId, wait } = deployTransaction;
+  const { chainId, hash, wait } = deployTransaction;
   const receipt = await wait();
   const contractArtifact = (await getNamedArtifact(name, workspacePath)) as Artifact;
 
@@ -33,6 +33,7 @@ async function writeDeployedResult(name: string, contract: ethers.Contract) {
     chainId: chainId
   };
   const artifactsDir = path.resolve(workspacePath, 'deployments', `chainId_${chainId.toString()}`, `${name}.json`);
+
   fs.ensureFileSync(artifactsDir);
   fs.writeJsonSync(artifactsDir, jsonData, {
     spaces: 2
@@ -72,7 +73,7 @@ export default class InnerProvider {
 
   public static async deploy(params: ContractDeployReqType): Promise<ContractDeployResType> {
     const { account, artifact, constractParams } = params;
-    const { contractName, abi, bytecode } = JSON.parse(artifact);
+    const { abi, bytecode, contractName } = JSON.parse(artifact);
     const provider = await InnerProvider.getProviderInstance();
     const signer = provider.getSigner(account);
     const factory = new ethers.ContractFactory(abi, bytecode, signer);
@@ -85,7 +86,7 @@ export default class InnerProvider {
     return InnerProvider.deployedRes;
   }
 
-  public static async call(params: ContractCallReqTypes) {
+  public static async call(params: ContractCallReqTypes): Promise<any> {
     const { addr, fragmentName, inputArgs } = params;
     const frg = InnerProvider.contracts[addr].interface.fragments.find((frg) => frg.name === fragmentName);
 
@@ -93,6 +94,6 @@ export default class InnerProvider {
       return await InnerProvider.contracts[addr][fragmentName](...inputArgs);
     }
 
-    return InnerProvider.contracts[addr][fragmentName](...inputArgs);
+    return await InnerProvider.contracts[addr][fragmentName](...inputArgs);
   }
 }

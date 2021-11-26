@@ -12,7 +12,9 @@ import { Webview } from 'vscode';
 let idCounter = 0;
 const handlers: Handlers = {};
 
-const vscodeWebview: Pick<Webview, 'postMessage'> = (window as any).acquireVsCodeApi();
+declare function acquireVsCodeApi(): Pick<Webview, 'postMessage'>;
+
+const vscodeWebview = acquireVsCodeApi();
 
 export const sendMessage = <TMessageType extends MessageTypes>(
   message: TMessageType,

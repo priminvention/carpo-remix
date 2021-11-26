@@ -3,7 +3,6 @@ import type { Handle } from '@carpo-remix/common/webview/handle';
 import { AbstractViewProvider } from '@carpo-remix/common';
 import { ContractCallReqTypes, ContractDeployReqType } from '@carpo-remix/common/webview/types';
 import { getArtifacts } from '@carpo-remix/helper';
-import { toast } from '@carpo-remix/utils';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import * as vscode from 'vscode';
 

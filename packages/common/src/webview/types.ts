@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 
 export type AccountType = { address: string; balance: string };
 export type Uri = { path: string; scheme: string };
-export type ContractDeployReqType = { artifact: any; account: string; constractParams: any };
+export type ContractDeployReqType = { artifact: any; account: string; constractParams: unknown[] };
 export type ContractDeployResType = { addr: string; fnFragment: Array<ethers.utils.FunctionFragment> }[];
 export type ContractCallReqTypes = { addr: string; fragmentName: string; inputArgs: any[] };
 
