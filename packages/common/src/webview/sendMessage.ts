@@ -7,17 +7,18 @@ import type {
   TransportResponseMessage
 } from './types';
 
+import { Webview } from 'vscode';
+
 let idCounter = 0;
 const handlers: Handlers = {};
 
-const vscode: {
-  postMessage: (data: any) => void;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-} = (window as any).acquireVsCodeApi();
+declare function acquireVsCodeApi(): Pick<Webview, 'postMessage'>;
+
+const vscodeWebview = acquireVsCodeApi();
 
 export const sendMessage = <TMessageType extends MessageTypes>(
   message: TMessageType,
-  request: RequestTypes[TMessageType],
+  request?: RequestTypes[TMessageType],
   subscriber?: (data: unknown) => void
 ): Promise<ResponseTypes[TMessageType]> => {
   return new Promise((resolve, reject): void => {
@@ -31,7 +32,7 @@ export const sendMessage = <TMessageType extends MessageTypes>(
       request: request || (null as RequestTypes[TMessageType])
     };
 
-    vscode.postMessage(transportRequestMessage);
+    vscodeWebview.postMessage(transportRequestMessage);
   });
 };
 

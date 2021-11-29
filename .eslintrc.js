@@ -23,6 +23,7 @@ module.exports = {
     // required as 'off' since typescript-eslint has own versions
     'prettier/prettier': ['error', {}, { usePrettierrc: true }],
     indent: 'off',
+    'no-unused-expressions': 'off',
     'no-use-before-define': 'off',
     '@typescript-eslint/indent': 'off',
     // specific overrides
@@ -62,18 +63,25 @@ module.exports = {
     '@typescript-eslint/no-unsafe-member-access': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
     '@typescript-eslint/no-unsafe-return': 'off',
+    '@typescript-eslint/no-floating-promises': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'warn',
+    '@typescript-eslint/no-non-null-assertion': 'off',
     'header/header': 'off',
     'object-curly-newline': 'off',
     'sort-keys': 'off',
-    'simple-import-sort/imports': [2, {
-      groups: [
-        ['^\u0000'], // all side-effects (0 at start)
-        ['\u0000$', '^@polkadot.*\u0000$', '^\\..*\u0000$'], // types (0 at end)
-        ['^[^/\\.]'], // non-polkadot
-        ['^@polkadot'], // polkadot
-        ['^\\.\\.(?!/?$)', '^\\.\\./?$', '^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'] // local (. last)
-      ]
-    }],
+    'simple-import-sort/imports': [
+      2,
+      {
+        groups: [
+          ['^\u0000'], // all side-effects (0 at start)
+          ['\u0000$', '^@polkadot.*\u0000$', '^\\..*\u0000$'], // types (0 at end)
+          ['^[^/\\.]'], // non-polkadot
+          ['^@polkadot'], // polkadot
+          ['^\\.\\.(?!/?$)', '^\\.\\./?$', '^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'] // local (. last)
+        ]
+      }
+    ]
   },
   settings: {
     ...base.settings,

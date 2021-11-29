@@ -1,34 +1,34 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Button, Form, Select, Input, Space, Row, Col, Collapse } from 'antd';
-import { ethers } from 'ethers';
-import useArtifacts from '@carpo-remix/react-components/useArtifacts';
 import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
-import connectToProvider, { ProviderType, AccountType, NetworkType } from './utils/provider';
+import { AccountType, ContractDeployResType } from '@carpo-remix/common/webview/types';
+import useArtifacts from '@carpo-remix/react-components/useArtifacts';
+import { Button, Col, Collapse, Form, Input, Row, Select } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 
 type AbiInput = {
   name: string;
   type: string;
 };
 
+type NetworkType = 'local' | 'wallet';
+
 const networkTypes: NetworkType[] = ['local', 'wallet'];
 
-function trimAddress(addr: string) {
+function trimAddress(addr: string | undefined) {
+  if (!addr) return '';
+
   return addr.slice(0, 6) + '...' + addr.slice(-6);
 }
 
 const Root: React.FC = () => {
   const [currentNetworkType, setcurrentNetworkType] = useState<NetworkType>('local');
-  const [custNodeUrl, setCustNodeUrl] = useState('http://127.0.0.1:8545');
+  const [custNodeUrl, setCustNodeUrl] = useState('http://localhost:8545');
   const [currentAccount, setCurrentAccount] = useState<string>();
   const [accountList, setAccountList] = useState<AccountType[]>([]);
   const [constractParams, setConstractParams] = useState<(AbiInput & { value: string })[]>([]);
   const [currentArtifact, setCurrentArtifact] = useState('');
-  const [deployedRes, setDeployedRes] = useState<
-    [ethers.Contract, (ethers.utils.FunctionFragment & { inputArgs?: any })[]][]
-  >([]);
+  const [deployedRes, setDeployedRes] = useState<ContractDeployResType>([]);
   const artifacts = useArtifacts();
-  let curProvider = useRef<ProviderType>();
-  let fnFragmentsArgs = useRef<{ [conAddr: string]: any[] }>({});
+  const fnFragmentsArgs = useRef<{ [conAddr: string]: { [key: string]: unknown[] } }>({});
 
   /**
    * Initializing the connection
@@ -36,11 +36,12 @@ const Root: React.FC = () => {
    * @todo custom
    */
   useEffect(() => {
-    connectToProvider(currentNetworkType, custNodeUrl).then(({ provider, accounts }) => {
-      curProvider.current = provider;
-      setAccountList(accounts);
-      setCurrentAccount(accounts[0].address);
-    });
+    if (currentNetworkType === 'local') {
+      sendMessage('carpo-deploy.accounts').then((accounts) => {
+        setAccountList(accounts);
+        setCurrentAccount(accounts[0].address);
+      });
+    }
   }, [currentNetworkType]);
 
   const handleChangeNetwork = (networkType: NetworkType) => {
@@ -51,8 +52,10 @@ const Root: React.FC = () => {
     setCurrentArtifact(val);
     const { abi } = JSON.parse(val);
     const constructorInputs = abi.find((i: any) => i.type === 'constructor');
+
     if (constructorInputs) {
       const enhancedInput = constructorInputs.inputs.map((i: AbiInput) => ({ ...i, value: '' }));
+
       setConstractParams(enhancedInput);
     } else {
       setConstractParams([]);
@@ -62,15 +65,10 @@ const Root: React.FC = () => {
   /**
    * after send Tx, update the balance of current account
    */
-  const updateAccountList = async (currentAccount: string) => {
-    const signer = curProvider.current!.getSigner(currentAccount);
-    const balance = await signer?.getBalance();
-    const accountLists = accountList.map((accountInfo) =>
-      accountInfo.address === currentAccount
-        ? { address: accountInfo.address, balance: ethers.utils.formatEther(balance ?? 0) }
-        : accountInfo
-    );
-    setAccountList(accountLists);
+  const updateAccountList = () => {
+    sendMessage('carpo-deploy.accounts').then((accounts) => {
+      setAccountList(accounts);
+    });
   };
 
   /**
@@ -78,33 +76,22 @@ const Root: React.FC = () => {
    * & update the singer's balance
    */
   const deploy = async () => {
-    const { abi, bytecode } = JSON.parse(currentArtifact);
-    const signer = curProvider.current?.getSigner(currentAccount);
-    const factory = new ethers.ContractFactory(abi, bytecode, signer);
-    const contract = await factory.deploy(...constractParams.map((i) => i.value));
+    const deployedRes = await sendMessage('carpo-deploy.run', {
+      artifact: currentArtifact,
+      account: currentAccount!,
+      constractParams
+    });
 
-    // update account balance
-
-    updateAccountList(currentAccount!);
-
-    fnFragmentsArgs.current[contract.address] = [];
-
-    deployedRes.push([contract, Object.values(contract.interface.functions)]);
-    setDeployedRes(deployedRes.slice());
-
-    sendMessage('workspace.toast', `Deployed success at ${contract.address}`);
+    setDeployedRes(deployedRes);
+    updateAccountList();
   };
 
-  const handleContractFn = async (contractIdx: number, fragmentIdx: number) => {
-    const [contract, fragments] = deployedRes[contractIdx];
-    const { name, inputs } = fragments[fragmentIdx];
-    const inputArgs = fnFragmentsArgs.current[contract.address][fragmentIdx];
+  const handleContractFn = async (addr: string, fragmentName: string) => {
+    const inputArgs = fnFragmentsArgs.current[addr] ? fnFragmentsArgs.current[addr][fragmentName] : [];
 
     try {
-      const res = inputs.length > 0 ? await contract[name](...inputArgs) : await contract[name]();
-      if (res.wait) {
-        updateAccountList(currentAccount!);
-      }
+      await sendMessage('carpo-deploy.call', { addr, fragmentName, inputArgs: inputArgs });
+      updateAccountList();
     } catch (error) {
       console.log(error);
     }
@@ -118,7 +105,7 @@ const Root: React.FC = () => {
             <Col span={24}>
               <Select defaultValue='local' onChange={handleChangeNetwork}>
                 {networkTypes.map((type) => (
-                  <Select.Option value={type} key={type}>
+                  <Select.Option key={type} value={type}>
                     {type}
                   </Select.Option>
                 ))}
@@ -128,10 +115,10 @@ const Root: React.FC = () => {
         </Form.Item>
         <Form.Item label='Account'>
           <Select
-            value={currentAccount}
             onChange={(address) => {
               setCurrentAccount(address);
             }}
+            value={currentAccount}
           >
             {accountList.map((account) => (
               <Select.Option key={account.address} value={account.address}>
@@ -157,9 +144,9 @@ const Root: React.FC = () => {
         <Form.Item label='Deploy'>
           {constractParams.map((item, index) => (
             <Input
-              key={index}
-              className='deployed-ipt-field'
               addonBefore={item.name}
+              className='deployed-ipt-field'
+              key={index}
               onChange={(e) => {
                 item.value = e.target.value;
                 setConstractParams([...constractParams]);
@@ -167,7 +154,7 @@ const Root: React.FC = () => {
               placeholder={item.type}
             />
           ))}
-          <Button onClick={deploy} className='deployed-btn' disabled={!currentAccount || !currentArtifact}>
+          <Button className='deployed-btn' disabled={!currentAccount || !currentArtifact} onClick={deploy}>
             Deploy
           </Button>
         </Form.Item>
@@ -177,31 +164,33 @@ const Root: React.FC = () => {
         <div className='deployed-result'>
           {deployedRes.length > 0 ? (
             <Collapse>
-              {deployedRes.map((info, contractIdx) => (
+              {deployedRes.map((info) => (
                 <Collapse.Panel
                   className='deployed-panel'
-                  header={<span className='head'>{info[0].address}</span>}
-                  key={info[0].address}
+                  header={<span className='head'>{info.addr}</span>}
+                  key={info.addr}
                 >
-                  {info[1].map((fragment, fragmentIndex) => {
+                  {info.fnFragment.map((fragment, fragmentIndex) => {
                     return (
-                      <div key={fragmentIndex}>
-                        <div className='frag'>
-                          {fragment.inputs.map((ipt, innerIndex) => (
-                            <Input
-                              key={ipt.name}
-                              placeholder={ipt.baseType}
-                              onChange={(e) => {
-                                if (!fnFragmentsArgs.current[info[0].address][fragmentIndex]) {
-                                  fnFragmentsArgs.current[info[0].address][fragmentIndex] = [];
-                                }
+                      <div className='frag' key={fragmentIndex}>
+                        {fragment.inputs.map((ipt, innerIndex) => (
+                          <Input
+                            key={ipt.name}
+                            onChange={(e) => {
+                              if (!fnFragmentsArgs.current[info.addr]) {
+                                fnFragmentsArgs.current[info.addr] = {};
+                              }
 
-                                fnFragmentsArgs.current[info[0].address][fragmentIndex][innerIndex] = e.target.value;
-                              }}
-                            />
-                          ))}
-                          <Button onClick={() => handleContractFn(contractIdx, fragmentIndex)}>{fragment.name}</Button>
-                        </div>
+                              if (!fnFragmentsArgs.current[info.addr][fragment.name]) {
+                                fnFragmentsArgs.current[info.addr][fragment.name] = [];
+                              }
+
+                              fnFragmentsArgs.current[info.addr][fragment.name][innerIndex] = e.target.value;
+                            }}
+                            placeholder={ipt.baseType}
+                          />
+                        ))}
+                        <Button onClick={() => handleContractFn(info.addr, fragment.name)}>{fragment.name}</Button>
                       </div>
                     );
                   })}

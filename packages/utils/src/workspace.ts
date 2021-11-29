@@ -11,6 +11,9 @@ export function getWorkspacePath(): string {
     throw new NoWorkspaceError();
   }
 
+  /**
+   * @todo support multiple workspace
+   */
   return workspace.workspaceFolders.map(({ uri }) => {
     return uri.path;
   })[0];

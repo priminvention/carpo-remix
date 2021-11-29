@@ -17,11 +17,7 @@ export abstract class AbstractViewProvider implements vscode.WebviewViewProvider
     this._handle = _handle;
   }
 
-  public resolveWebviewView<TMessageType extends MessageTypes>(
-    webviewView: vscode.WebviewView,
-    context: vscode.WebviewViewResolveContext,
-    _token: vscode.CancellationToken
-  ): void {
+  public resolveWebviewView<TMessageType extends MessageTypes>(webviewView: vscode.WebviewView): void {
     this._view = webviewView;
 
     webviewView.webview.options = {
