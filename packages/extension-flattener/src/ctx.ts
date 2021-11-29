@@ -3,6 +3,7 @@ import type { Uri } from 'vscode';
 import type { InterfaceEvents } from './types';
 
 import { Events } from '@carpo-remix/helper/events';
+import * as vscode from 'vscode';
 
 import flatten from './flatten';
 
@@ -18,7 +19,16 @@ export class FlattenerContext extends Events<InterfaceEvents, keyof InterfaceEve
   }
 
   public async flatten(filename: string | Uri): Promise<string> {
-    console.log(await flatten([typeof filename === 'string' ? filename : filename.path], this.workspacePath));
+    const doc = await vscode.workspace.openTextDocument({
+      language: 'solidity',
+      content: await flatten(typeof filename === 'string' ? filename : filename.path, this.workspacePath)
+    });
+
+    await vscode.window.showTextDocument(doc, {
+      preview: true,
+      preserveFocus: true,
+      viewColumn: vscode.ViewColumn.Beside
+    });
 
     return Promise.resolve('');
   }

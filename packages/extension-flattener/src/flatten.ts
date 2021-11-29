@@ -1,8 +1,6 @@
-import { ImportsFsEngine } from '@resolver-engine/imports-fs';
 import parser from '@solidity-parser/parser';
 import fs from 'fs-extra';
 import path from 'path';
-import tsort from 'tsort';
 
 const IMPORT_SOLIDITY_REGEX = /^\s*import(\s+).*$/gm;
 
@@ -10,9 +8,21 @@ function unique(array: string[]): string[] {
   return [...new Set(array)];
 }
 
-async function resolve(importPath: string) {
-  const resolver = ImportsFsEngine();
-  const filePath = await resolver.resolve(importPath);
+function findImport(importPath: string, projectRoot: string) {
+  if (path.isAbsolute(importPath)) {
+    return importPath;
+  } else if (fs.existsSync(path.resolve(projectRoot, importPath))) {
+    return path.resolve(projectRoot, importPath);
+  } else if (fs.existsSync(path.resolve(projectRoot, 'node_modules', importPath))) {
+    return path.resolve(projectRoot, 'node_modules', importPath);
+  } else {
+    throw new Error(`Not found importPath ${importPath}`);
+  }
+}
+
+function resolve(importPath: string, projectRoot: string) {
+  const filePath: string = findImport(importPath, projectRoot);
+
   const fileContents = fs.readFileSync(filePath).toString();
 
   return { fileContents, filePath };
@@ -27,8 +37,8 @@ function getDirPath(filePath: string): string {
 
 function getDependencies(filePath: string, fileContents: string) {
   try {
-    const ast = parser.parse(fileContents);
-    const imports: any[] = [];
+    const ast = parser.parse(fileContents, {});
+    const imports: string[] = [];
 
     parser.visit(ast, {
       ImportDirective: function (node) {
@@ -51,99 +61,68 @@ function getNormalizedDependencyPath(dependency: string, filePath: string) {
   return dependency.replace(/\\/g, '/');
 }
 
-async function dependenciesDfs(graph: { add: (arg0: any, arg1: any) => void }, visitedFiles: any[], filePath: string) {
-  visitedFiles.push(filePath);
-
-  const resolved = await resolve(filePath);
+async function dependenciesDfs(graph: string[], filePath: string, projectRoot: string) {
+  const resolved = resolve(filePath, projectRoot);
 
   const dependencies = getDependencies(resolved.filePath, resolved.fileContents);
 
-  for (const dependency of dependencies) {
-    graph.add(dependency, filePath);
-
-    if (!visitedFiles.includes(dependency)) {
-      await dependenciesDfs(graph, visitedFiles, dependency);
+  if (dependencies.length !== 0) {
+    for (const dependency of dependencies) {
+      await dependenciesDfs(graph, dependency, projectRoot);
     }
   }
+
+  graph.push(filePath);
 }
 
-async function getSortedFilePaths(entryPoints: string[], projectRoot: string): Promise<string[]> {
+async function getSortedFilePaths(entryPoint: string, projectRoot: string): Promise<string[]> {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  const graph = tsort();
-  const visitedFiles: any[] = [];
+  const graph: string[] = [];
 
-  for (const entryPoint of entryPoints) {
-    await dependenciesDfs(graph, visitedFiles, entryPoint);
-  }
-
-  let topologicalSortedFiles;
-
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    topologicalSortedFiles = graph.sort();
-  } catch (e: any) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    if (e.toString().includes('Error: There is a cycle in the graph.')) {
-      const message =
-        'There is a cycle in the dependency' +
-        " graph, can't compute topological ordering. Files:\n\t" +
-        visitedFiles.join('\n\t');
-
-      throw new Error(message);
-    }
-  }
+  await dependenciesDfs(graph, entryPoint, projectRoot);
 
   // If an entry has no dependency it won't be included in the graph, so we
   // add them and then dedup the array
   // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  const withEntries = topologicalSortedFiles.concat(entryPoints).map((f: any) => fileNameToGlobalName(f, projectRoot));
+  const withEntries = graph.concat(entryPoint).map((filePath) => {
+    if (path.isAbsolute(filePath)) {
+      filePath = path.relative(projectRoot, filePath);
+    }
+
+    if (filePath.includes('node_modules/')) {
+      filePath = filePath.substr(filePath.indexOf('node_modules/') + 'node_modules/'.length);
+    }
+
+    return filePath;
+  });
 
   const files = unique(withEntries);
 
   return files;
 }
 
-async function fileContentWithoutImports(filePath: string) {
-  const resolved = await resolve(filePath);
+function fileContentWithoutImports(filePath: string, projectRoot: string) {
+  const resolved = resolve(filePath, projectRoot);
   const output = resolved.fileContents.replace(IMPORT_SOLIDITY_REGEX, '');
 
   // normalize whitespace to a single trailing newline
   return output.trim() + '\n';
 }
 
-function fileNameToGlobalName(fileName: string, projectRoot: string) {
-  let globalName = getFilePathsFromProjectRoot([fileName], projectRoot)[0];
-
-  if (globalName.indexOf('node_modules/') !== -1) {
-    globalName = globalName.substr(globalName.indexOf('node_modules/') + 'node_modules/'.length);
-  }
-
-  return globalName;
-}
-
-async function printContactenation(files: string[]) {
-  const parts = await Promise.all(
-    files.map(async (file) => {
-      return '// File: ' + file + '\n\n' + (await fileContentWithoutImports(file));
-    })
-  );
+function printContactenation(files: string[], projectRoot: string) {
+  const parts = files.map((file) => {
+    return '// File: ' + file + '\n\n' + fileContentWithoutImports(file, projectRoot);
+  });
 
   return parts.join('\n');
 }
 
-function getFilePathsFromProjectRoot(filePaths: string[], projectRoot: string): string[] {
-  return filePaths.map((f) => path.relative(projectRoot, path.resolve(f)));
-}
-
-export default async function flatten(filePaths: string[], root: string): Promise<string> {
-  if (root && !fs.existsSync(root)) {
+export default async function flatten(filePath: string, projectRoot: string): Promise<string> {
+  if (projectRoot && !fs.existsSync(projectRoot)) {
     throw new Error('The specified root directory does not exist');
   }
 
-  const projectRoot = root;
-  const filePathsFromProjectRoot = getFilePathsFromProjectRoot(filePaths, projectRoot);
+  const sortedFiles = await getSortedFilePaths(filePath, projectRoot);
 
-  const sortedFiles = await getSortedFilePaths(filePathsFromProjectRoot, projectRoot);
-
-  return await printContactenation(sortedFiles);
+  return printContactenation(sortedFiles, projectRoot);
 }

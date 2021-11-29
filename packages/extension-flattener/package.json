@@ -41,8 +41,6 @@
     }
   },
   "dependencies": {
-    "@resolver-engine/imports-fs": "^0.3.3",
-    "@solidity-parser/parser": "^0.14.0",
-    "tsort": "^0.0.1"
+    "@solidity-parser/parser": "^0.8.0"
   }
 }
