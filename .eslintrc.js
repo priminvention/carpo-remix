@@ -66,6 +66,7 @@ module.exports = {
     '@typescript-eslint/no-floating-promises': 'off',
     '@typescript-eslint/no-unsafe-call': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'warn',
+    '@typescript-eslint/no-non-null-assertion': 'off',
     'header/header': 'off',
     'object-curly-newline': 'off',
     'sort-keys': 'off',

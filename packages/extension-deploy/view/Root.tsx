@@ -164,7 +164,7 @@ const Root: React.FC = () => {
         <div className='deployed-result'>
           {deployedRes.length > 0 ? (
             <Collapse>
-              {deployedRes.map((info, contractIdx) => (
+              {deployedRes.map((info) => (
                 <Collapse.Panel
                   className='deployed-panel'
                   header={<span className='head'>{info.addr}</span>}

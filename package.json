@@ -18,6 +18,7 @@
     "npm-publish": "./scripts/npmPublish.js"
   },
   "scripts": {
+    "postinstall": "husky install",
     "build": "yarn clean && yarn build:ts && yarn build:extension && yarn build:view",
     "build:ts": "yarn polkadot-dev-build-ts",
     "build:extension": "BUILD_TYPE=extension NODE_ENV=production webpack --config ./scripts/webpack.config.js",
@@ -27,6 +28,7 @@
     "dev": "concurrently \"yarn:dev:*\" ",
     "clean": "yarn polkadot-dev-clean-build",
     "lint": "polkadot-dev-run-lint",
+    "lint:fix": "polkadot-dev-run-lint --fix",
     "test": "polkadot-dev-run-test --coverage --runInBand",
     "test:one": "polkadot-dev-run-test",
     "test:watch": "polkadot-dev-run-test --watch"
@@ -52,6 +54,7 @@
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "fork-ts-checker-notifier-webpack-plugin": "^4.0.0",
     "fork-ts-checker-webpack-plugin": "^6.4.0",
+    "husky": "^7.0.0",
     "less": "^4.1.2",
     "less-loader": "^10.2.0",
     "mini-css-extract-plugin": "^2.4.3",
