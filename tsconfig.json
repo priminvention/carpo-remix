@@ -13,6 +13,8 @@
       "carpo-compiler/*": ["packages/extension-compiler/src/*"],
       "carpo-deploy": ["packages/extension-deploy/src"],
       "carpo-deploy/*": ["packages/extension-deploy/src/*"],
+      "carpo-flattener": ["packages/extension-flattener/src"],
+      "carpo-flattener/*": ["packages/extension-flattener/src/*"],
       "@carpo-remix/common": ["packages/common/src"],
       "@carpo-remix/common/*": ["packages/common/src/*"],
       "@carpo-remix/config": ["packages/config/src"],

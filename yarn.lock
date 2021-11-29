@@ -2478,6 +2478,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@solidity-parser/parser@npm:^0.8.0":
+  version: 0.8.2
+  resolution: "@solidity-parser/parser@npm:0.8.2"
+  checksum: 8efb5a2052b9da65e322e6c4d5ba654d95c6834a3b71e9dd6348d1701dc28fe15fd423fb332664750ca1a79ec7eec2cfc3c6628eadaa20ea67070906e2684b62
+  languageName: node
+  linkType: hard
+
 "@szmarczak/http-timer@npm:^1.1.2":
   version: 1.1.2
   resolution: "@szmarczak/http-timer@npm:1.1.2"
@@ -4374,6 +4381,14 @@ __metadata:
 "carpo-deploy@workspace:packages/extension-deploy":
   version: 0.0.0-use.local
   resolution: "carpo-deploy@workspace:packages/extension-deploy"
+  languageName: unknown
+  linkType: soft
+
+"carpo-flattener@workspace:packages/extension-flattener":
+  version: 0.0.0-use.local
+  resolution: "carpo-flattener@workspace:packages/extension-flattener"
+  dependencies:
+    "@solidity-parser/parser": ^0.8.0
   languageName: unknown
   linkType: soft
 
