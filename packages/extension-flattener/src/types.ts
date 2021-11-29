@@ -1,5 +1,5 @@
-import { CompilerContext } from './ctx';
+import { FlattenerContext } from './ctx';
 
 export type InterfaceEvents = {
-  ready: CompilerContext;
+  ready: FlattenerContext;
 };
