@@ -1,6 +1,5 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { getCoreApi } from '@carpo-remix/common/getCoreApi';
 import * as vscode from 'vscode';
 
 import { DeployContext } from './ctx';
@@ -13,11 +12,7 @@ export function activate(context: vscode.ExtensionContext): void {
 
   console.log('"carpo-deploy" is now active!');
 
-  const coreApi = getCoreApi();
-
-  coreApi?.ctx.runDevNode();
-
-  const webviewProvider = new DeployWebviewProvider(context.extensionUri);
+  const webviewProvider = new DeployWebviewProvider(context.extensionUri, ctx);
 
   context.subscriptions.push(
     ctx,

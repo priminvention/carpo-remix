@@ -1,3 +1,4 @@
+import type { Webview } from 'vscode';
 import type {
   Handlers,
   MessageTypes,
@@ -6,8 +7,6 @@ import type {
   TransportRequestMessage,
   TransportResponseMessage
 } from './types';
-
-import { Webview } from 'vscode';
 
 let idCounter = 0;
 const handlers: Handlers = {};

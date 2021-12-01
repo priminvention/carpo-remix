@@ -1,8 +1,13 @@
+import type { AccountType, Deployment } from '@carpo-remix/common/webview/types';
+import type { Artifact } from '@carpo-remix/helper/types';
+
 import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
-import { AccountType, ContractDeployResType } from '@carpo-remix/common/webview/types';
 import useArtifacts from '@carpo-remix/react-components/useArtifacts';
 import { Button, Col, Collapse, Form, Input, Row, Select } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import { ethers } from 'ethers';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
+import { PostMessageProvider } from './PostMessageProvider';
 
 type AbiInput = {
   name: string;
@@ -21,14 +26,39 @@ function trimAddress(addr: string | undefined) {
 
 const Root: React.FC = () => {
   const [currentNetworkType, setcurrentNetworkType] = useState<NetworkType>('local');
-  const [custNodeUrl, setCustNodeUrl] = useState('http://localhost:8545');
   const [currentAccount, setCurrentAccount] = useState<string>();
   const [accountList, setAccountList] = useState<AccountType[]>([]);
   const [constractParams, setConstractParams] = useState<(AbiInput & { value: string })[]>([]);
-  const [currentArtifact, setCurrentArtifact] = useState('');
-  const [deployedRes, setDeployedRes] = useState<ContractDeployResType>([]);
+  const [currentArtifact, setCurrentArtifact] = useState<Artifact>();
   const artifacts = useArtifacts();
-  const fnFragmentsArgs = useRef<{ [conAddr: string]: { [key: string]: unknown[] } }>({});
+  const [provider, setProvider] = useState<PostMessageProvider>();
+
+  const getAccounts = useCallback(() => {
+    return provider
+      ? provider
+          .listAccounts()
+          .then((accounts) =>
+            accounts.map(async (account) => ({
+              address: account,
+              balance: await provider.getBalance(account)
+            }))
+          )
+          .then((data) => {
+            return Promise.all(data.map((d) => d));
+          })
+      : Promise.resolve([]);
+  }, [provider]);
+
+  useEffect(() => {
+    if (currentNetworkType === 'local') {
+      setProvider(new PostMessageProvider('development'));
+    }
+
+    return () => {
+      provider?.removeAllListeners();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentNetworkType]);
 
   /**
    * Initializing the connection
@@ -36,21 +66,22 @@ const Root: React.FC = () => {
    * @todo custom
    */
   useEffect(() => {
-    if (currentNetworkType === 'local') {
-      sendMessage('carpo-deploy.accounts').then((accounts) => {
-        setAccountList(accounts);
-        setCurrentAccount(accounts[0].address);
-      });
-    }
-  }, [currentNetworkType]);
+    getAccounts().then((accounts) => {
+      setAccountList(accounts);
+      setCurrentAccount(accounts[0].address);
+    });
+  }, [getAccounts]);
 
   const handleChangeNetwork = (networkType: NetworkType) => {
     setcurrentNetworkType(networkType);
   };
 
-  const handleChangeContract = (val: string) => {
-    setCurrentArtifact(val);
-    const { abi } = JSON.parse(val);
+  const handleChangeContract = (index: number) => {
+    const artifact = artifacts?.[index];
+
+    if (!artifact) return;
+    setCurrentArtifact(artifact);
+    const { abi } = artifact;
     const constructorInputs = abi.find((i: any) => i.type === 'constructor');
 
     if (constructorInputs) {
@@ -65,37 +96,36 @@ const Root: React.FC = () => {
   /**
    * after send Tx, update the balance of current account
    */
-  const updateAccountList = () => {
-    sendMessage('carpo-deploy.accounts').then((accounts) => {
-      setAccountList(accounts);
-    });
-  };
+  const updateAccountList = useCallback(() => {
+    getAccounts().then(setAccountList);
+  }, [getAccounts]);
 
   /**
    * deploy the contract
    * & update the singer's balance
    */
-  const deploy = async () => {
-    const deployedRes = await sendMessage('carpo-deploy.run', {
-      artifact: currentArtifact,
-      account: currentAccount!,
-      constractParams
-    });
+  const deploy = useCallback(async () => {
+    if (!provider || !currentArtifact) return;
 
-    setDeployedRes(deployedRes);
+    const { abi, bytecode } = currentArtifact;
+    const signer = provider.getSigner();
+    const factory = new ethers.ContractFactory(abi, bytecode, signer);
+
+    const contract = await factory.deploy(...constractParams.map((i) => i.value));
+
+    await contract.deployed();
+
+    const deployment: Deployment = {
+      address: contract.address,
+      transactionHash: contract.deployTransaction.hash,
+      chainId: provider.network.chainId,
+      ...currentArtifact
+    };
+
+    await sendMessage('carpo-deploy.saveDeployment', deployment);
+
     updateAccountList();
-  };
-
-  const handleContractFn = async (addr: string, fragmentName: string) => {
-    const inputArgs = fnFragmentsArgs.current[addr] ? fnFragmentsArgs.current[addr][fragmentName] : [];
-
-    try {
-      await sendMessage('carpo-deploy.call', { addr, fragmentName, inputArgs: inputArgs });
-      updateAccountList();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  }, [constractParams, currentArtifact, provider, updateAccountList]);
 
   return (
     <>
@@ -122,20 +152,19 @@ const Root: React.FC = () => {
           >
             {accountList.map((account) => (
               <Select.Option key={account.address} value={account.address}>
-                {`${trimAddress(account.address)}   (${account.balance} eth)`}
+                {`${trimAddress(account.address)}   (${ethers.utils.formatEther(account.balance)} eth)`}
               </Select.Option>
             ))}
           </Select>
         </Form.Item>
         <Form.Item label='Contract'>
-          <Select
-            defaultValue={''}
+          <Select<number>
             onChange={(val) => {
               handleChangeContract(val);
             }}
           >
-            {artifacts?.map((artifact) => (
-              <Select.Option key={artifact.contractName} value={JSON.stringify(artifact)}>
+            {artifacts?.map((artifact, index) => (
+              <Select.Option key={artifact.contractName} value={index}>
                 {artifact.contractName}
               </Select.Option>
             ))}
@@ -161,7 +190,7 @@ const Root: React.FC = () => {
       </Form>
       <div className='deployed'>
         <div className='deployed-title'>Deployed Contracts</div>
-        <div className='deployed-result'>
+        {/* <div className='deployed-result'>
           {deployedRes.length > 0 ? (
             <Collapse>
               {deployedRes.map((info) => (
@@ -200,7 +229,7 @@ const Root: React.FC = () => {
           ) : (
             <div>No deployed contracts !</div>
           )}
-        </div>
+        </div> */}
       </div>
     </>
   );

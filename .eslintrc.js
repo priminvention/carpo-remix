@@ -29,6 +29,7 @@ module.exports = {
     // specific overrides
     'default-param-last': [0], // conflicts with TS version (this one doesn't allow TS ?)
     'react/prop-types': [0], // this is a completely broken rule
+    'no-case-declarations': 'off',
     'padding-line-between-statements': [
       1,
       { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },

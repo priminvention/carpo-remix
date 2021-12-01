@@ -4,7 +4,7 @@ import type { MessageTypes, RequestTypes, ResponseTypes } from './types';
 import { getWorkspaceConfig } from '@carpo-remix/config/getWorkspaceConfig';
 import { mergeWorkspaceConfig } from '@carpo-remix/config/mergeWorkspaceConfig';
 import { WorkspaceConfig } from '@carpo-remix/config/types';
-import { getArtifacts } from '@carpo-remix/helper';
+import { getArtifacts, getNamedArtifact } from '@carpo-remix/helper';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 
 import { findContracts, getSolidityReleases } from '../solidity';
@@ -50,6 +50,9 @@ export async function handle<TMessageType extends MessageTypes>(
 
       case 'artifacts.all':
         return getArtifacts(workspacePath);
+
+      case 'artifacts.one':
+        return getNamedArtifact(request as string, workspacePath);
 
       default:
         throw new Error(`Unable to handle message of type ${type} in common`);

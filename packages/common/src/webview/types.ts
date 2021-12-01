@@ -3,11 +3,20 @@ import type { Artifact, CompilerOutput } from '@carpo-remix/helper/types';
 
 import { ethers } from 'ethers';
 
-export type AccountType = { address: string; balance: string };
+export type AccountType = { address: string; balance: ethers.BigNumber };
 export type Uri = { path: string; scheme: string };
-export type ContractDeployReqType = { artifact: any; account: string; constractParams: unknown[] };
-export type ContractDeployResType = { addr: string; fnFragment: Array<ethers.utils.FunctionFragment> }[];
-export type ContractCallReqTypes = { addr: string; fragmentName: string; inputArgs: any[] };
+export type ProviderSendRequest = {
+  nameOrUrl: string;
+  data: {
+    method: string;
+    params: any[];
+  };
+};
+export interface Deployment extends Artifact {
+  address: string;
+  transactionHash: string;
+  chainId: number;
+}
 
 export interface RequestSignatures {
   /** common */
@@ -18,14 +27,14 @@ export interface RequestSignatures {
   'solidity.releases': [null, Record<string, string>];
   'contracts.files': [null, string[]];
   'artifacts.all': [null, Artifact[]];
+  'artifacts.one': [string, Artifact];
   /** carpo-core extension */
   'carpo-core.genConfig': [WorkspaceConfig, WorkspaceConfig | undefined];
   /** carpo-compiler extension */
   'carpo-compiler.compile': [string[], CompilerOutput];
   /** carpo-deploy extension */
-  'carpo-deploy.accounts': [null, AccountType[]];
-  'carpo-deploy.run': [ContractDeployReqType, ContractDeployResType];
-  'carpo-deploy.call': [ContractCallReqTypes, void];
+  'carpo-deploy.providerSend': [ProviderSendRequest, any];
+  'carpo-deploy.saveDeployment': [Deployment, Deployment];
 }
 
 export type MessageTypes = keyof RequestSignatures;
