@@ -1,6 +1,7 @@
 import type { Handle } from '@carpo-remix/common/webview/handle';
 
 import { AbstractViewProvider } from '@carpo-remix/common';
+import { getCoreApi } from '@carpo-remix/common/getCoreApi';
 import { ContractCallReqTypes, ContractDeployReqType } from '@carpo-remix/common/webview/types';
 import { getArtifacts } from '@carpo-remix/helper';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
@@ -19,6 +20,18 @@ export default class DeployWebviewProvider extends AbstractViewProvider {
     const workspacePath = getWorkspacePath();
 
     switch (type) {
+      case 'carpo-deploy.guaranteeDevNode': {
+        const devNodeNpmTask = vscode.tasks.taskExecutions.filter((tsk) => tsk.task.name === 'Dev node');
+
+        if (devNodeNpmTask.length === 0) {
+          const coreApi = getCoreApi();
+
+          return coreApi?.ctx.runDevNode();
+        }
+
+        return;
+      }
+
       case 'carpo-deploy.accounts':
         return Provider.getAccountList();
       case 'carpo-deploy.run':

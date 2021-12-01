@@ -7,14 +7,16 @@ import type {
   TransportResponseMessage
 } from './types';
 
-import { Webview } from 'vscode';
-
 let idCounter = 0;
 const handlers: Handlers = {};
 
-declare function acquireVsCodeApi(): Pick<Webview, 'postMessage'>;
+declare function acquireVsCodeApi(): {
+  postMessage: (params: any) => void;
+  setState: <T extends Record<string, unknown>>(params: T) => void;
+  getState: <K>() => Record<string, K>;
+};
 
-const vscodeWebview = acquireVsCodeApi();
+export const vscodeWebview = acquireVsCodeApi();
 
 export const sendMessage = <TMessageType extends MessageTypes>(
   message: TMessageType,

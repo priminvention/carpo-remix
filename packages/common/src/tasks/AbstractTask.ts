@@ -8,13 +8,14 @@ export abstract class AbstractTask extends Task {
   public execute(): Promise<TaskExecution> {
     return new Promise((resolve, reject) => {
       tasks.executeTask(this).then((_execution) => {
-        this.taskExcution = _execution;
-        tasks.onDidEndTask((e) => {
-          if (e.execution === _execution) {
-            resolve(e.execution);
-            _execution.terminate();
-          }
-        });
+        resolve(_execution);
+        // this.taskExcution = _execution;
+        // tasks.onDidEndTask((e) => {
+        //   if (e.execution === _execution) {
+        //     resolve(e.execution);
+        //     _execution.terminate();
+        //   }
+        // });
       }, reject);
     });
   }

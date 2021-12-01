@@ -1,4 +1,4 @@
-import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
+import { sendMessage, vscodeWebview } from '@carpo-remix/common/webview/sendMessage';
 import { AccountType, ContractDeployResType } from '@carpo-remix/common/webview/types';
 import useArtifacts from '@carpo-remix/react-components/useArtifacts';
 import { Button, Col, Collapse, Form, Input, Row, Select } from 'antd';
@@ -37,12 +37,24 @@ const Root: React.FC = () => {
    */
   useEffect(() => {
     if (currentNetworkType === 'local') {
-      sendMessage('carpo-deploy.accounts').then((accounts) => {
-        setAccountList(accounts);
-        setCurrentAccount(accounts[0].address);
+      sendMessage('carpo-deploy.guaranteeDevNode').then(() => {
+        sendMessage('carpo-deploy.accounts').then((accounts) => {
+          setAccountList(accounts);
+          setCurrentAccount(accounts[0].address);
+        });
       });
     }
   }, [currentNetworkType]);
+
+  useEffect(() => {
+    if (currentArtifact) {
+      const data = vscodeWebview.getState<any>();
+
+      if (data.deployedData) {
+        setDeployedRes(data.deployedData);
+      }
+    }
+  }, [currentArtifact]);
 
   const handleChangeNetwork = (networkType: NetworkType) => {
     setcurrentNetworkType(networkType);
@@ -82,15 +94,23 @@ const Root: React.FC = () => {
       constractParams
     });
 
+    vscodeWebview.setState({ deployedData: deployedRes });
     setDeployedRes(deployedRes);
     updateAccountList();
   };
 
-  const handleContractFn = async (addr: string, fragmentName: string) => {
-    const inputArgs = fnFragmentsArgs.current[addr] ? fnFragmentsArgs.current[addr][fragmentName] : [];
+  const handleContractFn = async (contractAddr: string, fragmentName: string) => {
+    const inputArgs = fnFragmentsArgs.current[contractAddr] ? fnFragmentsArgs.current[contractAddr][fragmentName] : [];
+    const res = deployedRes.find((res) => res.contractAddr === contractAddr);
 
     try {
-      await sendMessage('carpo-deploy.call', { addr, fragmentName, inputArgs: inputArgs });
+      await sendMessage('carpo-deploy.call', {
+        addr: currentAccount!,
+        contractAddr,
+        abi: res?.abi,
+        fragmentName,
+        inputArgs: inputArgs
+      });
       updateAccountList();
     } catch (error) {
       console.log(error);
@@ -167,8 +187,8 @@ const Root: React.FC = () => {
               {deployedRes.map((info) => (
                 <Collapse.Panel
                   className='deployed-panel'
-                  header={<span className='head'>{info.addr}</span>}
-                  key={info.addr}
+                  header={<span className='head'>{info.contractAddr}</span>}
+                  key={info.contractAddr}
                 >
                   {info.fnFragment.map((fragment, fragmentIndex) => {
                     return (
@@ -177,20 +197,22 @@ const Root: React.FC = () => {
                           <Input
                             key={ipt.name}
                             onChange={(e) => {
-                              if (!fnFragmentsArgs.current[info.addr]) {
-                                fnFragmentsArgs.current[info.addr] = {};
+                              if (!fnFragmentsArgs.current[info.contractAddr]) {
+                                fnFragmentsArgs.current[info.contractAddr] = {};
                               }
 
-                              if (!fnFragmentsArgs.current[info.addr][fragment.name]) {
-                                fnFragmentsArgs.current[info.addr][fragment.name] = [];
+                              if (!fnFragmentsArgs.current[info.contractAddr][fragment.name]) {
+                                fnFragmentsArgs.current[info.contractAddr][fragment.name] = [];
                               }
 
-                              fnFragmentsArgs.current[info.addr][fragment.name][innerIndex] = e.target.value;
+                              fnFragmentsArgs.current[info.contractAddr][fragment.name][innerIndex] = e.target.value;
                             }}
                             placeholder={ipt.baseType}
                           />
                         ))}
-                        <Button onClick={() => handleContractFn(info.addr, fragment.name)}>{fragment.name}</Button>
+                        <Button onClick={() => handleContractFn(info.contractAddr, fragment.name)}>
+                          {fragment.name}
+                        </Button>
                       </div>
                     );
                   })}

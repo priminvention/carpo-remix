@@ -6,6 +6,7 @@ import {
 } from '@carpo-remix/common/webview/types';
 import { getNamedArtifact } from '@carpo-remix/helper';
 import { Artifact } from '@carpo-remix/helper/types';
+import { toast } from '@carpo-remix/utils';
 import { getWorkspacePath } from '@carpo-remix/utils/workspace';
 import { ethers } from 'ethers';
 import * as fs from 'fs-extra';
@@ -80,20 +81,47 @@ export default class InnerProvider {
     const contract = await factory.deploy(...constractParams.map((i: any) => i.value));
 
     InnerProvider.contracts[contract.address] = contract;
-    InnerProvider.deployedRes.push({ addr: contract.address, fnFragment: Object.values(contract.interface.functions) });
+    InnerProvider.deployedRes.push({
+      contractAddr: contract.address,
+      abi,
+      fnFragment: Object.values(contract.interface.functions)
+    });
     writeDeployedResult(contractName, contract);
 
     return InnerProvider.deployedRes;
   }
 
   public static async call(params: ContractCallReqTypes): Promise<any> {
-    const { addr, fragmentName, inputArgs } = params;
-    const frg = InnerProvider.contracts[addr].interface.fragments.find((frg) => frg.name === fragmentName);
+    const { abi, addr, contractAddr, fragmentName, inputArgs } = params;
+    const provider = await InnerProvider.getProviderInstance();
+    const signer = provider.getSigner(addr);
+    const contract = new ethers.Contract(contractAddr, abi, signer);
 
-    if (frg?.inputs.length && frg?.inputs.length > 0) {
-      return await InnerProvider.contracts[addr][fragmentName](...inputArgs);
+    const signedContract = contract.connect(signer);
+    const frg = signedContract.interface.fragments.find((frg) => frg.name === fragmentName);
+
+    try {
+      if (frg?.inputs.length && frg?.inputs.length > 0) {
+        for (let i = 0; i < frg.inputs.length; i++) {
+          if (frg.inputs[i].type === 'string' && !inputArgs[i]) {
+            inputArgs[i] = '';
+          }
+        }
+
+        const res = await signedContract[fragmentName].call(null, ...inputArgs);
+
+        toast.info(JSON.stringify(res));
+
+        return;
+      }
+
+      const res = await signedContract[fragmentName].call(null);
+
+      toast.info(JSON.stringify(res));
+    } catch (error) {
+      console.log('error', JSON.stringify(error));
+
+      toast.error(JSON.stringify(error));
     }
-
-    return await InnerProvider.contracts[addr][fragmentName](...inputArgs);
   }
 }

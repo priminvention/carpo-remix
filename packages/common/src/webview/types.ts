@@ -6,8 +6,18 @@ import { ethers } from 'ethers';
 export type AccountType = { address: string; balance: string };
 export type Uri = { path: string; scheme: string };
 export type ContractDeployReqType = { artifact: any; account: string; constractParams: unknown[] };
-export type ContractDeployResType = { addr: string; fnFragment: Array<ethers.utils.FunctionFragment> }[];
-export type ContractCallReqTypes = { addr: string; fragmentName: string; inputArgs: any[] };
+export type ContractDeployResType = {
+  contractAddr: string;
+  abi: any;
+  fnFragment: Array<ethers.utils.FunctionFragment>;
+}[];
+export type ContractCallReqTypes = {
+  contractAddr: string;
+  addr: string;
+  abi: any;
+  fragmentName: string;
+  inputArgs: any[];
+};
 
 export interface RequestSignatures {
   /** common */
@@ -23,6 +33,7 @@ export interface RequestSignatures {
   /** carpo-compiler extension */
   'carpo-compiler.compile': [string[], CompilerOutput];
   /** carpo-deploy extension */
+  'carpo-deploy.guaranteeDevNode': [null, void];
   'carpo-deploy.accounts': [null, AccountType[]];
   'carpo-deploy.run': [ContractDeployReqType, ContractDeployResType];
   'carpo-deploy.call': [ContractCallReqTypes, void];
