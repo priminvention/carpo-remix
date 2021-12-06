@@ -1,0 +1,17 @@
+{
+  "name": "@carpo-remix/react-params",
+  "version": "0.0.4-2",
+  "description": "carpo-remix extension react-params",
+  "main": "index.js",
+  "repository": "https://github.com/patractlabs/carpo-extension.git",
+  "author": "patractlabs",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "*",
+    "react-dom": "*"
+  },
+  "dependencies": {
+    "@ethersproject/abi": "^5.5.0",
+    "antd": "^4.16.13"
+  }
+}

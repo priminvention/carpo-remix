@@ -3,16 +3,12 @@ import type { Artifact } from '@carpo-remix/helper/types';
 
 import { sendMessage } from '@carpo-remix/common/webview/sendMessage';
 import useArtifacts from '@carpo-remix/react-components/useArtifacts';
-import { Button, Col, Collapse, Form, Input, Row, Select } from 'antd';
+import { Fragment } from '@carpo-remix/react-params';
+import { Button, Col, Form, Row, Select } from 'antd';
 import { ethers } from 'ethers';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { PostMessageProvider } from './PostMessageProvider';
-
-type AbiInput = {
-  name: string;
-  type: string;
-};
 
 type NetworkType = 'local' | 'wallet';
 
@@ -28,10 +24,11 @@ const Root: React.FC = () => {
   const [currentNetworkType, setcurrentNetworkType] = useState<NetworkType>('local');
   const [currentAccount, setCurrentAccount] = useState<string>();
   const [accountList, setAccountList] = useState<AccountType[]>([]);
-  const [constractParams, setConstractParams] = useState<(AbiInput & { value: string })[]>([]);
+  const [constructorFragment, setConstructorFragment] = useState<ethers.utils.Fragment>();
   const [currentArtifact, setCurrentArtifact] = useState<Artifact>();
   const artifacts = useArtifacts();
   const [provider, setProvider] = useState<PostMessageProvider>();
+  const [deployParams, setDeployParams] = useState<any[]>([]);
 
   const getAccounts = useCallback(() => {
     return provider
@@ -82,15 +79,9 @@ const Root: React.FC = () => {
     if (!artifact) return;
     setCurrentArtifact(artifact);
     const { abi } = artifact;
-    const constructorInputs = abi.find((i: any) => i.type === 'constructor');
+    const constructor = new ethers.utils.Interface(abi).fragments.find((i: any) => i.type === 'constructor');
 
-    if (constructorInputs) {
-      const enhancedInput = constructorInputs.inputs.map((i: AbiInput) => ({ ...i, value: '' }));
-
-      setConstractParams(enhancedInput);
-    } else {
-      setConstractParams([]);
-    }
+    setConstructorFragment(constructor);
   };
 
   /**
@@ -111,7 +102,7 @@ const Root: React.FC = () => {
     const signer = provider.getSigner();
     const factory = new ethers.ContractFactory(abi, bytecode, signer);
 
-    const contract = await factory.deploy(...constractParams.map((i) => i.value));
+    const contract = await factory.deploy(...deployParams);
 
     await contract.deployed();
 
@@ -125,7 +116,7 @@ const Root: React.FC = () => {
     await sendMessage('carpo-deploy.saveDeployment', deployment);
 
     updateAccountList();
-  }, [constractParams, currentArtifact, provider, updateAccountList]);
+  }, [currentArtifact, deployParams, provider, updateAccountList]);
 
   return (
     <>
@@ -171,19 +162,8 @@ const Root: React.FC = () => {
           </Select>
         </Form.Item>
         <Form.Item label='Deploy'>
-          {constractParams.map((item, index) => (
-            <Input
-              addonBefore={item.name}
-              className='deployed-ipt-field'
-              key={index}
-              onChange={(e) => {
-                item.value = e.target.value;
-                setConstractParams([...constractParams]);
-              }}
-              placeholder={item.type}
-            />
-          ))}
-          <Button className='deployed-btn' disabled={!currentAccount || !currentArtifact} onClick={deploy}>
+          {constructorFragment && <Fragment fragmentValue={constructorFragment} onChange={setDeployParams} />}
+          <Button className='deployed-btn' onClick={deploy}>
             Deploy
           </Button>
         </Form.Item>

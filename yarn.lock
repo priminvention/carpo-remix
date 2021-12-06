@@ -1563,6 +1563,18 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@carpo-remix/react-params@workspace:packages/react-params":
+  version: 0.0.0-use.local
+  resolution: "@carpo-remix/react-params@workspace:packages/react-params"
+  dependencies:
+    "@ethersproject/abi": ^5.5.0
+    antd: ^4.16.13
+  peerDependencies:
+    react: "*"
+    react-dom: "*"
+  languageName: unknown
+  linkType: soft
+
 "@carpo-remix/utils@0.0.4-2, @carpo-remix/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@carpo-remix/utils@workspace:packages/utils"
