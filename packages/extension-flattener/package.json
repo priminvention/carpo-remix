@@ -42,5 +42,8 @@
   },
   "dependencies": {
     "@solidity-parser/parser": "^0.8.0"
+  },
+  "devDependencies": {
+    "vsce": "^2.5.1"
   }
 }

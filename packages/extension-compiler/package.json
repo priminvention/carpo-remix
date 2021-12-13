@@ -57,5 +57,8 @@
         }
       ]
     }
+  },
+  "devDependencies": {
+    "vsce": "^2.5.1"
   }
 }
